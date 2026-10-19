@@ -1,10 +1,7 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://maven.fabricmc.net/")
-        maven("https://maven.architectury.dev/")
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://maven.minecraftforge.net/")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 
     includeBuild("build-logic")
@@ -18,7 +15,5 @@ include(
     "common:common-customobject",
     "common:common-generator",
     "common:common-core",
-    "platforms:forge",
-    //"platforms:fabric",
     "platforms:paper",
 )

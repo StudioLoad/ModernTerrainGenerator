@@ -1,8 +1,8 @@
 plugins {
     `java-library`
     id("platform-conventions")
-    id("io.papermc.paperweight.userdev") version "1.3.6"
-    id("xyz.jpenilla.run-paper") version "1.0.6" // Adds runServer and runMojangMappedServer tasks for testing
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
+    id("xyz.jpenilla.run-paper") version "2.3.1" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
 repositories {
@@ -10,14 +10,11 @@ repositories {
 }
 
 java {
-    // Configure the java toolchain. This allows gradle to auto-provision JDK 17 on systems that only have JDK 8 installed for example.
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 dependencies {
-    //paperDevBundle("1.18.1-R0.1-SNAPSHOT")
-
-    paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:1.18.2-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 
     implementation(project(":common:common-core"))
 
