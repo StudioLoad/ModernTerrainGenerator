@@ -1,9 +1,7 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![Discord][discord-shield]][discord-url]
 
 <br />
 <div align="center">
@@ -11,7 +9,7 @@
     <img src="logo.png" alt="Logo" width="291" height="100">
   </a>
 
-  <h3 align="center">OpenTerrainGenerator by Team OTG</h3>
+  <h3 align="center">ModernTerrainGenerator</h3>
 
   <p align="center">
     Minecraft's Leading Data-Driven Worldgen Engine
@@ -21,27 +19,17 @@
     <br />
     <a href="https://openterraingen.fandom.com/wiki/OTG_Presets">See Our Presets</a>
     ·
-    <a href="https://github.com/PG85/OpenTerrainGenerator/issues">Report Bugs</a>
-    ·
-    <a href="https://discord.gg/YY2NECCBYN">Join our Discord</a>
+    <a href="https://github.com/rodriaum/ModernTerrainGenerator/issues">Report Bugs</a>
   </p>
 </div>
 
-##  OpenTerrainGenerator by Team OTG
+##  ModernTerrainGenerator
 
 > [!CAUTION]
 > This project is being moved to the latest versions (1.21.11).
 > Contains bugs at the compilation stage.
 
-### Team OTG
-* <a href="https://github.com/PG85">PG85</a>
-* MCPitman
-* <a href="https://github.com/authvin">Authvin</a>
-* <a href="https://github.com/Coll1234567">Josh</a>
-* <a href="https://github.com/SuperCoder7979">SuperCoder79</a>
-* <a href="https://github.com/SXRWahrheit">Wahrheit</a>
-
-### Team Load
+### Team
 * <a href="https://github.com/rodriaum">Rodrigo</a>
 
 ## Installation / building
@@ -58,7 +46,7 @@
 
 ## Original developers
 
-OpenTerrainGenerator is a fork of Terrain Control, which is the successor to <a href="http://www.minecraftforum.net/topic/313991-phoenixterrainmod/">PhoenixTerrainMod</a>, which was based on <a href="http://www.minecraftforum.net/topic/71565-biomemod/">BiomeTerrainMod</a>. 
+ModernTerrainGenerator is a fork of <a href="https://github.com/PG85/OpenTerrainGenerator">OpenTerrainControl</a> is a fork of Terrain Control, which is the successor to <a href="http://www.minecraftforum.net/topic/313991-phoenixterrainmod/">PhoenixTerrainMod</a>, which was based on <a href="http://www.minecraftforum.net/topic/71565-biomemod/">BiomeTerrainMod</a>. 
 
 * Buycruss       - BiomeTerrainMod
 * R-T-B          - PhoenixTerrainMod
@@ -67,19 +55,20 @@ OpenTerrainGenerator is a fork of Terrain Control, which is the successor to <a 
 * <a href="https://github.com/Timethor">Timethor - TerrainControl</a>
 * <a href="https://github.com/rutgerkok">Rutgerkok - TerrainControl</a>
 * <a href="https://github.com/bloodmc">BloodMC - TerrainControl</a>
+* <a href="https://github.com/PG85">PG85</a>
+* MCPitman
+* <a href="https://github.com/authvin">Authvin</a>
+* <a href="https://github.com/Coll1234567">Josh</a>
+* <a href="https://github.com/SuperCoder7979">SuperCoder79</a>
+* <a href="https://github.com/SXRWahrheit">Wahrheit</a>
 
-[contributors-shield]: https://img.shields.io/github/contributors/PG85/OpenTerrainGenerator.svg?style=for-the-badge
-[contributors-url]: https://github.com/PG85/OpenTerrainGenerator/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/PG85/OpenTerrainGenerator.svg?style=for-the-badge
-[forks-url]: https://github.com/PG85/OpenTerrainGenerator/network/members
-[stars-shield]: https://img.shields.io/github/stars/PG85/OpenTerrainGenerator.svg?style=for-the-badge
-[stars-url]: https://github.com/PG85/OpenTerrainGenerator/stargazers
-[issues-shield]: https://img.shields.io/github/issues/PG85/OpenTerrainGenerator.svg?style=for-the-badge
-[issues-url]: https://github.com/PG85/OpenTerrainGenerator/issues
-[license-shield]: https://img.shields.io/github/license/PG85/OpenTerrainGenerator.svg?style=for-the-badge
-[license-url]: https://github.com/PG85/OpenTerrainGenerator/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[discord-shield]: https://img.shields.io/discord/307111022257373185?style=for-the-badge
-[discord-url]: https://discord.gg/YY2NECCBYN
-[product-screenshot]: images/screenshot.png
+[contributors-shield]: https://img.shields.io/github/contributors/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
+[contributors-url]: https://github.com/StudioLoad/ModernTerrainGenerator/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
+[forks-url]: https://github.com/StudioLoad/ModernTerrainGenerator/network/members
+[stars-shield]: https://img.shields.io/github/stars/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
+[stars-url]: https://github.com/StudioLoad/ModernTerrainGenerator/stargazers
+[issues-shield]: https://img.shields.io/github/issues/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
+[issues-url]: https://github.com/StudioLoad/ModernTerrainGenerator/issues
+[license-shield]: https://img.shields.io/github/license/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
+[license-url]: https://github.com/StudioLoad/ModernTerrainGenerator/blob/main/LICENSE.txt
