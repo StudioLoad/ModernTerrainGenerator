@@ -21,6 +21,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
@@ -88,7 +90,7 @@ public class BiomeCommand extends BaseCommand
 							.append(Component.literal(" biome.").withStyle(ChatFormatting.GOLD))),
 					false);
 		}
-		source.sendSuccess(() -> (createComponent("Biome registry name: ", source.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome).toString(),
+		source.sendSuccess(() -> (createComponent("Biome registry name: ", source.getServer().registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).toString(),
 				ChatFormatting.GOLD, ChatFormatting.GREEN)), false);
 
 		switch (option)
@@ -170,7 +172,7 @@ public class BiomeCommand extends BaseCommand
 	public void showSpawns(CommandSourceStack source, WeightedRandomList<SpawnerData> spawns)
 	{
 		spawns.unwrap().forEach(spawn -> source
-				.sendSuccess(() -> (createComponent("   - Entity: ", Registry.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
+				.sendSuccess(() -> (createComponent("   - Entity: ", BuiltInRegistries.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
 						.append(createComponent(", Weight: ", Integer.toString(spawn.getWeight().asInt()), ChatFormatting.GOLD,
 								ChatFormatting.GREEN))
 						.append(createComponent(", Min: ", Integer.toString(spawn.minCount), ChatFormatting.GOLD,
