@@ -195,7 +195,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 				biome = existingBiome.get();
 				if (refresh && OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY)) {
 					OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
-							"Biome " + registryKey.location() + " is already registered; restart the server to apply changed biome settings.");
+							"Biome " + registryKey.identifier() + " is already registered; restart the server to apply changed biome settings.");
 				}
 			} else {
 				biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
