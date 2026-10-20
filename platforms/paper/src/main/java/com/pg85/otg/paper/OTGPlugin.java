@@ -58,17 +58,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 
 	public static OTGPlugin plugin;
 
-	static
-	{
-		try
-		{
-			Field field = CustomChunkGenerator.class.getDeclaredField("delegate");
-			field.setAccessible(true);
-		} catch (ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
+
 
 	@Override
 	public void onDisable ()
