@@ -169,7 +169,7 @@ public class BiomeCommand extends BaseCommand
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.MISC));
 	}
 
-	public void showSpawns(CommandSourceStack source, WeightedList<SpawnerData> spawns)
+	public void showSpawns(CommandSourceStack source, WeightedList spawns)
 	{
 		spawns.unwrap().forEach(spawn -> source
 				.sendSuccess(() -> (createComponent("   - Entity: ", BuiltInRegistries.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
