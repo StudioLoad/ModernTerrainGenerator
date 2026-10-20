@@ -540,7 +540,7 @@ public class PaperBiome implements IBiome
 			Optional<EntityType<?>> entityType = EntityType.byString(mobSpawnGroup.getInternalName());
 			if (entityType.isPresent())
 			{
-				mobSpawnInfoBuilder.addSpawn(creatureType, new MobSpawnSettings.SpawnerData(entityType.get(), mobSpawnGroup.getWeight(), mobSpawnGroup.getMin(), mobSpawnGroup.getMax()));
+				mobSpawnInfoBuilder.addSpawn(creatureType, mobSpawnGroup.getWeight(), new MobSpawnSettings.SpawnerData(entityType.get(), mobSpawnGroup.getMin(), mobSpawnGroup.getMax()));
 			} else {
 				if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.MOBS))
 				{
