@@ -64,7 +64,7 @@ public class TpCommand extends BaseCommand
 	private int locateBiome(CommandSourceStack source, String biome, int range) throws CommandSyntaxException
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		biome = biome.toLowerCase();
@@ -72,7 +72,7 @@ public class TpCommand extends BaseCommand
 		ServerLevel world = source.getLevel();
 		if (!(world.getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			source.sendSuccess(Component.literal("OTG is not enabled in this world"), false);
+			source.sendSuccess(() -> (Component.literal("OTG is not enabled in this world")), false);
 			return 0;
 		}
 
@@ -93,7 +93,7 @@ public class TpCommand extends BaseCommand
 			int y = world.getChunkSource().getGenerator().getBaseHeight(pos.getX(), pos.getZ(),
 					Types.MOTION_BLOCKING_NO_LEAVES, world);
 			source.getPlayerOrException().teleportTo(pos.getX(), y, pos.getZ());
-			source.sendSuccess(Component.literal("Teleporting you to the nearest " + biome + "."), false);
+			source.sendSuccess(() -> (Component.literal("Teleporting you to the nearest " + biome + ".")), false);
 			return 0;
 		}
 	}
@@ -119,7 +119,7 @@ public class TpCommand extends BaseCommand
 
 	private int showHelp(CommandSourceStack source)
 	{
-		source.sendSuccess(Component.literal(getUsage()), false);
+		source.sendSuccess(() -> (Component.literal(getUsage())), false);
 		return 0;
 	}
 }
