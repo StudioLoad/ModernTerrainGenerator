@@ -1,3 +1,4 @@
+
 name: Java CI with Gradle
 
 on:
@@ -8,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: gradle-${{ github.workflow }}-${{ github.ref }}
@@ -16,12 +17,15 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -33,17 +37,58 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Compile Paper module
-        run: ./gradlew --no-daemon clean :platforms:paper:compileJava
+      - name: Get Gradle version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(./gradlew -q properties | \
+            awk -F ': ' '$1 == "version" {print $2; exit}')
+
+          if [[ -z "$VERSION" || "$VERSION" == "unspecified" ]]; then
+            echo "Gradle version is missing or unspecified."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Release version: $VERSION"
 
       - name: Build production and universal JARs
-        run: ./gradlew --no-daemon :platforms:paper:reobfJar universalJar
+        run: ./gradlew --no-daemon clean :platforms:paper:reobfJar universalJar
 
-      - name: Upload build output
-        if: success()
+      - name: Create tag
+        id: tag
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          TAG="v${VERSION}"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ModernTerrainGenerator-1.21.11
+          name: ModernTerrainGenerator-${{ steps.version.outputs.version }}
           path: build/distributions/*.jar
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish GitHub Release
+        if: steps.tag.outputs.created == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: ModernTerrainGenerator ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: build/distributions/*.jar
