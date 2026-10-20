@@ -54,7 +54,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 
 // TODO: Split up worldgenregion into separate classes, one for decoration/worldgen, one for non-worldgen.
 public class PaperWorldGenRegion extends LocalWorldGenRegion
@@ -696,7 +695,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 				mobEntity.setPersistenceRequired();
 				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())), EntitySpawnReason.CHUNK_GENERATION, null);
 			}
-			this.worldGenRegion.addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.DEFAULT);
+			this.worldGenRegion.addFreshEntity(entity);
 		}
 	}
 
