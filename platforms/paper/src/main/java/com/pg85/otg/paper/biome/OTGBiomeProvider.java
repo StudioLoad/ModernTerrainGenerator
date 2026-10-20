@@ -110,8 +110,8 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		return this.layer.get();
 	}
 	
-	@Override
-	public BiomeSource withSeed(long seed)
+	// OTG utility method. BiomeSource no longer declares withSeed in Minecraft 1.21.11.
+	public OTGBiomeProvider withSeed(long seed)
 	{
 		return new OTGBiomeProvider(this.presetFolderName, seed, this.registry);
 	}
