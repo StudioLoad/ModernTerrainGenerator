@@ -33,7 +33,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.storage.LevelResource;
@@ -100,7 +100,7 @@ public class SpawnCommand extends BaseCommand
 	public static int execute(CommandSourceStack source, String presetName, String objectName, BlockPos blockPos, boolean force)
 	{
 		if (!source.hasPermission(2, "otg.cmd.spawn")) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
 			return 0;
 		}
 		try
@@ -110,7 +110,7 @@ public class SpawnCommand extends BaseCommand
 
 			if (objectToSpawn == null)
 			{
-				source.sendSuccess(new TextComponent("Could not find an object by the name " + objectName + " in either " + presetName + " or Global objects"), false);
+				source.sendSuccess(Component.literal("Could not find an object by the name " + objectName + " in either " + presetName + " or Global objects"), false);
 				return 0;
 			}
 
@@ -138,12 +138,12 @@ public class SpawnCommand extends BaseCommand
 			{
 				if(!(source.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 				{
-	        		source.sendSuccess(new TextComponent("BO4 objects can only be spawned in OTG worlds/dimensions."), false);
+	        		source.sendSuccess(Component.literal("BO4 objects can only be spawned in OTG worlds/dimensions."), false);
 	        		return 0;					
 				}
 	        	if(preset.getWorldConfig().getCustomStructureType() != CustomStructureType.BO4)
 	        	{
-	        		source.sendSuccess(new TextComponent("Cannot spawn a BO4 structure in an isOTGPlus:false world, use a BO3 instead or recreate the world with IsOTGPlus:true in the worldconfig."), false);
+	        		source.sendSuccess(Component.literal("Cannot spawn a BO4 structure in an isOTGPlus:false world, use a BO3 instead or recreate the world with IsOTGPlus:true in the worldconfig."), false);
 	        		return 0;
 	        	}
 	        	
@@ -191,7 +191,7 @@ public class SpawnCommand extends BaseCommand
 	        	
 	        	// Try spawning the structure in available chunks around the player
 	        	int maxRadius = 1000;
-	        	source.sendSuccess(new TextComponent("Trying to plot BO4 structure within " + maxRadius + " chunks of player, with height bounds " + (force ? "disabled" : "enabled") + ". This may take a while."), false);
+	        	source.sendSuccess(Component.literal("Trying to plot BO4 structure within " + maxRadius + " chunks of player, with height bounds " + (force ? "disabled" : "enabled") + ". This may take a while."), false);
 
 	            ChunkCoordinate chunkCoord;
 	            for (int cycle = 1; cycle < maxRadius; cycle++)
@@ -234,7 +234,7 @@ public class SpawnCommand extends BaseCommand
 	                            	
 	                            	if(chunkCoordSpawned != null)
 	                            	{
-	                            		source.sendSuccess(new TextComponent(objectToSpawn.getName() + " was spawned at: "), false);
+	                            		source.sendSuccess(Component.literal(objectToSpawn.getName() + " was spawned at: "), false);
 	                            		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", chunkCoordSpawned.getBlockX(), "~", chunkCoordSpawned.getBlockZ())).withStyle((p_241055_1_) -> {
 	                            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + chunkCoordSpawned.getBlockX() + " ~ " + chunkCoordSpawned.getBlockZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip")));
 	                            		});	                            		
@@ -246,7 +246,7 @@ public class SpawnCommand extends BaseCommand
 	                    }
 	                }
 	            }
-	            source.sendSuccess(new TextComponent(objectToSpawn.getName() + " could not be spawned. This can happen if the world is currently generating chunks, if no biomes with enough space could be found, or if there is an error in the structure's files. Enable SpawnLog:true in OTG.ini and check the logs for more information."), false);
+	            source.sendSuccess(Component.literal(objectToSpawn.getName() + " could not be spawned. This can happen if the world is currently generating chunks, if no biomes with enough space could be found, or if there is an error in the structure's files. Enable SpawnLog:true in OTG.ini and check the logs for more information."), false);
 	        	return 0;
 			} else {
 				if (objectToSpawn.spawnForced(
@@ -260,19 +260,19 @@ public class SpawnCommand extends BaseCommand
 					!(genRegion instanceof MCWorldGenRegion)
 				))
 				{
-            		source.sendSuccess(new TextComponent(objectToSpawn.getName() + " was spawned at: "), false);
+            		source.sendSuccess(Component.literal(objectToSpawn.getName() + " was spawned at: "), false);
             		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", blockPos.getX(), "~", blockPos.getZ())).withStyle((p_241055_1_) -> {
             			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + blockPos.getX() + " ~ " + blockPos.getZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip")));
             		});	                            		
             		source.sendSuccess(itextcomponent, false);
 				} else {
-					source.sendSuccess(new TextComponent("Failed to spawn object " + objectName), false);
+					source.sendSuccess(Component.literal("Failed to spawn object " + objectName), false);
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			source.sendSuccess(new TextComponent("Something went wrong, please check logs"), false);
+			source.sendSuccess(Component.literal("Something went wrong, please check logs"), false);
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Error during spawn command: ");
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, String.format("Error during spawn command: ", (Object[])e.getStackTrace()));
 			e.printStackTrace();
