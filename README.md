@@ -33,7 +33,7 @@
   </p>
 </div>
 
-##  ModernTerrainGenerator
+##  Modern Terrain Generator
 
 > [!CAUTION]
 > This project is being moved to the latest versions (1.21.11).
