@@ -199,7 +199,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 	// Generates the base terrain for a chunk. Spigot compatible.
 	public void buildNoiseSpigot (ServerLevel world, org.bukkit.generator.ChunkGenerator.ChunkData chunk, ChunkCoordinate chunkCoord, Random random)
 	{
-		ChunkBuffer buffer = new PaperChunkBuffer(chunk, chunkCoord);
+		ChunkBuffer buffer = new PaperChunkBuffer(chunk, chunkCoord, this.internalGenerator.getMinY());
 		ChunkAccess cachedChunk = this.shadowChunkGenerator.getChunkFromCache(chunkCoord);
 		if (cachedChunk != null)
 		{
@@ -277,7 +277,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 		//	fixBiomesForChunk = null;
 		//}
-		ChunkBuffer buffer = new PaperChunkBuffer(chunk, chunk.getHeightAccessorForGeneration().getMinBuildHeight());
+		ChunkBuffer buffer = new PaperChunkBuffer(chunk, this.internalGenerator.getMinY());
 		ChunkAccess cachedChunk = this.shadowChunkGenerator.getChunkFromCache(chunkCoord);
 		if (cachedChunk != null)
 		{
