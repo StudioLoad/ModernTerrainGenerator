@@ -49,7 +49,7 @@ public class PaperChunkBuffer extends ChunkBuffer
 		{
 			this.chunkData.setBlock(blockX, blockY, blockZ, ((PaperMaterialData) material).toSpigotBlockData());
 		} else {
-			this.chunk.setBlockState(this.mutable.set(blockX, blockY, blockZ), ((PaperMaterialData) material).internalBlock(), false);
+			this.chunk.setBlockState(this.mutable.set(blockX, blockY, blockZ), ((PaperMaterialData) material).internalBlock());
 		}
 	}
 
