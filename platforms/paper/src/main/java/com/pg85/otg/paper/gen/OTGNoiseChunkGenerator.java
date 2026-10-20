@@ -477,8 +477,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 				double yLerp = (double) pieceY / 8.0D;
 				double density = Mth.lerp3(xLerp, yLerp, zLerp,
-						x0z0y0, x1z0y0, x0z0y1, x1z0y1,
-						x0z1y0, x1z1y0, x0z1y1, x1z1y1);
+						x0z0y0, x1z0y0, x0z1y0, x1z1y0,
+						x0z0y1, x1z0y1, x0z1y1, x1z1y1);
 				BlockState state = this.getBlockState(density, y);
 
 				if (blockStates != null) {
