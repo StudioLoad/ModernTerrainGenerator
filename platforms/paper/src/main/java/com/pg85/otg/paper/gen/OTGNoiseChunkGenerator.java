@@ -404,7 +404,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
 		int minGenY = Math.max(noiseSettings.minY(), world.getMinBuildHeight());
 		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), world.getMaxBuildHeight());
-		int cellNoiseMinY = Math.floorDiv(minGenY, noiseSettings.getCellHeight());
+		int cellNoiseMinY = Math.floorDiv(minGenY - this.internalGenerator.getMinY(), noiseSettings.getCellHeight());
 		int noiseCellCount = Math.floorDiv(maxGenY - minGenY, noiseSettings.getCellHeight());
 		return noiseCellCount <= 0 ?
 				world.getMinBuildHeight() :
@@ -477,7 +477,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		double density;
 		int y;
 		// [0, 32] -> noise chunks
-		for (int noiseY = this.internalGenerator.getNoiseSizeY() - 1; noiseY >= 0; --noiseY)
+		for (int noiseY = cellNoiseMinY + noiseCellCount - 1; noiseY >= cellNoiseMinY; --noiseY)
 		{
 			// Gets all the noise in a 2x2x2 cube and interpolates it together.
 			// Lower pieces
@@ -500,12 +500,12 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 				density = Mth.lerp3(xLerp, yLerp, zLerp, x0z0y0, x0z0y1, x1z0y0, x1z0y1, x0z1y0, x0z1y1, x1z1y0, x1z1y1);
 
 				// Get the real y position (translate noise chunk and noise piece)
-				y = (noiseY * 8) + pieceY;
+				y = this.internalGenerator.getMinY() + (noiseY * 8) + pieceY;
 
 				state = this.getBlockState(density, y);
 				if (blockStates != null)
 				{
-					blockStates[y] = state;
+					blockStates[y - (this.internalGenerator.getMinY() + cellNoiseMinY * 8)] = state;
 				}
 
 				// return y if it fails the check
@@ -516,7 +516,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			}
 		}
 
-		return 0;
+		return this.internalGenerator.getMinY() + cellNoiseMinY * 8;
 	}
 
 	private BlockState getBlockState(double density, int y)
@@ -541,7 +541,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 	}
 
 	@Override
-	protected Codec<? extends ChunkGenerator> codec()
+	protected com.mojang.serialization.MapCodec<? extends ChunkGenerator> codec()
 	{
 		return CODEC;
 	}
