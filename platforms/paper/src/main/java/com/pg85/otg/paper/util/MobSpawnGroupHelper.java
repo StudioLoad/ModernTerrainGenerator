@@ -14,7 +14,7 @@ public class MobSpawnGroupHelper
 {
 	public static List<WeightedMobSpawnGroup> getListFromMinecraftBiome(Biome biome, MobCategory type)
 	{
-		WeightedList<SpawnerData> mobList = biome.getMobSettings().getMobs(type);
+		WeightedList mobList = biome.getMobSettings().getMobs(type);
 		List<WeightedMobSpawnGroup> result = new ArrayList<WeightedMobSpawnGroup>();
 		for (SpawnerData spawner : mobList.unwrap())
 		{
