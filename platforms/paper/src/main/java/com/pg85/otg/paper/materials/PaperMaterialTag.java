@@ -26,7 +26,7 @@ public class PaperMaterialTag extends LocalMaterialTag
 		final ResourceLocation resourceLocation;
 		try
 		{
-			resourceLocation = new ResourceLocation(name.trim().toLowerCase());
+			resourceLocation = ResourceLocation.parse(name.trim().toLowerCase());
 		} catch(Exception ex) {
 			return null;
 		}
