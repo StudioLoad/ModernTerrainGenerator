@@ -100,12 +100,12 @@ public class PaperBiome implements IBiome
 			if (res instanceof RegistryResource registryResource)
 			{
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
-				PlacedFeature registry = BuiltInRegistries.PLACED_FEATURE.get(new ResourceLocation(registryResource.getFeatureKey()));
+				PlacedFeature registry = BuiltInRegistries.PLACED_FEATURE.get(ResourceLocation.parse(registryResource.getFeatureKey()));
 				if (registry == null)
 				{
 					String newResourceLocation = LegacyRegistry.convertLegacyResourceLocation(registryResource.getFeatureKey());
 					if (newResourceLocation != null) {
-						registry = BuiltInRegistries.PLACED_FEATURE.get(new ResourceLocation(newResourceLocation));
+						registry = BuiltInRegistries.PLACED_FEATURE.get(ResourceLocation.parse(newResourceLocation));
 						if (registry == null) {
 							OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Somehow you broke the universe! Feature: "+newResourceLocation+" is not in the registry");
 						} else {
@@ -169,13 +169,13 @@ public class PaperBiome implements IBiome
 				;
 
 
-		Optional<ParticleType<?>> particleType = Registry.PARTICLE_TYPE.getOptional(new ResourceLocation(biomeConfig.getParticleType()));
+		Optional<ParticleType<?>> particleType = Registry.PARTICLE_TYPE.getOptional(ResourceLocation.parse(biomeConfig.getParticleType()));
 		if (particleType.isPresent() && particleType.get() instanceof ParticleOptions)
 		{
 			biomeAmbienceBuilder.ambientParticle(new AmbientParticleSettings((ParticleOptions) particleType.get(), biomeConfig.getParticleProbability()));
 		}
 
-		Optional<SoundEvent> music = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getMusic()));
+		Optional<SoundEvent> music = Registry.SOUND_EVENT.getOptional(ResourceLocation.parse(biomeConfig.getMusic()));
 		music.ifPresent(soundEffect ->
 				biomeAmbienceBuilder.backgroundMusic(
 						new Music(
@@ -187,10 +187,10 @@ public class PaperBiome implements IBiome
 				)
 		);
 
-		Optional<SoundEvent> ambientSound = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getAmbientSound()));
+		Optional<SoundEvent> ambientSound = Registry.SOUND_EVENT.getOptional(ResourceLocation.parse(biomeConfig.getAmbientSound()));
 		ambientSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientLoopSound(ambientSound.get()));
 
-		Optional<SoundEvent> moodSound = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getMoodSound()));
+		Optional<SoundEvent> moodSound = Registry.SOUND_EVENT.getOptional(ResourceLocation.parse(biomeConfig.getMoodSound()));
 		moodSound.ifPresent(soundEffect ->
 				biomeAmbienceBuilder.ambientMoodSound(
 						new AmbientMoodSettings(
@@ -202,7 +202,7 @@ public class PaperBiome implements IBiome
 				)
 		);
 
-		Optional<SoundEvent> additionsSound = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getAdditionsSound()));
+		Optional<SoundEvent> additionsSound = Registry.SOUND_EVENT.getOptional(ResourceLocation.parse(biomeConfig.getAdditionsSound()));
 		additionsSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientAdditionsSound(new AmbientAdditionsSettings(additionsSound.get(), biomeConfig.getAdditionsTickChance())));
 
 		if (biomeConfig.getFoliageColor() != 0xffffff)
