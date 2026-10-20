@@ -7,7 +7,7 @@ import com.pg85.otg.util.minecraft.BlockNames;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.datafix.fixes.ItemStackTheFlatteningFix;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
@@ -162,7 +162,7 @@ public class PaperLegacyMaterials
 			case "mob_spawner":
 				return Blocks.INFESTED_STONE.defaultBlockState();
 			case "double_step":
-				return Registry.BLOCK.get(ResourceLocation.parse("minecraft:smooth_stone_slab"))
+				return Registry.BLOCK.get(Identifier.parse("minecraft:smooth_stone_slab"))
 						.defaultBlockState().setValue(SlabBlock.TYPE,
 								SlabType.DOUBLE);
 			case "smooth_brick":
@@ -807,14 +807,14 @@ public class PaperLegacyMaterials
 		return null;
 	}
 
-	private static ResourceLocation getFlatKey (String name, int data) throws NullPointerException
+	private static Identifier getFlatKey (String name, int data) throws NullPointerException
 	{
 		String result = ItemStackTheFlatteningFix.updateItem(name, data);
 		if (result == null)
 		{
 			throw new NullPointerException();
 		}
-		return ResourceLocation.parse(result);
+		return Identifier.parse(result);
 	}
 
 	private static BlockState getAnvilWithData (int material, int data)
