@@ -23,7 +23,6 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
@@ -31,7 +30,7 @@ import net.minecraft.world.level.levelgen.Heightmap.Types;
 public class TpCommand extends BaseCommand
 {
 	private static final DynamicCommandExceptionType ERROR_BIOME_NOT_FOUND = new DynamicCommandExceptionType(
-			object -> new TranslatableComponent("commands.locatebiome.notFound", object));
+			object -> Component.translatable("commands.locatebiome.notFound", object));
 
 	public TpCommand()
 	{
