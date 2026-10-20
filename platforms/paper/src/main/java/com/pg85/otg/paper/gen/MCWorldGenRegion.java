@@ -71,7 +71,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 		// Get internal coordinates for block in chunk
 		int internalX = x & 0xF;
 		int internalZ = z & 0xF;
-		return PaperMaterialData.ofBlockData(chunk.getBlockState(internalX, y, internalZ));
+		return PaperMaterialData.ofBlockData(chunk.getBlockState(new BlockPos(x, y, z)));
 	}
 
 
