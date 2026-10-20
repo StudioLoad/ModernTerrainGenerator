@@ -282,37 +282,43 @@ public class MapCommand extends BaseCommand
 		@Override
 		public void run()
 		{
-			//set the color
-			while(true)
+			try
 			{
-				BlockPos2D coords = null;
-				int sizeLeft;
-				synchronized(queueLock)
+				//set the color
+				while(true)
 				{
-					sizeLeft = this.coordsToHandle.size();
-					if(sizeLeft > 0)
+					BlockPos2D coords = null;
+					int sizeLeft;
+					synchronized(queueLock)
 					{
-						coords = this.coordsToHandle.remove(sizeLeft - 1);
+						sizeLeft = this.coordsToHandle.size();
+						if(sizeLeft > 0)
+						{
+							coords = this.coordsToHandle.remove(sizeLeft - 1);
+						}
 					}
-				}
-				// Send a progress update to let people know the server isn't dying
-				if (sizeLeft % this.progressUpdate == 0)
-				{
-					this.source.sendSuccess(() -> (Component.literal((int)Math.floor(100 - (((double)sizeLeft / this.totalSize) * 100)) + "% Done mapping")), true);
-				}
-				
-				if(coords != null)
-				{
-					if(this.mapBiomes)
+					// Send a progress update to let people know the server isn't dying
+					if (sizeLeft % this.progressUpdate == 0)
 					{
-						getBiomePixel(coords);
+						this.source.sendSuccess(() -> (Component.literal((int)Math.floor(100 - (((double)sizeLeft / this.totalSize) * 100)) + "% Done mapping")), true);
+					}
+					
+					if(coords != null)
+					{
+						if(this.mapBiomes)
+						{
+							getBiomePixel(coords);
+						} else {
+							getTerrainPixel(coords);
+						}
 					} else {
-						getTerrainPixel(coords);
+						return;
 					}
-				} else {
-					this.latch.countDown();
-					return;
 				}
+			}
+			finally
+			{
+				this.latch.countDown();
 			}
 		}
 
