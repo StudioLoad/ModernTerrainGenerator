@@ -209,7 +209,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		// Get internal coordinates for block in chunk
 		int internalX = x & 0xF;
 		int internalZ = z & 0xF;
-		return PaperMaterialData.ofBlockData(chunk.getBlockState(internalX, y, internalZ));
+		return PaperMaterialData.ofBlockData(chunk.getBlockState(new BlockPos(x, y, z)));
 	}
 
 
@@ -252,7 +252,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		for (int i = heightMapY; i >= getWorldMinY(); i--)
 		{
 			// TODO: mutable
-			blockState = chunk.getBlockState(new BlockPos(internalX, i, internalZ));
+			blockState = chunk.getBlockState(new BlockPos(chunk.getPos().getMinBlockX() + internalX, i, chunk.getPos().getMinBlockZ() + internalZ));
 			block = blockState.getBlock();
 			material = PaperMaterialData.ofBlockData(blockState);
 			isLiquid = material.isLiquid();
@@ -768,7 +768,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		// Get internal coordinates for block in chunk
 		int internalX = x & 0xF;
 		int internalZ = z & 0xF;
-		return PaperMaterialData.ofBlockData(chunk.getBlockState(internalX, y, internalZ));
+		return PaperMaterialData.ofBlockData(chunk.getBlockState(new BlockPos(x, y, z)));
 	}	
 	
 	@Override
