@@ -182,7 +182,7 @@ public class PaperBiome implements IBiome
 								? biomeConfig.getWaterColor() : 4159204);
 
 		List<AmbientParticle> ambientParticles = new ArrayList<>();
-		Optional<ParticleType<?>> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
+		Optional<ParticleType> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
 		if (particleType.isPresent() && particleType.get() instanceof ParticleOptions particleOptions)
 		{
 			ambientParticles.add(new AmbientParticle(particleOptions, biomeConfig.getParticleProbability()));
