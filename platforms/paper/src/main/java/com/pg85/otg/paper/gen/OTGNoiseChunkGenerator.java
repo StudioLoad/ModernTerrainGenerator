@@ -395,7 +395,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		}
 	// Mob spawning on chunk tick
 	@Override
-	public WeightedList<MobSpawnSettings.SpawnerData> getMobsAt(Holder<Biome> biome, StructureManager structureManager, MobCategory entityClassification, BlockPos blockPos)
+	public WeightedList getMobsAt(Holder<Biome> biome, StructureManager structureManager, MobCategory entityClassification, BlockPos blockPos)
 	{
 		return super.getMobsAt(biome, structureManager, entityClassification, blockPos);
 	}
