@@ -188,14 +188,17 @@ public class PaperPresetLoader extends LocalPresetLoader
 			presetBiomes.add(registryKey);
 			biome = PaperBiome.createOTGBiome(isOceanBiome, preset.getWorldConfig(), biomeConfig.getValue(), ((CraftServer)Bukkit.getServer()).getServer().registryAccess());
 
-			if (!refresh) {
-				biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
-			} else {
-				// Minecraft 1.21.11 registries no longer expose registerOrOverride.
-				// Existing biome entries are kept until the registry is rebuilt by a server restart.
-				if (biomeRegistry.getOptional(registryKey).isEmpty()) {
-					biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
+			java.util.Optional<Biome> existingBiome = biomeRegistry.getOptional(registryKey);
+			if (existingBiome.isPresent()) {
+				// Registry entries cannot be replaced safely after the world registry has been built.
+				// Reuse the registered instance so subsequent key lookups never operate on an unregistered biome.
+				biome = existingBiome.get();
+				if (refresh && OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY)) {
+					OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
+							"Biome " + registryKey.location() + " is already registered; restart the server to apply changed biome settings.");
 				}
+			} else {
+				biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
 			}
 
 			// Populate our map for syncing
