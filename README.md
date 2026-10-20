@@ -1,7 +1,17 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+<p align="center">
+  <a href="https://github.com/StudioLoad/ModernTerrainGenerator/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge" alt="Contributors">
+  </a>
+  <a href="https://github.com/StudioLoad/ModernTerrainGenerator/network/members">
+    <img src="https://img.shields.io/github/forks/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge" alt="Forks">
+  </a>
+  <a href="https://github.com/StudioLoad/ModernTerrainGenerator/issues">
+    <img src="https://img.shields.io/github/issues/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge" alt="Issues">
+  </a>
+  <a href="https://github.com/StudioLoad/ModernTerrainGenerator/blob/main/LICENSE.txt">
+    <img src="https://img.shields.io/github/license/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge" alt="MIT License">
+  </a>
+</p>
 
 <br />
 <div align="center">
@@ -61,14 +71,3 @@ ModernTerrainGenerator is a fork of [OpenTerrainGenerator](https://github.com/PG
 * <a href="https://github.com/Coll1234567">Josh - OpenTerrainGenerator</a>
 * <a href="https://github.com/SuperCoder7979">SuperCoder79 - OpenTerrainGenerator</a>
 * <a href="https://github.com/SXRWahrheit">Wahrheit - OpenTerrainGenerator</a>
-
-[contributors-shield]: https://img.shields.io/github/contributors/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
-[contributors-url]: https://github.com/StudioLoad/ModernTerrainGenerator/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
-[forks-url]: https://github.com/StudioLoad/ModernTerrainGenerator/network/members
-[stars-shield]: https://img.shields.io/github/stars/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
-[stars-url]: https://github.com/StudioLoad/ModernTerrainGenerator/stargazers
-[issues-shield]: https://img.shields.io/github/issues/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
-[issues-url]: https://github.com/StudioLoad/ModernTerrainGenerator/issues
-[license-shield]: https://img.shields.io/github/license/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
-[license-url]: https://github.com/StudioLoad/ModernTerrainGenerator/blob/main/LICENSE.txt
