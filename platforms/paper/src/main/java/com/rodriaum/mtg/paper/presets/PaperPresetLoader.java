@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.rodriaum.mtg.paper.util.ObfuscationHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.registries.Registries;
@@ -207,6 +208,17 @@ public class PaperPresetLoader extends LocalPresetLoader
 				}
 			} else {
 				biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
+
+				// MTG registers biomes during plugin enable, after Paper has already bound
+				// the vanilla biome tags. The new holder therefore has no tag binding yet,
+				// and vanilla spawning can fail with "Tags not bound" when querying it.
+				// Bind an empty set as a safe fallback until the next normal tag reload.
+				Holder<Biome> registeredHolder = biomeRegistry.getOrThrow(registryKey);
+				if (registeredHolder instanceof Holder.Reference<?> reference) {
+					@SuppressWarnings("unchecked")
+					Holder.Reference<Biome> biomeHolder = (Holder.Reference<Biome>) reference;
+					biomeHolder.bindTags(List.of());
+				}
 			}
 
 			// Populate our map for syncing
