@@ -29,7 +29,7 @@ public class PaperLegacyMaterials
 {
 	static BlockState fromLegacyBlockName (String oldBlockName)
 	{
-		if (oldBlockName.matches("minecraft:[A-Za-z]+:[0-9]+")) {
+		if (oldBlockName.matches("minecraft:[A-Za-z0-9_]+:[0-9]+")) {
 			int stateId = Integer.parseInt(oldBlockName.split(":")[2]);
 			return fromLegacyBlockNameOrIdWithData(oldBlockName.split(":")[1], stateId);
 		}
