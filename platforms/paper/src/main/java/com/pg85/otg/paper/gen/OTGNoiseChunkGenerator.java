@@ -265,18 +265,9 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		// Dummy random, as we can't get the level random right now
 		Random random = new Random(this.worldSeed ^ ((long) chunkCoord.getChunkX() * 341873128712L) ^ ((long) chunkCoord.getChunkZ() * 132897987541L));
 
-		// When generating the spawn area, Spigot will get the structure and biome info for the first chunk before we can inject
-		// Therefore, we need to re-do these calls now, for that one chunk
-//		if (fixBiomesForChunk != null && fixBiomesForChunk.equals(chunkCoord))
-//		{
-
-			// Should only run when first creating the world, on a single chunk
-			// TODO: we need a ServerLevel or similar for this
-			//this.createStructures(world.getMinecraftWorld().registryAccess(), world.getMinecraftWorld().structureFeatureManager(), chunk, world.getMinecraftWorld().getStructureManager(), worldSeed);
-//			this.createBiomes(chunk.biomeRegistry, executor, blender, accessor, chunk);
-
-		//	fixBiomesForChunk = null;
-		//}
+		// Biomes are created by the normal biome-generation stage in Minecraft 1.21.11.
+		// The old createBiomes(registry, executor, ...) overload was removed; don't
+		// re-run biome generation from fillFromNoise.
 		ChunkBuffer buffer = new PaperChunkBuffer(chunk, this.internalGenerator.getMinY());
 		ChunkAccess cachedChunk = this.shadowChunkGenerator.getChunkFromCache(chunkCoord);
 		if (cachedChunk != null)
