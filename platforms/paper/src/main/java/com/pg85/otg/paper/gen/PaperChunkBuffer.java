@@ -42,9 +42,14 @@ public class PaperChunkBuffer extends ChunkBuffer
 
 	public PaperChunkBuffer(ChunkGenerator.ChunkData chunkData, ChunkCoordinate chunkCoord)
 	{
+		this(chunkData, chunkCoord, chunkData.getMinHeight());
+	}
+
+	public PaperChunkBuffer(ChunkGenerator.ChunkData chunkData, ChunkCoordinate chunkCoord, int yOffset)
+	{
 		this.chunkCoord = chunkCoord;
 		this.chunkData = chunkData;
-		this.yOffset = chunkData.getMinHeight();
+		this.yOffset = yOffset;
 	}
 
 	@Override
