@@ -28,20 +28,20 @@ public class PresetCommand extends BaseCommand
 	private int showPreset(CommandSourceStack source)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (!(source.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			source.sendSuccess(Component.literal("OTG is not enabled in this world"), false);
+			source.sendSuccess(() -> (Component.literal("OTG is not enabled in this world")), false);
 			return 0;
 		}
 		Preset preset = ((OTGNoiseChunkGenerator) source.getLevel().getChunkSource().getGenerator()).getPreset();
-		source.sendSuccess(new TextComponent
+		source.sendSuccess(() -> (new TextComponent
 			("Preset: " + preset.getFolderName()
 			 + "\nDescription: " + preset.getDescription()
 			 + "\nMajor version: " + preset.getMajorVersion()
-			),
+			)),
 				false);
 		return 0;
 	}
