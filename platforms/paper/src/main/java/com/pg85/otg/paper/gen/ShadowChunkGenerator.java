@@ -101,7 +101,7 @@ public class ShadowChunkGenerator
 		// As an optimisation, we cache the dummy chunk in a limited size FIFO cache. Later when MC requests the chunk 
 		// during world generation, we swap the dummy chunk's data into the real chunk.
 		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), UpgradeData.EMPTY, level, level.palettedContainerFactory(), null);
-		PaperChunkBuffer terrainBuffer = new PaperChunkBuffer(chunk, chunk.getHeightAccessorForGeneration().getMinBuildHeight());
+		PaperChunkBuffer terrainBuffer = new PaperChunkBuffer(chunk, otgChunkGenerator.getMinY());
 
 		// This is where vanilla processes any noise affecting structures like villages, in order to spawn smoothing areas.
 		// Doing this for unloaded chunks causes a hang on load since getChunk is called by StructureManager.
