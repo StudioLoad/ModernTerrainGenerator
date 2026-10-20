@@ -25,6 +25,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.chunk.status.WorldGenContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
@@ -214,17 +216,52 @@ public class OTGPlugin extends JavaPlugin implements Listener
 
 		try
 		{
-			
-			//Field finalGenerator = ObfuscationHelper.getField(ChunkMap.class, "generator", "t");
-			Field finalGenerator = ObfuscationHelper.getField(ChunkMap.class, "generator", "u");
-			finalGenerator.setAccessible(true);
+			ChunkMap chunkMap = serverWorld.getChunkSource().chunkMap;
+			Field contextField = ChunkMap.class.getDeclaredField("worldGenContext");
+			Field randomStateField = ChunkMap.class.getDeclaredField("randomState");
+			Field structureStateField = ChunkMap.class.getDeclaredField("chunkGeneratorState");
+			contextField.setAccessible(true);
+			randomStateField.setAccessible(true);
+			structureStateField.setAccessible(true);
 
-			finalGenerator.set(serverWorld.getChunkSource().chunkMap, OTGDelegate);
+			WorldGenContext oldContext = (WorldGenContext) contextField.get(chunkMap);
+			RandomState otgRandomState = RandomState.create(
+					OTGDelegate.getGeneratorSettingsHolder().value(),
+					registryAccess.lookupOrThrow(Registries.NOISE),
+					world.getSeed());
+			ChunkGeneratorStructureState otgStructureState = OTGDelegate.createState(
+					registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
+					otgRandomState,
+					world.getSeed());
+			WorldGenContext otgContext = new WorldGenContext(
+					oldContext.level(),
+					OTGDelegate,
+					oldContext.structureManager(),
+					oldContext.lightEngine(),
+					oldContext.mainThreadExecutor(),
+					oldContext.unsavedListener());
 
-			/*Field pcmGen = ObfuscationHelper.getField(ChunkMap.class, "generator", "r");
-			pcmGen.setAccessible(true);
-
-			pcmGen.set(serverWorld.getChunkSource().chunkMap, OTGDelegate);*/
+			Object oldRandomState = randomStateField.get(chunkMap);
+			Object oldStructureState = structureStateField.get(chunkMap);
+			try
+			{
+				randomStateField.set(chunkMap, otgRandomState);
+				structureStateField.set(chunkMap, otgStructureState);
+				contextField.set(chunkMap, otgContext);
+			}
+			catch (ReflectiveOperationException ex)
+			{
+				try
+				{
+					randomStateField.set(chunkMap, oldRandomState);
+					structureStateField.set(chunkMap, oldStructureState);
+				}
+				catch (ReflectiveOperationException rollbackException)
+				{
+					ex.addSuppressed(rollbackException);
+				}
+				throw ex;
+			}
 		} catch (ReflectiveOperationException ex)
 		{
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN,
