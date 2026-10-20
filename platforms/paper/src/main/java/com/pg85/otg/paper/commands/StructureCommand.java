@@ -40,12 +40,12 @@ public class StructureCommand extends BaseCommand
 	private int showStructureInfo(CommandSourceStack source)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (!(source.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			source.sendSuccess(Component.literal("OTG is not enabled in this world"), false);
+			source.sendSuccess(() -> (Component.literal("OTG is not enabled in this world")), false);
 			return 0;
 		}
 		
@@ -76,7 +76,7 @@ public class StructureCommand extends BaseCommand
 			}
 		}
 		
-		source.sendSuccess(Component.literal(structureInfo), false);
+		source.sendSuccess(() -> (Component.literal(structureInfo)), false);
 		return 0;
 	}
 
