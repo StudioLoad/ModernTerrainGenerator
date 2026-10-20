@@ -20,7 +20,7 @@ import com.pg85.otg.paper.presets.PaperPresetLoader;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -36,16 +36,16 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		(instance) -> instance.group(
 			Codec.STRING.fieldOf("preset_name").stable().forGetter((provider) -> provider.presetFolderName),
 			Codec.LONG.fieldOf("seed").stable().forGetter((provider) -> provider.seed),
-			RegistryOps.retrieveRegistry(Registries.BIOME).forGetter((provider) -> provider.registry)
+			RegistryOps.retrieveGetter(Registries.BIOME).forGetter((provider) -> provider.registry)
 		).apply(instance, instance.stable(OTGBiomeProvider::new))
 	);
 	private final long seed;
-	private final Registry<Biome> registry;
+	private final HolderGetter<Biome> registry;
 	private final ThreadLocal<CachingLayerSampler> layer;
 	private final Int2ObjectMap<ResourceKey<Biome>> keyLookup;
 	private final String presetFolderName;
 
-	public OTGBiomeProvider (String presetFolderName, long seed, Registry<Biome> registry)
+	public OTGBiomeProvider (String presetFolderName, long seed, HolderGetter<Biome> registry)
 	{
 		super();
 		this.presetFolderName = presetFolderName;
@@ -72,7 +72,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		}
 	}
 
-	private static Stream<Holder<Biome>> getAllBiomesByPreset (String presetFolderName, Registry<Biome> registry)
+	private static Stream<Holder<Biome>> getAllBiomesByPreset (String presetFolderName, HolderGetter<Biome> registry)
 	{
 		List<ResourceKey<Biome>> biomesForPreset = ((PaperPresetLoader) OTG.getEngine().getPresetLoader()).getBiomeRegistryKeys(presetFolderName);
 		if (biomesForPreset == null)
