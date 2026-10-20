@@ -978,6 +978,11 @@ public class PaperLegacyMaterials
 
 		if (flattened == null)
 		{
+			Identifier directId = Identifier.parse(name.contains(":") ? name : "minecraft:" + name);
+			if (BuiltInRegistries.BLOCK.containsKey(directId))
+			{
+				return directId;
+			}
 			throw new NullPointerException("Unsupported legacy block: " + name + ":" + data);
 		}
 		return Identifier.fromNamespaceAndPath("minecraft", flattened);
