@@ -43,6 +43,7 @@ import com.pg85.otg.interfaces.ICachedBiomeProvider;
 import com.pg85.otg.interfaces.ILayerSource;
 import com.pg85.otg.interfaces.IWorldConfig;
 import com.pg85.otg.paper.biome.PaperBiome;
+import com.pg85.otg.paper.biome.OTGBiomeProvider;
 import com.pg85.otg.paper.presets.PaperPresetLoader;
 import com.pg85.otg.util.ChunkCoordinate;
 import com.pg85.otg.util.gen.ChunkBuffer;
@@ -509,7 +510,11 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 	public ChunkGenerator withSeed(long seed)
 	{
-		return new OTGNoiseChunkGenerator(this.preset.getFolderName(), this.biomeSource.withSeed(seed), this.structureSets, this.noises, seed, this.generatorSettingsHolder);
+		if (!(this.biomeSource instanceof OTGBiomeProvider otgBiomeProvider))
+		{
+			throw new IllegalStateException("OTG requires OTGBiomeProvider when reseeding a chunk generator.");
+		}
+		return new OTGNoiseChunkGenerator(this.preset.getFolderName(), otgBiomeProvider.withSeed(seed), this.structureSets, this.noises, seed, this.generatorSettingsHolder);
 	}
 
 	@Override
