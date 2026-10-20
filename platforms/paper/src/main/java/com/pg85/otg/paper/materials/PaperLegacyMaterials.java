@@ -934,14 +934,16 @@ public class PaperLegacyMaterials
 			{
 				case 0 -> "red_sandstone";
 				case 1 -> "chiseled_red_sandstone";
-				case 2 -> "cut_red_sandstone";
+				case 2 -> "smooth_red_sandstone";
+				case 3 -> "cut_red_sandstone";
 				default -> null;
 			};
 			case "sandstone" -> switch (metadata & 3)
 			{
 				case 0 -> "sandstone";
 				case 1 -> "chiseled_sandstone";
-				case 2 -> "cut_sandstone";
+				case 2 -> "smooth_sandstone";
+				case 3 -> "cut_sandstone";
 				default -> null;
 			};
 			case "sapling" -> switch (metadata & 7)
