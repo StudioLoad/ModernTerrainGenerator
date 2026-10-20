@@ -15,6 +15,7 @@ import java.util.Set;
 import com.pg85.otg.paper.util.ObfuscationHelper;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -61,7 +62,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 	// We have to store biomes, since Spigot doesn't expose registry key on BiomeBase.
 	private final Map<Biome, IBiomeConfig> biomeConfigsByBiome = new HashMap<>();	
 
-	private final ResourceKey<Registry<Biome>> BIOME_KEY = Registry.BIOME_REGISTRY;
+	private final ResourceKey<Registry<Biome>> BIOME_KEY = Registries.BIOME;
 
 	public PaperPresetLoader(File otgRootFolder)
 	{
