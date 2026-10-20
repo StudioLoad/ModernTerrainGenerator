@@ -88,33 +88,36 @@ public class PaperPresetLoader extends LocalPresetLoader
 		try
 		{
 			frozen = ObfuscationHelper.getField(MappedRegistry.class, "frozen", "bL");
-			// Make the frozen boolean accessible
 			frozen.setAccessible(true);
-			// Set the 'frozen' boolean to false for this registry
 			frozen.set(biomeRegistry, false);
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
+					"Failed to unfreeze the biome registry; OTG biomes cannot be registered.");
 			e.printStackTrace();
-		}
-
-		for(Preset preset : this.presets.values())
-		{
-			registerBiomesForPreset(false, preset, biomeRegistry);
+			return;
 		}
 
 		try
 		{
-			frozen = ObfuscationHelper.getField(MappedRegistry.class, "frozen", "bL");
-			// Set the 'frozen' boolean to true for this registry
-			frozen.setAccessible(true);
-			frozen.set(biomeRegistry, true);
+			for (Preset preset : this.presets.values())
+			{
+				registerBiomesForPreset(false, preset, biomeRegistry);
+			}
 		}
-		catch (NoSuchFieldException | IllegalAccessException e)
+		finally
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to re-freeze registry");
-			e.printStackTrace();
+			try
+			{
+				frozen.set(biomeRegistry, true);
+			}
+			catch (IllegalAccessException e)
+			{
+				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
+						"Failed to re-freeze the biome registry after registering OTG biomes.");
+				e.printStackTrace();
+			}
 		}
 	}
 
