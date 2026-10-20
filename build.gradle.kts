@@ -38,6 +38,8 @@ listOf(
             options.compilerArgs.add("5000")
         }
         universalJar {
+            // The platform's production jar must exist before the universal jar is assembled.
+            dependsOn(proj.tasks.named("reobfJar"))
             val tree = zipTree(proj.the<OTGPlatformExtension>().productionJar)
             from(tree)
             val manifestFile = tree.elements.map { files ->
