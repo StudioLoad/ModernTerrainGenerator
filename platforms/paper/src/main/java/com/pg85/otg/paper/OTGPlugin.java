@@ -20,7 +20,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.SurfaceRuleData;
-import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ChunkMap;
@@ -274,11 +273,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		return NoiseSettings.create(
 				worldConfig.getWorldMinY(),
 				worldConfig.getWorldHeight(),
-				new NoiseSamplingSettings(1.0D, 1.0D, 80.0D, 160.0D),
-				new NoiseSlider(-0.078125D, 2, 8),
-				new NoiseSlider(0.1171875D, 3, 0),
 				1,
-				2,
-				TerrainProvider.overworld(false));
+				2);
 	}
 }
