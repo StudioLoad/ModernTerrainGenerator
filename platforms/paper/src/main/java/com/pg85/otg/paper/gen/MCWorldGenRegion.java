@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.ticks.ScheduledTick;
-import org.apache.commons.lang.NotImplementedException;
 
 import com.pg85.otg.interfaces.IBiome;
 import com.pg85.otg.interfaces.IBiomeConfig;
@@ -36,19 +35,19 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 	@Override
 	public IBiome getBiomeForDecoration(int worldX, int worldZ)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");		
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");		
 	}
 	
 	@Override
 	public IBiomeConfig getBiomeConfigForDecoration(int worldX, int worldZ)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 
 	@Override
 	public double getBiomeBlocksNoiseValue(int xInWorld, int zInWorld)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 
 	@Override
@@ -128,19 +127,19 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 	@Override
 	public boolean placeTree(TreeType type, Random rand, int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}	
 	
 	@Override
 	public void placeDungeon (Random random, int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 
 	@Override
 	public void placeFossil(Random random, int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 	
 	// Shadowgen
@@ -148,23 +147,23 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 	@Override
 	public LocalMaterialData getMaterialWithoutLoading(int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}	
 	
 	@Override
 	public int getHighestBlockYAtWithoutLoading(int x, int z, boolean findSolid, boolean findLiquid, boolean ignoreLiquid, boolean ignoreSnow, boolean ignoreLeaves)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature."); 
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature."); 
 	}
 	
 	@Override
 	public boolean chunkHasDefaultStructure (ChunkCoordinate chunkCoordinate)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 	@Override
 	public long getSeed()
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 }
