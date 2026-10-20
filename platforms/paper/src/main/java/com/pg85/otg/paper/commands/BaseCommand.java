@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public abstract class BaseCommand
 {
@@ -44,7 +44,7 @@ public abstract class BaseCommand
 	}
 	
 	public MutableComponent createComponent(String text, String text2, ChatFormatting color1, ChatFormatting color2) {
-		return new TextComponent(text).withStyle(color1).append(new TextComponent(text2).withStyle(color2));
+		return Component.literal(text).withStyle(color1).append(Component.literal(text2).withStyle(color2));
 	}
 
 	public abstract void build(LiteralArgumentBuilder<CommandSourceStack> builder);
