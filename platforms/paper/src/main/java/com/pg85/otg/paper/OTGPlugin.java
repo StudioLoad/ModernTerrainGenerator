@@ -167,6 +167,8 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	public void injectInternalGenerator(World world)
 	{
 		initLock.lock();
+		try
+		{
 		if (processedWorlds.contains(world.getName()))
 		{
 			// We have already processed this world, return
@@ -238,8 +240,11 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.MAIN, "Success!");
 
 		processedWorlds.add(world.getName());
-
-		initLock.unlock();
+		}
+		finally
+		{
+			initLock.unlock();
+		}
 	}
 
 	// Taken from vanilla NoiseRouterData::overworldWithoutCaves
