@@ -129,7 +129,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getDouble(i)));
 					break;
 				case TAG_String:
-					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getString(i)));
+					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getStringOr(i, "")));
 					break;
 				case TAG_Compound:
 					listTag.addTag(getNBTFromNMSTagCompound(null, (CompoundTag) nmsListTag.get(i)));
