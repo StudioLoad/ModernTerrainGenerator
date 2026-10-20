@@ -277,7 +277,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 		//	fixBiomesForChunk = null;
 		//}
-		ChunkBuffer buffer = new PaperChunkBuffer(chunk);
+		ChunkBuffer buffer = new PaperChunkBuffer(chunk, chunk.getHeightAccessorForGeneration().getMinBuildHeight());
 		ChunkAccess cachedChunk = this.shadowChunkGenerator.getChunkFromCache(chunkCoord);
 		if (cachedChunk != null)
 		{
