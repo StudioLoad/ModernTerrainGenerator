@@ -404,11 +404,10 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
 		int minGenY = Math.max(noiseSettings.minY(), world.getMinBuildHeight());
 		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), world.getMaxBuildHeight());
-		int cellNoiseMinY = Math.floorDiv(minGenY - this.internalGenerator.getMinY(), noiseSettings.getCellHeight());
-		int noiseCellCount = Math.floorDiv(maxGenY - minGenY, noiseSettings.getCellHeight());
-		return noiseCellCount <= 0 ?
-				world.getMinBuildHeight() :
-				this.sampleHeightmap(x, z, null, heightmap.isOpaque(), cellNoiseMinY, noiseCellCount);
+		if (maxGenY <= minGenY) {
+			return minGenY;
+		}
+		return this.sampleHeightmap(x, z, null, heightmap.isOpaque(), minGenY, maxGenY);
 	}
 
 	// Provides a sample of the full column for structure generation.
@@ -418,16 +417,13 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
 		int minGenY = Math.max(noiseSettings.minY(), world.getMinBuildHeight());
 		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), world.getMaxBuildHeight());
-		int cellNoiseMinY = Math.floorDiv(minGenY, noiseSettings.getCellHeight());
-		int noiseCellCount = Math.floorDiv(maxGenY - minGenY, noiseSettings.getCellHeight());
-		if (noiseCellCount <= 0)
-		{
+		if (maxGenY <= minGenY) {
 			return new NoiseColumn(minGenY, new BlockState[0]);
-		} else {
-			BlockState[] blockStates = new BlockState[noiseCellCount * noiseSettings.getCellHeight()];
-			this.sampleHeightmap(x, z, blockStates, null, cellNoiseMinY, noiseCellCount);
-			return new NoiseColumn(minGenY, blockStates);
 		}
+
+		BlockState[] blockStates = new BlockState[maxGenY - minGenY];
+		this.sampleHeightmap(x, z, blockStates, null, minGenY, maxGenY);
+		return new NoiseColumn(minGenY, blockStates);
 	}
 
 	@Override
@@ -436,87 +432,60 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 	}
 
 	// Samples the noise at a column and provides a view of the blockstates, or fills a heightmap.
-	private int sampleHeightmap (int x, int z, @Nullable BlockState[] blockStates, @Nullable Predicate<BlockState> predicate, int cellNoiseMinY, int noiseCellCount)
+	// Samples OTG's fixed 8-block noise columns inside the requested world build range.
+	private int sampleHeightmap(int x, int z, @Nullable BlockState[] blockStates,
+			@Nullable Predicate<BlockState> predicate, int minGenY, int maxGenY)
 	{
-		NoiseSettings noisesettings = this.generatorSettingsHolder.value().noiseSettings();
-		int cellWidth = noisesettings.getCellWidth();
-		// Get all of the coordinate starts and positions
+		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
+		int cellWidth = noiseSettings.getCellWidth();
 		int xStart = Math.floorDiv(x, cellWidth);
 		int zStart = Math.floorDiv(z, cellWidth);
 		int xProgress = Math.floorMod(x, cellWidth);
 		int zProgress = Math.floorMod(z, cellWidth);
 		double xLerp = (double) xProgress / cellWidth;
 		double zLerp = (double) zProgress / cellWidth;
-		// Create the noise data in a 2 * 2 * 32 grid for interpolation.
-		double[][] noiseData = new double[4][this.internalGenerator.getNoiseSizeY() + 1];
 
-		// Initialize noise array.
-		for (int i = 0; i < noiseData.length; i++)
-		{
-			noiseData[i] = new double[this.internalGenerator.getNoiseSizeY() + 1];
-		}
-
-		// Sample all 4 nearby columns.
+		int noiseSizeY = this.internalGenerator.getNoiseSizeY();
+		double[][] noiseData = new double[4][noiseSizeY + 1];
 		this.internalGenerator.getNoiseColumn(noiseData[0], xStart, zStart);
 		this.internalGenerator.getNoiseColumn(noiseData[1], xStart, zStart + 1);
 		this.internalGenerator.getNoiseColumn(noiseData[2], xStart + 1, zStart);
 		this.internalGenerator.getNoiseColumn(noiseData[3], xStart + 1, zStart + 1);
 
-		//IBiomeConfig biomeConfig = this.internalGenerator.getCachedBiomeProvider().getBiomeConfig(x, z);
-		
-		BlockState state;
-		double x0z0y0;
-		double x0z1y0;
-		double x1z0y0;
-		double x1z1y0;
-		double x0z0y1;
-		double x0z1y1;
-		double x1z0y1;
-		double x1z1y1;
-		double yLerp;
-		double density;
-		int y;
-		// [0, 32] -> noise chunks
-		for (int noiseY = cellNoiseMinY + noiseCellCount - 1; noiseY >= cellNoiseMinY; --noiseY)
+		for (int noiseY = noiseSizeY - 1; noiseY >= 0; --noiseY)
 		{
-			// Gets all the noise in a 2x2x2 cube and interpolates it together.
-			// Lower pieces
-			x0z0y0 = noiseData[0][noiseY];
-			x0z1y0 = noiseData[1][noiseY];
-			x1z0y0 = noiseData[2][noiseY];
-			x1z1y0 = noiseData[3][noiseY];
-			// Upper pieces
-			x0z0y1 = noiseData[0][noiseY + 1];
-			x0z1y1 = noiseData[1][noiseY + 1];
-			x1z0y1 = noiseData[2][noiseY + 1];
-			x1z1y1 = noiseData[3][noiseY + 1];
+			double x0z0y0 = noiseData[0][noiseY];
+			double x0z1y0 = noiseData[1][noiseY];
+			double x1z0y0 = noiseData[2][noiseY];
+			double x1z1y0 = noiseData[3][noiseY];
+			double x0z0y1 = noiseData[0][noiseY + 1];
+			double x0z1y1 = noiseData[1][noiseY + 1];
+			double x1z0y1 = noiseData[2][noiseY + 1];
+			double x1z1y1 = noiseData[3][noiseY + 1];
 
-			// [0, 8] -> noise pieces
 			for (int pieceY = 7; pieceY >= 0; --pieceY)
 			{
-				yLerp = (double) pieceY / 8.0;
-				// Density at this position given the current y interpolation
-				// used to have yLerp and xLerp switched, which seemed wrong? -auth
-				density = Mth.lerp3(xLerp, yLerp, zLerp, x0z0y0, x0z0y1, x1z0y0, x1z0y1, x0z1y0, x0z1y1, x1z1y0, x1z1y1);
-
-				// Get the real y position (translate noise chunk and noise piece)
-				y = this.internalGenerator.getMinY() + (noiseY * 8) + pieceY;
-
-				state = this.getBlockState(density, y);
-				if (blockStates != null)
-				{
-					blockStates[y - (this.internalGenerator.getMinY() + cellNoiseMinY * 8)] = state;
+				int y = this.internalGenerator.getMinY() + (noiseY * 8) + pieceY;
+				if (y < minGenY || y >= maxGenY) {
+					continue;
 				}
 
-				// return y if it fails the check
-				if (predicate != null && predicate.test(state))
-				{
+				double yLerp = (double) pieceY / 8.0D;
+				double density = Mth.lerp3(xLerp, yLerp, zLerp,
+						x0z0y0, x0z0y1, x1z0y0, x1z0y1,
+						x0z1y0, x0z1y1, x1z1y0, x1z1y1);
+				BlockState state = this.getBlockState(density, y);
+
+				if (blockStates != null) {
+					blockStates[y - minGenY] = state;
+				}
+				if (predicate != null && predicate.test(state)) {
 					return y + 1;
 				}
 			}
 		}
 
-		return this.internalGenerator.getMinY() + cellNoiseMinY * 8;
+		return minGenY;
 	}
 
 	private BlockState getBlockState(double density, int y)
