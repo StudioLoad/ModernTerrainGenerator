@@ -252,8 +252,8 @@ public class OTGPlugin extends JavaPlugin implements Listener
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
-				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, BuiltinRegistries.NOISE.getHolderOrThrow(Noises.TEMPERATURE)),
-				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, BuiltinRegistries.NOISE.getHolderOrThrow(Noises.VEGETATION)),
+				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, BuiltInRegistries.NOISE.getHolderOrThrow(Noises.TEMPERATURE)),
+				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, BuiltInRegistries.NOISE.getHolderOrThrow(Noises.VEGETATION)),
 				getFunction("overworld/continents"),
 				getFunction("overworld/erosion"),
 				getFunction("overworld/depth"),
@@ -267,7 +267,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	}
 
 	private DensityFunction getFunction(String string) {
-		return BuiltinRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, ResourceLocation.parse(string))).value();
+		return BuiltInRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, ResourceLocation.parse(string))).value();
 	}
 
 	private NoiseSettings getNoiseSettings(IWorldConfig worldConfig) {
