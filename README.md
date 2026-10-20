@@ -5,7 +5,7 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/PG85/OpenTerrainGenerator">
+  <a href="https://github.com/StudioLoad/ModernTerrainGenerator">
     <img src="logo.png" alt="Logo" width="291" height="100">
   </a>
 
