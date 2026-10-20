@@ -13,6 +13,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.WorldGenRegion;
@@ -675,7 +676,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 				if (
 					block.isSolid() ||
 					(
-						((LivingEntity) entity).getMobType() == MobType.WATER
+						entity.getType().is(EntityTypeTags.AQUATIC)
 						&& !block.isLiquid()
 					)
 				)
