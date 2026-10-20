@@ -1,5 +1,8 @@
 package com.pg85.otg.paper.biome;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+
 import com.mojang.serialization.Codec;
 import com.pg85.otg.core.OTG;
 import com.pg85.otg.util.logging.LogCategory;
@@ -18,7 +21,7 @@ import net.minecraft.util.RandomSource;
 
 public class OTGTestFeature extends Feature<CountConfiguration> {
     /*
-    public static final Feature<CountConfiguration> FEATURE = Registry.register(Registry.FEATURE, "otg_test", new OTGTestFeature(CountConfiguration.CODEC));
+    public static final Feature<CountConfiguration> FEATURE = Registry.register(BuiltInRegistries.FEATURE, "otg_test", new OTGTestFeature(CountConfiguration.CODEC));
     public static final ConfiguredFeature<?, ?> CONFIGURED = Registry
             .register(
                     BuiltInRegistries.CONFIGURED_FEATURE,
