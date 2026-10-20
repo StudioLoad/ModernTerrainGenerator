@@ -224,7 +224,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		for (int startChunkX = chunkX - 1; startChunkX <= chunkX + 1; startChunkX++) {
 			for (int startChunkZ = chunkZ - 1; startChunkZ <= chunkZ + 1; startChunkZ++) {
 				ChunkPos startChunkPos = new ChunkPos(startChunkX, startChunkZ);
-				for (StructureStart start : manager.startsForStructure(startChunkPos, structure -> structure instanceof JigsawStructure)) {
+				for (StructureStart start : manager.startsForStructure(startChunkX, startChunkZ, structure -> structure instanceof JigsawStructure)) {
 					for (StructurePiece piece : start.getPieces()) {
 						if (!piece.isCloseToChunk(pos, 12)) {
 							continue;
