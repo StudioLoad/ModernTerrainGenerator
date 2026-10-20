@@ -101,12 +101,12 @@ public class PaperBiome implements IBiome
 			if (res instanceof RegistryResource registryResource)
 			{
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
-				PlacedFeature registry = BuiltInRegistries.PLACED_FEATURE.get(Identifier.parse(registryResource.getFeatureKey()));
+				PlacedFeature registry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE).get(Identifier.parse(registryResource.getFeatureKey()));
 				if (registry == null)
 				{
 					String newResourceLocation = LegacyRegistry.convertLegacyResourceLocation(registryResource.getFeatureKey());
 					if (newResourceLocation != null) {
-						registry = BuiltInRegistries.PLACED_FEATURE.get(Identifier.parse(newResourceLocation));
+						registry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE).get(Identifier.parse(newResourceLocation));
 						if (registry == null) {
 							OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Somehow you broke the universe! Feature: "+newResourceLocation+" is not in the registry");
 						} else {
@@ -486,11 +486,7 @@ public class PaperBiome implements IBiome
 		}*/
 	}
 
-	// StructureFeatures.register()
-	private static <FC extends FeatureConfiguration, F extends StructureFeature<FC>> ConfiguredStructureFeature<FC, F> register (String name, ConfiguredStructureFeature<FC, F> structure)
-	{
-		return Registry.register(BuiltInRegistries.CONFIGURED_STRUCTURE_FEATURE, name, structure);
-	}
+	
 
 	private static MobSpawnSettings.Builder createMobSpawnInfo (IBiomeConfig biomeConfig)
 	{
