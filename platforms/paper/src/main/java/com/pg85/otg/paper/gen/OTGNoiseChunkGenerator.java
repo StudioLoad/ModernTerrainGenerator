@@ -80,8 +80,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			.group(
 				Codec.STRING.fieldOf("preset_folder_name").forGetter(p -> p.getPreset().getFolderName()),
 				BiomeSource.CODEC.fieldOf("biome_source").forGetter(p -> p.biomeSource),
-				RegistryOps.retrieveRegistry(Registries.STRUCTURE_SET).forGetter(p -> p.structureSets),
-				RegistryOps.retrieveRegistry(Registries.NOISE).forGetter(p -> p.noises),
+				RegistryOps.retrieveGetter(Registries.STRUCTURE_SET).forGetter(p -> p.structureSets),
+				RegistryOps.retrieveGetter(Registries.NOISE).forGetter(p -> p.noises),
 				Codec.LONG.fieldOf("seed").stable().forGetter(p -> p.worldSeed),
 				NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(p -> p.generatorSettingsHolder)
 			).apply(
@@ -90,7 +90,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			)
 	);
 
-	private final Registry<StructureSet> structureSets;
+	private final HolderGetter<StructureSet> structureSets;
 	private final Holder<NoiseGeneratorSettings> generatorSettingsHolder;
 	private final long worldSeed;
 	private final int noiseHeight;
@@ -109,10 +109,10 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 	private CustomStructureCache structureCache;
 
 	private final Climate.Sampler sampler;
-	private final Registry<NormalNoise.NoiseParameters> noises;
+	private final HolderGetter<NormalNoise.NoiseParameters> noises;
 	private ChunkCoordinate fixBiomesForChunk;
 
-	public OTGNoiseChunkGenerator (BiomeSource biomeSource, long seed, Registry<StructureSet> structureSetRegistry, Registry<NormalNoise.NoiseParameters> noiseRegistry, Holder<NoiseGeneratorSettings> generatorSettings)
+	public OTGNoiseChunkGenerator (BiomeSource biomeSource, long seed, HolderGetter<StructureSet> structureSetRegistry, HolderGetter<NormalNoise.NoiseParameters> noiseRegistry, Holder<NoiseGeneratorSettings> generatorSettings)
 	{
 		this("default", biomeSource, structureSetRegistry, noiseRegistry, seed, generatorSettings);
 	}
