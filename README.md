@@ -29,7 +29,7 @@
     <br />
     <a href="https://openterraingen.fandom.com/wiki/OTG_Presets">See Our Presets</a>
     ·
-    <a href="https://github.com/rodriaum/ModernTerrainGenerator/issues">Report Bugs</a>
+    <a href="https://github.com/StudioLoad/ModernTerrainGenerator/issues">Report Bugs</a>
   </p>
 </div>
 
