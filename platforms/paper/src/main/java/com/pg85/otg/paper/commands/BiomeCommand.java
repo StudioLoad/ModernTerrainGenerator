@@ -24,6 +24,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
@@ -171,16 +172,20 @@ public class BiomeCommand extends BaseCommand
 
 	public void showSpawns(CommandSourceStack source, WeightedList spawns)
 	{
-		spawns.unwrap().forEach(spawn -> source
-				.sendSuccess(() -> (createComponent("   - Entity: ", BuiltInRegistries.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
-						.append(createComponent(", Weight: ", Integer.toString(spawn.getWeight().asInt()), ChatFormatting.GOLD,
-								ChatFormatting.GREEN))
-						.append(createComponent(", Min: ", Integer.toString(spawn.minCount), ChatFormatting.GOLD,
-								ChatFormatting.GREEN))
-						.append(createComponent(", Max: ", Integer.toString(spawn.maxCount), ChatFormatting.GOLD,
-								ChatFormatting.GREEN))),
-						false));
+		for (Object entry : spawns.unwrap())
+		{
+			if (!(entry instanceof Weighted weighted) || !(weighted.value() instanceof SpawnerData spawn))
+			{
+				continue;
+			}
 
+			Component message = createComponent("   - Entity: ", BuiltInRegistries.ENTITY_TYPE.getKey(spawn.type()).toString(),
+					ChatFormatting.GOLD, ChatFormatting.GREEN)
+					.append(createComponent(", Weight: ", Integer.toString(weighted.weight()), ChatFormatting.GOLD, ChatFormatting.GREEN))
+					.append(createComponent(", Min: ", Integer.toString(spawn.minCount()), ChatFormatting.GOLD, ChatFormatting.GREEN))
+					.append(createComponent(", Max: ", Integer.toString(spawn.maxCount()), ChatFormatting.GOLD, ChatFormatting.GREEN));
+			source.sendSuccess(() -> message, false);
+		}
 	}
 
 	private CompletableFuture<Suggestions> suggestTypes(CommandContext<CommandSourceStack> context,
