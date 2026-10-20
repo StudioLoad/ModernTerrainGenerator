@@ -422,6 +422,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		}
 
 		BlockState[] blockStates = new BlockState[maxGenY - minGenY];
+		Arrays.fill(blockStates, Blocks.AIR.defaultBlockState());
 		this.sampleHeightmap(x, z, blockStates, null, minGenY, maxGenY);
 		return new NoiseColumn(minGenY, blockStates);
 	}
