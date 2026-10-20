@@ -11,7 +11,7 @@
     <img src="logo.png" alt="Logo" width="291" height="100">
   </a>
 
-<h3 align="center">OpenTerrainGenerator by Team OTG</h3>
+  <h3 align="center">OpenTerrainGenerator by Team OTG</h3>
 
   <p align="center">
     Minecraft's Leading Data-Driven Worldgen Engine
@@ -19,9 +19,9 @@
     <a href="https://openterraingen.fandom.com"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://www.openterraingenerator.org/presets.html">See Our Presets</a>
+    <a href="https://openterraingen.fandom.com/wiki/OTG_Presets">See Our Presets</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bugs</a>
+    <a href="https://github.com/PG85/OpenTerrainGenerator/issues">Report Bugs</a>
     ·
     <a href="https://discord.gg/YY2NECCBYN">Join our Discord</a>
   </p>
@@ -29,9 +29,9 @@
 
 ##  OpenTerrainGenerator by Team OTG
 
-OpenTerrainGenerator for MC 1.16.x is under development, alpha builds are available in the dev-releases channel of the OTG Discord.
-
-OTG 1.16.x 0.1.0 will be the first public beta release for 1.16.x, available via CurseForge. Once 0.1.0 is released, the 1.16.4 branch will be promoted to default/main. See the milestones for open issues/progress.
+> [!CAUTION]
+> This project is being moved to the latest versions (1.21.11).
+> Contains bugs at the compilation stage.
 
 ### Team OTG
 * <a href="https://github.com/PG85">PG85</a>
@@ -41,11 +41,12 @@ OTG 1.16.x 0.1.0 will be the first public beta release for 1.16.x, available via
 * <a href="https://github.com/SuperCoder7979">SuperCoder79</a>
 * <a href="https://github.com/SXRWahrheit">Wahrheit</a>
 
-We're always looking for people to contribute or collaborate with. For OTG 1.16, we've completely cleaned up and overhauled the codebase with the aim of making things more modular, so developers and collaborators can implement new settings and modes such as terrain generation noise. If you'd like to contribute, collaborate or become part of Team OTG, join us on the OTG Discord!
+### Team Load
+* <a href="https://github.com/rodriaum">Rodrigo</a>
 
 ## Installation / building
 
-- As with Forge mods, download the repo, then run /gradlew genEclipseRuns, then /gradlew eclipse (for Eclipse IDE).
+- Run /gradlew genEclipseRuns, then /gradlew eclipse (for Eclipse IDE).
 - To create a release jar in the build folder, update the build version in build.gradle, then run /gradlew createReleaseJar.
 - If you're having problems, make a sacrifice to the gradle gods and/or run /gradlew clean and /gradlew --refresh-dependencies.
 
@@ -55,24 +56,9 @@ We're always looking for people to contribute or collaborate with. For OTG 1.16,
 - Then, all you have to do is Open IntelliJ and import the project folder, make sure you Trust the gradle project, and IntelliJ will do the rest :)
 - Follow the same instructions that you do for Eclipse if you want to build -- do note that IntelliJ has a gradle GUI that you can use once you've imported the project. (Should be on the right of the code.)
 
-## Dev Builds
-There are dev builds available for 1.16.5 [here](https://github.com/PG85/OpenTerrainGenerator/actions?query=branch%3A1.16.4).
-
-Dev builds for 1.17.1 are available [here](https://github.com/PG85/OpenTerrainGenerator/actions?query=branch%3A1.17.1).
-
-Dev builds for 1.18.1 are available [here](https://github.com/PG85/OpenTerrainGenerator/actions?query=branch%3A1.18.1).
-
-You will **NOT** get official support for dev builds, and they may break. Please use the mod jars available to you on CurseForge and the [OTG Discord](https://discord.gg/vTqe4zr5Hc).
-
-## Links
-* [CurseForge](https://minecraft.curseforge.com/projects/open-terrain-generator)
-* [Wiki](http://openterraingen.wikia.com/wiki/Open_Terrain_Generator_Wiki)
-* [Discord](https://discord.com/invite/UXzdVTH)
-* [Installation](https://openterraingen.fandom.com/wiki/Installing_OTG) for Spigot and Forge
-
 ## Original developers
 
-OpenTerrainGenerator is a fork of Terrain Control, which is the successor to <a href="http://www.minecraftforum.net/topic/313991-phoenixterrainmod/">PhoenixTerrainMod</a>, which was based on <a href="http://www.minecraftforum.net/topic/71565-biomemod/">BiomeTerrainMod</a>.
+OpenTerrainGenerator is a fork of Terrain Control, which is the successor to <a href="http://www.minecraftforum.net/topic/313991-phoenixterrainmod/">PhoenixTerrainMod</a>, which was based on <a href="http://www.minecraftforum.net/topic/71565-biomemod/">BiomeTerrainMod</a>. 
 
 * Buycruss       - BiomeTerrainMod
 * R-T-B          - PhoenixTerrainMod
