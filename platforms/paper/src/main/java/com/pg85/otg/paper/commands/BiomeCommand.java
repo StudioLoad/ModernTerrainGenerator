@@ -58,12 +58,12 @@ public class BiomeCommand extends BaseCommand
 	private int showBiome(CommandSourceStack source, String option)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (!(source.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			source.sendSuccess(Component.literal("OTG is not enabled in this world"), false);
+			source.sendSuccess(() -> (Component.literal("OTG is not enabled in this world")), false);
 			return 0;
 		}
 
@@ -72,26 +72,24 @@ public class BiomeCommand extends BaseCommand
 		IBiomeConfig config = ((OTGNoiseChunkGenerator) source.getLevel().getChunkSource().getGenerator())
 				.getCachedBiomeProvider().getBiomeConfig((int) source.getPosition().x, (int) source.getPosition().z);
 
-		source.sendSuccess(Component.literal("====================================================="), false);
+		source.sendSuccess(() -> (Component.literal("=====================================================")), false);
 		if (config.getIsTemplateForBiome())
 		{
-			source.sendSuccess(
-					Component.literal("According to OTG, this biome uses the ").withStyle(ChatFormatting.GOLD)
+			source.sendSuccess(() -> (Component.literal("According to OTG, this biome uses the ").withStyle(ChatFormatting.GOLD)
 							.append(Component.literal(config.getName()).withStyle(ChatFormatting.GREEN))
-							.append(Component.literal(" template.").withStyle(ChatFormatting.GOLD)),
+							.append(Component.literal(" template.").withStyle(ChatFormatting.GOLD))),
 					false);
-			source.sendSuccess(Component.literal("This biome belongs to either another mod or the vanilla game.")
-					.withStyle(ChatFormatting.GRAY), false);
+			source.sendSuccess(() -> (Component.literal("This biome belongs to either another mod or the vanilla game.")
+					.withStyle(ChatFormatting.GRAY)), false);
 		} else
 		{
-			source.sendSuccess(
-					Component.literal("According to OTG, you are in the ").withStyle(ChatFormatting.GOLD)
+			source.sendSuccess(() -> (Component.literal("According to OTG, you are in the ").withStyle(ChatFormatting.GOLD)
 							.append(Component.literal(config.getName()).withStyle(ChatFormatting.GREEN))
-							.append(Component.literal(" biome.").withStyle(ChatFormatting.GOLD)),
+							.append(Component.literal(" biome.").withStyle(ChatFormatting.GOLD))),
 					false);
 		}
-		source.sendSuccess(createComponent("Biome registry name: ", source.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome).toString(),
-				ChatFormatting.GOLD, ChatFormatting.GREEN), false);
+		source.sendSuccess(() -> (createComponent("Biome registry name: ", source.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome).toString(),
+				ChatFormatting.GOLD, ChatFormatting.GREEN)), false);
 
 		switch (option)
 		{
@@ -105,15 +103,15 @@ public class BiomeCommand extends BaseCommand
 
 	private void showBiomeFeatures(CommandSourceStack source, Biome biome, IBiomeConfig config)
 	{
-		source.sendSuccess(Component.literal("Vanilla features in this biome: ").withStyle(ChatFormatting.GREEN), false);
+		source.sendSuccess(() -> (Component.literal("Vanilla features in this biome: ").withStyle(ChatFormatting.GREEN)), false);
 		List<HolderSet<PlacedFeature>> featureList = biome.getGenerationSettings().features();
 		for (int i = 0; i < featureList.size(); i++)
 		{
 			HolderSet<PlacedFeature> innerList = featureList.get(i);
-			source.sendSuccess(Component.literal(" "+GenerationStep.Decoration.values()[i].toString().toLowerCase(Locale.ROOT)+":").withStyle(ChatFormatting.GOLD), false);
+			source.sendSuccess(() -> (Component.literal(" "+GenerationStep.Decoration.values()[i].toString().toLowerCase(Locale.ROOT)+":").withStyle(ChatFormatting.GOLD)), false);
 			for (Holder<PlacedFeature> holder : innerList)
 			{
-				source.sendSuccess(Component.literal(" - "+holder.value().toString()).withStyle(ChatFormatting.GREEN), false);
+				source.sendSuccess(() -> (Component.literal(" - "+holder.value().toString()).withStyle(ChatFormatting.GREEN)), false);
 			}
 		}
 	}
@@ -121,64 +119,64 @@ public class BiomeCommand extends BaseCommand
 	private void showBiomeInfo(CommandSourceStack source, Biome biome, IBiomeConfig config)
 	{
 		// Biome Category seems to be deprecated?
-		//source.sendSuccess(createComponent("Biome Category: ", biome.getBiomeCategory().toString(), ChatFormatting.GOLD, ChatFormatting.GREEN), false);
-		source.sendSuccess(createComponent("Inherit Mobs: ", config.getInheritMobsBiomeName(), ChatFormatting.GOLD,
-				ChatFormatting.GREEN), false);
+		//source.sendSuccess(() -> (createComponent("Biome Category: ", biome.getBiomeCategory().toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)), false);
+		source.sendSuccess(() -> (createComponent("Inherit Mobs: ", config.getInheritMobsBiomeName(), ChatFormatting.GOLD,
+				ChatFormatting.GREEN)), false);
 
-		source.sendSuccess(createComponent("Base Size: ", Integer.toString(config.getBiomeSize()), ChatFormatting.GOLD,
+		source.sendSuccess(() -> (createComponent("Base Size: ", Integer.toString(config.getBiomeSize()), ChatFormatting.GOLD,
 				ChatFormatting.GREEN)
 						.append(createComponent(" Biome Rarity: ", Integer.toString(config.getBiomeRarity()),
-								ChatFormatting.GOLD, ChatFormatting.GREEN)),
+								ChatFormatting.GOLD, ChatFormatting.GREEN))),
 				false);
 
-		source.sendSuccess(createComponent("Biome Height: ", String.format("%.2f", config.getBiomeHeight()),
-				ChatFormatting.GOLD, ChatFormatting.GREEN), false);
+		source.sendSuccess(() -> (createComponent("Biome Height: ", String.format("%.2f", config.getBiomeHeight()),
+				ChatFormatting.GOLD, ChatFormatting.GREEN)), false);
 
-		source.sendSuccess(createComponent("Volatility: ", String.format("%.2f", config.getBiomeVolatility()),
+		source.sendSuccess(() -> (createComponent("Volatility: ", String.format("%.2f", config.getBiomeVolatility()),
 				ChatFormatting.GOLD, ChatFormatting.GREEN)
 						.append(createComponent(" Volatility1: ", String.format("%.2f", config.getVolatility1()),
 								ChatFormatting.GOLD, ChatFormatting.GREEN))
 						.append(createComponent(" Volatility2: ", String.format("%.2f", config.getVolatility2()),
-								ChatFormatting.GOLD, ChatFormatting.GREEN)),
+								ChatFormatting.GOLD, ChatFormatting.GREEN))),
 				false);
 
-		source.sendSuccess(createComponent("Base Temperature: ", String.format("%.2f", biome.getBaseTemperature()),
+		source.sendSuccess(() -> (createComponent("Base Temperature: ", String.format("%.2f", biome.getBaseTemperature()),
 				ChatFormatting.GOLD, ChatFormatting.GREEN)
 						.append(createComponent(" Current Temperature: ",
 								String.format("%.2f", biome.getTemperature(new BlockPos(source.getPosition()))),
-								ChatFormatting.GOLD, ChatFormatting.GREEN)),
+								ChatFormatting.GOLD, ChatFormatting.GREEN))),
 				false);
 	}
 
 	private void showBiomeMobs(CommandSourceStack source, Biome biome, IBiomeConfig config)
 	{
-		source.sendSuccess(Component.literal("Spawns:").withStyle(ChatFormatting.GOLD), false);
-		source.sendSuccess(Component.literal("  Monsters:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("Spawns:").withStyle(ChatFormatting.GOLD)), false);
+		source.sendSuccess(() -> (Component.literal("  Monsters:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.MONSTER));
-		source.sendSuccess(Component.literal("  Creatures:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("  Creatures:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.CREATURE));
-		source.sendSuccess(Component.literal("  Water Creatures:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("  Water Creatures:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.WATER_CREATURE));
-		source.sendSuccess(Component.literal("  Underground Water Creatures:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("  Underground Water Creatures:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.UNDERGROUND_WATER_CREATURE));
-		source.sendSuccess(Component.literal("  Ambient Creatures:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("  Ambient Creatures:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.AMBIENT));
-		source.sendSuccess(Component.literal("  Water Ambient:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("  Water Ambient:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.WATER_AMBIENT));
-		source.sendSuccess(Component.literal("  Misc:").withStyle(ChatFormatting.GOLD), false);
+		source.sendSuccess(() -> (Component.literal("  Misc:").withStyle(ChatFormatting.GOLD)), false);
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.MISC));
 	}
 
 	public void showSpawns(CommandSourceStack source, WeightedRandomList<SpawnerData> spawns)
 	{
 		spawns.unwrap().forEach(spawn -> source
-				.sendSuccess(createComponent("   - Entity: ", Registry.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
+				.sendSuccess(() -> (createComponent("   - Entity: ", Registry.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
 						.append(createComponent(", Weight: ", Integer.toString(spawn.getWeight().asInt()), ChatFormatting.GOLD,
 								ChatFormatting.GREEN))
 						.append(createComponent(", Min: ", Integer.toString(spawn.minCount), ChatFormatting.GOLD,
 								ChatFormatting.GREEN))
 						.append(createComponent(", Max: ", Integer.toString(spawn.maxCount), ChatFormatting.GOLD,
-								ChatFormatting.GREEN)),
+								ChatFormatting.GREEN))),
 						false));
 
 	}
