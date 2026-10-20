@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.pg85.otg.core.OTG;
@@ -31,7 +32,7 @@ import net.minecraft.world.level.biome.Climate;
 
 public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 {
-	public static final Codec<OTGBiomeProvider> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<OTGBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
 		(instance) -> instance.group(
 			Codec.STRING.fieldOf("preset_name").stable().forGetter((provider) -> provider.presetFolderName),
 			Codec.LONG.fieldOf("seed").stable().forGetter((provider) -> provider.seed),
