@@ -980,8 +980,9 @@ public class PaperLegacyMaterials
 
 		if (flattened == null)
 		{
-			Identifier directId = Identifier.parse(name.contains(":") ? name : "minecraft:" + name);
-			if (BuiltInRegistries.BLOCK.containsKey(directId))
+			String directName = name.contains(":") ? name : "minecraft:" + name;
+			Identifier directId = Identifier.tryParse(directName);
+			if (directId != null && BuiltInRegistries.BLOCK.containsKey(directId))
 			{
 				return directId;
 			}
