@@ -99,7 +99,7 @@ public class ShadowChunkGenerator
 		// Make a dummy chunk, we'll fill this with base terrain data ourselves, without touching any MC worldgen logic.
 		// As an optimisation, we cache the dummy chunk in a limited size FIFO cache. Later when MC requests the chunk 
 		// during world generation, we swap the dummy chunk's data into the real chunk.
-		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), null, level, level.registryAccess().registryOrThrow(Registries.BIOME), null);
+		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), null, level, level.registryAccess().lookupOrThrow(Registries.BIOME), null);
 		PaperChunkBuffer buffer = new PaperChunkBuffer(chunk);
 
 		// This is where vanilla processes any noise affecting structures like villages, in order to spawn smoothing areas.
