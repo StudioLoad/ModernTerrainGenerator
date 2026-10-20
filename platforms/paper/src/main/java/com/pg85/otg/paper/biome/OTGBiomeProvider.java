@@ -22,7 +22,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Biomes;
@@ -65,7 +65,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		{
 			IBiomeConfig config = biomeLookup[biomeId].getBiomeConfig();
 
-			ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, ResourceLocation.parse(config.getRegistryKey().toResourceLocationString()));
+			ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, Identifier.parse(config.getRegistryKey().toResourceLocationString()));
 			this.keyLookup.put(biomeId, key);
 		}
 	}
