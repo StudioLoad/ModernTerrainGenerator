@@ -7,12 +7,10 @@ import com.pg85.otg.util.materials.MaterialProperties;
 import com.pg85.otg.util.materials.MaterialProperty;
 
 import net.minecraft.core.Direction;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluids;
 
@@ -231,7 +229,7 @@ public class PaperMaterialData extends LocalMaterialData
 			for (Property<?> property : properties)
 			{
 				// Anything with a direction
-				if (property instanceof DirectionProperty)
+				if (property.getValueClass() == Direction.class)
 				{
 					Direction direction = (Direction) state.getValue(property);
 					switch (direction)
@@ -240,7 +238,7 @@ public class PaperMaterialData extends LocalMaterialData
 						case UP:
 							break;
 						case NORTH:
-							state = state.setValue((DirectionProperty) property, Direction.WEST);
+							state = state.setValue((Property<Direction>) property, Direction.WEST);
 							break;
 						case SOUTH:
 							state = state.setValue((DirectionProperty) property, Direction.EAST);
