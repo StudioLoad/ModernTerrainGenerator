@@ -89,7 +89,7 @@ public class ExportCommand extends BaseCommand
 
 	public int execute(CommandContext<CommandSourceStack> context)
 	{
-		if (!context.getSource().hasPermission(2, getPermission())) {
+		if (!context.getSource().getBukkitSender().hasPermission(getPermission())) {
 			context.getSource().sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
