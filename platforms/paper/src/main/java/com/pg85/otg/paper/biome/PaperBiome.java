@@ -101,12 +101,12 @@ public class PaperBiome implements IBiome
 			if (res instanceof RegistryResource registryResource)
 			{
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
-				PlacedFeature registry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE).get(Identifier.parse(registryResource.getFeatureKey()));
+				PlacedFeature registry = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE).getValue(Identifier.parse(registryResource.getFeatureKey()));
 				if (registry == null)
 				{
 					String newResourceLocation = LegacyRegistry.convertLegacyResourceLocation(registryResource.getFeatureKey());
 					if (newResourceLocation != null) {
-						registry = registryAccess.registryOrThrow(Registries.PLACED_FEATURE).get(Identifier.parse(newResourceLocation));
+						registry = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE).getValue(Identifier.parse(newResourceLocation));
 						if (registry == null) {
 							OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Somehow you broke the universe! Feature: "+newResourceLocation+" is not in the registry");
 						} else {
@@ -176,7 +176,7 @@ public class PaperBiome implements IBiome
 			biomeAmbienceBuilder.ambientParticle(new AmbientParticleSettings((ParticleOptions) particleType.get(), biomeConfig.getParticleProbability()));
 		}
 
-		var music = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getMusic()));
+		var music = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getMusic())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
 		music.ifPresent(soundEffect ->
 				biomeAmbienceBuilder.backgroundMusic(
 						new Music(
@@ -188,10 +188,10 @@ public class PaperBiome implements IBiome
 				)
 		);
 
-		var ambientSound = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getAmbientSound()));
+		var ambientSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getAmbientSound())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
 		ambientSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientLoopSound(ambientSound.get()));
 
-		var moodSound = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getMoodSound()));
+		var moodSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getMoodSound())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
 		moodSound.ifPresent(soundEffect ->
 				biomeAmbienceBuilder.ambientMoodSound(
 						new AmbientMoodSettings(
@@ -203,7 +203,7 @@ public class PaperBiome implements IBiome
 				)
 		);
 
-		var additionsSound = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getAdditionsSound()));
+		var additionsSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getAdditionsSound())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
 		additionsSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientAdditionsSound(new AmbientAdditionsSettings(additionsSound.get(), biomeConfig.getAdditionsTickChance())));
 
 		if (biomeConfig.getFoliageColor() != 0xffffff)
