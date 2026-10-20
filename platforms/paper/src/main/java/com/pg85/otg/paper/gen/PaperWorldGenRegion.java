@@ -10,6 +10,8 @@ import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.entity.*;
@@ -41,13 +43,13 @@ import com.pg85.otg.util.minecraft.TreeType;
 import com.pg85.otg.util.nbt.NamedBinaryTag;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
@@ -678,7 +680,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 	@Override
 	public void placeDungeon (Random random, int x, int y, int z)
 	{
-		Feature.MONSTER_ROOM.place(FeatureConfiguration.NONE, this.worldGenRegion, this.chunkGenerator, random, new BlockPos(x, y, z));
+		BuiltInRegistries.PLACED_FEATURE.get(Identifier.parse("minecraft:monster_room")).placeWithBiomeCheck(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
 	}
 
 	@Override
