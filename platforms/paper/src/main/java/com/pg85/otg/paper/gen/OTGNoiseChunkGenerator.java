@@ -57,6 +57,7 @@ import net.minecraft.ReportedException;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.Blocks;
@@ -607,6 +608,12 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		var biomeConfig = biome.getBiomeConfig();
 		IWorldConfig worldConfig = this.preset.getWorldConfig();
 
+		if (worldConfig.getStrongholdsEnabled() && biomeConfig.getStrongholdsEnabled()
+				&& this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.STRONGHOLD), this.worldSeed, x, z, 4))
+		{
+			return true;
+		}
+
 		// Use each world's enabled settings as well as biome settings. Otherwise disabled
 		// structures are still treated as terrain obstacles by OTG's shadow chunk cache.
 		if (worldConfig.getVillagesEnabled() && biomeConfig.getVillageType() != SettingsEnums.VillageType.disabled
@@ -703,6 +710,9 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 	public boolean hasFeatureChunkInRange(StructurePlacement placement, long seed, int chunkX, int chunkZ, int radius)
 	{
+		if (placement instanceof ConcentricRingsStructurePlacement rings) {
+			return hasConcentricStructureChunkInRange(rings, seed, chunkX, chunkZ, radius);
+		}
 		if (!(placement instanceof RandomSpreadStructurePlacement spread)) {
 			return false;
 		}
@@ -728,4 +738,54 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			}
 		}
 		return false;
-	}}
+	}
+
+	private boolean hasConcentricStructureChunkInRange(ConcentricRingsStructurePlacement placement, long seed, int chunkX, int chunkZ, int radius)
+	{
+		int count = placement.count();
+		int spread = placement.spread();
+		int distance = placement.distance();
+		if (count <= 0 || spread <= 0 || distance <= 0)
+		{
+			return false;
+		}
+
+		// Vanilla can move a ring candidate by up to 112 blocks while searching for
+		// an allowed biome. Expand the check to cover that shift without loading chunks.
+		int searchRadius = radius + 8;
+		RandomSource random = RandomSource.create();
+		random.setSeed(seed);
+		double angle = random.nextDouble() * Math.PI * 2.0D;
+		int positionInCircle = 0;
+		int circle = 0;
+
+		for (int i = 0; i < count; i++)
+		{
+			double ringDistance = (4.0D * distance + (double) distance * circle * 6.0D)
+					+ (random.nextDouble() - 0.5D) * (double) distance * 2.5D;
+			int candidateX = (int) Math.round(Math.cos(angle) * ringDistance);
+			int candidateZ = (int) Math.round(Math.sin(angle) * ringDistance);
+
+			if (Math.abs((long) chunkX - candidateX) <= searchRadius
+					&& Math.abs((long) chunkZ - candidateZ) <= searchRadius)
+			{
+				return true;
+			}
+
+			// The vanilla algorithm forks a biome-search random source each iteration.
+			// Advance the parent source too, so later ring angles follow the same sequence.
+			random.fork();
+			angle += Math.PI * 2.0D / spread;
+			positionInCircle++;
+			if (positionInCircle == spread)
+			{
+				circle++;
+				positionInCircle = 0;
+				spread += 2 * spread / (circle + 1);
+				spread = Math.min(spread, count - i);
+				angle += random.nextDouble() * Math.PI * 2.0D;
+			}
+		}
+		return false;
+	}
+}
