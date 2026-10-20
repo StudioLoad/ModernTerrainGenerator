@@ -168,7 +168,7 @@ public class ShadowChunkGenerator
 				for (int y = minY; y <= endY; y++)
 				{
 					BlockPos pos = new BlockPos(x, y, z);
-					chunk.setBlockState(pos, cachedChunk.getBlockState(pos), false);
+					chunk.setBlockState(pos, cachedChunk.getBlockState(pos));
 				}
 			}
 		}
