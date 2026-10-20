@@ -146,8 +146,9 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		this.shadowChunkGenerator = new ShadowChunkGenerator(internalGenerator.getMinY(), internalGenerator.getMaxY());
 		this.chunkDecorator = new OTGChunkDecorator();
 
-		this.router = genSettings.createNoiseRouter(this.noises, worldSeed);
-		this.sampler = new Climate.Sampler(this.router.temperature(), this.router.humidity(), this.router.continents(), this.router.erosion(), this.router.depth(), this.router.ridges(), this.router.spawnTarget());
+		this.router = genSettings.noiseRouter();
+		this.sampler = new Climate.Sampler(this.router.temperature(), this.router.vegetation(), this.router.continents(),
+				this.router.erosion(), this.router.depth(), this.router.ridges(), genSettings.spawnTarget());
 	}
 
 
