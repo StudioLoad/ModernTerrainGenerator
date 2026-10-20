@@ -54,7 +54,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
@@ -372,7 +372,7 @@ public class EditCommand extends BaseCommand
 			}
 
 			// Queue the block coordinate for processing
-			if (fixObject && updateMap.contains(ResourceLocation.tryParse(block.material.getRegistryName())))
+			if (fixObject && updateMap.contains(Identifier.tryParse(block.material.getRegistryName())))
 			{
 				updates.add(new BlockPos(x + block.x, y + block.y, z + block.z));
 			}
@@ -445,7 +445,7 @@ public class EditCommand extends BaseCommand
 		LocalMaterials.SAND, LocalMaterials.RED_SAND, LocalMaterials.GRAVEL
 	).collect(Collectors.toCollection(HashSet::new));
 
-	private static final HashSet<ResourceLocation> updateMap = Stream.of(
+	private static final HashSet<Identifier> updateMap = Stream.of(
 		"oak_fence",
 		"birch_fence",
 		"nether_brick_fence",
@@ -533,6 +533,6 @@ public class EditCommand extends BaseCommand
 		"acacia_leaves",
 		"dark_oak_leaves",
 		"vine")
-		.map(ResourceLocation::parse)
+		.map(Identifier::parse)
 		.collect(Collectors.toCollection(HashSet::new));
 }
