@@ -99,7 +99,7 @@ public class EditCommand extends BaseCommand
 	public int execute(CommandContext<CommandSourceStack> context)
 	{
 		if (!context.getSource().hasPermission(2, getPermission())) {
-			context.getSource().sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
+			context.getSource().sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		CommandSourceStack source = context.getSource();
@@ -122,13 +122,13 @@ public class EditCommand extends BaseCommand
 				
 			if (objectName.equals(""))
 			{
-				source.sendSuccess(Component.literal("Please supply an object name"), false);
+				source.sendSuccess(() -> (Component.literal("Please supply an object name")), false);
 				return 0;
 			}
 
 			if (source.getEntity() == null)
 			{
-				source.sendSuccess(Component.literal("Only players can run this command"), false);
+				source.sendSuccess(() -> (Component.literal("Only players can run this command")), false);
 				return 0;
 			}
 
@@ -138,12 +138,12 @@ public class EditCommand extends BaseCommand
 			}
 			catch (InvalidConfigException e)
 			{
-				source.sendSuccess(Component.literal("Error loading object " + objectName), false);
+				source.sendSuccess(() -> (Component.literal("Error loading object " + objectName)), false);
 				return 0;
 			}
 			if (inputObject == null)
 			{
-				source.sendSuccess(Component.literal("Could not find " + objectName), false);
+				source.sendSuccess(() -> (Component.literal("Could not find " + objectName)), false);
 				return 0;
 			}
 
@@ -152,7 +152,7 @@ public class EditCommand extends BaseCommand
 			Preset preset = ObjectUtils.getPresetOrDefault(presetFolderName);
 			if (preset == null)
 			{
-				source.sendSuccess(Component.literal("Could not find preset " + (presetFolderName == null ? "" : presetFolderName)), false);
+				source.sendSuccess(() -> (Component.literal("Could not find preset " + (presetFolderName == null ? "" : presetFolderName))), false);
 				return 0;
 			}
 
@@ -186,19 +186,19 @@ public class EditCommand extends BaseCommand
 			// Store the info, wait for /otg finishedit
 			sessionsMap.put(source.getEntity(), new EditSession(type, worldGenRegion, inputObject, extraBlocks,
 				path, preset.getFolderName(), center, leaveIllegalLeaves));
-			source.sendSuccess(Component.literal("You can now edit the object"), false);
-			source.sendSuccess(Component.literal("To change the area of the object, use /otg region"), false);
-			source.sendSuccess(Component.literal("When you are done editing, do /otg finishedit"), false);
-			source.sendSuccess(Component.literal("To cancel, do /otg canceledit"), false);
+			source.sendSuccess(() -> (Component.literal("You can now edit the object")), false);
+			source.sendSuccess(() -> (Component.literal("To change the area of the object, use /otg region")), false);
+			source.sendSuccess(() -> (Component.literal("When you are done editing, do /otg finishedit")), false);
+			source.sendSuccess(() -> (Component.literal("To cancel, do /otg canceledit")), false);
 
 			if (!extraBlocks.isEmpty())
-				source.sendSuccess(Component.literal("This object's center cannot be moved"), false);
+				source.sendSuccess(() -> (Component.literal("This object's center cannot be moved")), false);
 
 			RegionCommand.playerSelectionMap.put(source.getEntity(), region);
 		}
 		catch (Exception e)
 		{
-			source.sendSuccess(Component.literal("Edit command encountered an error, please check the logs."), false);
+			source.sendSuccess(() -> (Component.literal("Edit command encountered an error, please check the logs.")), false);
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Edit command encountered an error: "+e.getClass().getName() + " - " +e.getMessage());
 			OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, e);
 		}
@@ -272,32 +272,32 @@ public class EditCommand extends BaseCommand
 
 			if (session == null)
 			{
-				source.sendSuccess(Component.literal("No active session, do '/otg edit' to start one"), false);
+				source.sendSuccess(() -> (Component.literal("No active session, do '/otg edit' to start one")), false);
 				return 0;
 			}
 			else if (ObjectUtils.isOutsideBounds(region, session.type))
 			{
-				source.sendSuccess(Component.literal("Selection is too big! Maximum size is 16x16 for BO4 and 32x32 for BO3"), false);
+				source.sendSuccess(() -> (Component.literal("Selection is too big! Maximum size is 16x16 for BO4 and 32x32 for BO3")), false);
 				return 0;
 			} else {
-				source.sendSuccess(Component.literal("Cleaning up..."), false);
+				source.sendSuccess(() -> (Component.literal("Cleaning up...")), false);
 			}
 
 			StructuredCustomObject object = exportFromSession(session, region);
 
 			if (object != null)
 			{
-				source.sendSuccess(Component.literal("Successfully edited "+session.type.getType()+" " + object.getName()), false);
+				source.sendSuccess(() -> (Component.literal("Successfully edited "+session.type.getType()+" " + object.getName())), false);
 				OTG.getEngine().getCustomObjectManager().getGlobalObjects().addObjectToPreset(session.presetFolderName,  object.getName(), object.getConfig().getFile(), object);
 			} else {
-				source.sendSuccess(Component.literal("Failed to edit "+session.type.getType()+" " + session.object.getName()), false);
+				source.sendSuccess(() -> (Component.literal("Failed to edit "+session.type.getType()+" " + session.object.getName())), false);
 			}
 			ObjectUtils.cleanArea(session.genRegion, region.getMin(), region.getMax(), false);
 			sessionsMap.put(source.getEntity(), null);
 		}
 		catch (Exception e)
 		{
-			source.sendSuccess(Component.literal("Edit command encountered an error, please check logs."), false);
+			source.sendSuccess(() -> (Component.literal("Edit command encountered an error, please check logs.")), false);
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Edit command encountered an error: ");
 			OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, e);
 		}
@@ -335,9 +335,9 @@ public class EditCommand extends BaseCommand
 		{
 			ObjectUtils.cleanArea(session.genRegion, region.getMin(), region.getMax(), false);
 			sessionsMap.put(source.getEntity(), null);
-			source.sendSuccess(Component.literal("Edit session cancelled"), false);
+			source.sendSuccess(() -> (Component.literal("Edit session cancelled")), false);
 		} else {
-			source.sendSuccess(Component.literal("No active edit session to cancel"), false);
+			source.sendSuccess(() -> (Component.literal("No active edit session to cancel")), false);
 		}
 		return 0;
 	}
@@ -422,14 +422,14 @@ public class EditCommand extends BaseCommand
 
 	public int help(CommandContext<CommandSourceStack> context)
 	{
-		context.getSource().sendSuccess(Component.literal("To use the edit command:").withStyle(ChatFormatting.LIGHT_PURPLE), false);
-		context.getSource().sendSuccess(Component.literal("/otg edit <preset> <object> [-nofix, -update]"), false);
-		context.getSource().sendSuccess(Component.literal(" - Preset is which preset to fetch the object from, and save it back to"), false);
-		context.getSource().sendSuccess(Component.literal(" - Object is the object you want to edit"), false);
-		context.getSource().sendSuccess(Component.literal(" - The -nofix flag disables block state fixing"), false);
-		context.getSource().sendSuccess(Component.literal(" - The -update flag immediately exports and cleans after fixing"), false);
-		context.getSource().sendSuccess(Component.literal(" - Complex objects cannot have their center moved"), false);
-		context.getSource().sendSuccess(Component.literal(" - An object is \"complex\" if it contains NBT or RandomBlock"), false);
+		context.getSource().sendSuccess(() -> (Component.literal("To use the edit command:").withStyle(ChatFormatting.LIGHT_PURPLE)), false);
+		context.getSource().sendSuccess(() -> (Component.literal("/otg edit <preset> <object> [-nofix, -update]")), false);
+		context.getSource().sendSuccess(() -> (Component.literal(" - Preset is which preset to fetch the object from, and save it back to")), false);
+		context.getSource().sendSuccess(() -> (Component.literal(" - Object is the object you want to edit")), false);
+		context.getSource().sendSuccess(() -> (Component.literal(" - The -nofix flag disables block state fixing")), false);
+		context.getSource().sendSuccess(() -> (Component.literal(" - The -update flag immediately exports and cleans after fixing")), false);
+		context.getSource().sendSuccess(() -> (Component.literal(" - Complex objects cannot have their center moved")), false);
+		context.getSource().sendSuccess(() -> (Component.literal(" - An object is \"complex\" if it contains NBT or RandomBlock")), false);
 		return 0;
 	}
 
