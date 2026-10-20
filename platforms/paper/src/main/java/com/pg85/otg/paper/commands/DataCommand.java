@@ -69,12 +69,12 @@ public class DataCommand extends BaseCommand
 		Registry<?> registry;
 
 		switch (type.toLowerCase()) {
-			case "biome" -> registry = source.getServer().registryAccess().registryOrThrow(Registries.BIOME);
+			case "biome" -> registry = source.getServer().registryAccess().lookupOrThrow(Registries.BIOME);
 			case "block" -> registry = BuiltInRegistries.BLOCK;
 			case "entity" -> registry = BuiltInRegistries.ENTITY_TYPE;
 			case "sound" -> registry = BuiltInRegistries.SOUND_EVENT;
 			case "particle" -> registry = BuiltInRegistries.PARTICLE_TYPE;
-			case "configured_feature" -> registry = source.getServer().registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+			case "configured_feature" -> registry = source.getServer().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
 			default -> {
 				source.sendSuccess(() -> (Component.literal(getUsage())), false);
 				return 0;
