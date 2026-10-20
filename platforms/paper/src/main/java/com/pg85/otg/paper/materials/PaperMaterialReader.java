@@ -15,7 +15,7 @@ import com.pg85.otg.util.minecraft.BlockNames;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -183,7 +183,7 @@ public class PaperMaterialReader implements IMaterialReader
 		try
 		{
 			// This returns AIR if block is not found ><. ----Does it for spigot too?
-			block = Registry.BLOCK.get(ResourceLocation.parse(blockNameCorrected));
+			block = Registry.BLOCK.get(Identifier.parse(blockNameCorrected));
 			if (block != Blocks.AIR || blockNameCorrected.toLowerCase().endsWith("air"))
 			{
 				// For leaves, add DISTANCE 1 to make them not decay.
