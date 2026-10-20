@@ -3,7 +3,7 @@ package com.pg85.otg.paper.materials;
 import com.pg85.otg.constants.Constants;
 import com.pg85.otg.util.materials.LocalMaterialTag;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
@@ -23,10 +23,10 @@ public class PaperMaterialTag extends LocalMaterialTag
 				return new PaperMaterialTag(blockTag, Constants.MOD_ID_SHORT + ":" + name.trim().toLowerCase().replace(Constants.MOD_ID_SHORT + ":", ""));
 			}
 		}
-		final ResourceLocation resourceLocation;
+		final Identifier resourceLocation;
 		try
 		{
-			resourceLocation = ResourceLocation.parse(name.trim().toLowerCase());
+			resourceLocation = Identifier.parse(name.trim().toLowerCase());
 		} catch(Exception ex) {
 			return null;
 		}
@@ -91,7 +91,7 @@ public class PaperMaterialTag extends LocalMaterialTag
 	// Adding this because I can't find a method to do lookup by name. Really weird that this doesn't exist.
 	// It's scuffed but it's the best we got for now
 	// -auth
-	private static TagKey<Block> getBlockTagFromResourceLocation (ResourceLocation loc)
+	private static TagKey<Block> getBlockTagFromResourceLocation (Identifier loc)
 	{
 		if (BlockTags.WOOL.location().equals(loc)) return BlockTags.WOOL;
 		if (BlockTags.PLANKS.location().equals(loc)) return BlockTags.PLANKS;
