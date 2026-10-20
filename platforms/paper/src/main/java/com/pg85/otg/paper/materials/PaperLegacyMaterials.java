@@ -829,7 +829,7 @@ public class PaperLegacyMaterials
 		String color = LEGACY_DYE_COLORS[metadata];
 		String flattened = switch (path)
 		{
-			case "banner" -> color + "_banner";
+			case "banner" -> LEGACY_DYE_COLORS[15 - metadata] + "_banner";
 			case "bed" -> color + "_bed";
 			case "carpet" -> color + "_carpet";
 			case "concrete" -> color + "_concrete";
@@ -856,7 +856,7 @@ public class PaperLegacyMaterials
 			};
 			case "stone_slab" -> switch (metadata & 7)
 			{
-				case 0 -> "smooth_stone_slab";
+				case 0 -> "stone_slab";
 				case 1 -> "sandstone_slab";
 				case 2 -> "petrified_oak_slab";
 				case 3 -> "cobblestone_slab";
@@ -933,8 +933,8 @@ public class PaperLegacyMaterials
 			case "red_sandstone" -> switch (metadata & 3)
 			{
 				case 0 -> "red_sandstone";
-				case 1 -> "cut_red_sandstone";
-				case 2 -> "smooth_red_sandstone";
+				case 1 -> "chiseled_red_sandstone";
+				case 2 -> "cut_red_sandstone";
 				default -> null;
 			};
 			case "sandstone" -> switch (metadata & 3)
