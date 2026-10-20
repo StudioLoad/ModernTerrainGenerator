@@ -796,14 +796,14 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 	private PlacedFeature getPlacedFeature(ResourceKey key)
 	{
 		return (PlacedFeature) this.worldGenRegion.registryAccess()
-				.registryOrThrow(Registries.PLACED_FEATURE)
+				.lookupOrThrow(Registries.PLACED_FEATURE)
 				.getValueOrThrow(key);
 	}
 
 	private ConfiguredFeature<?, ?> getConfiguredFeature(ResourceKey key)
 	{
 		return (ConfiguredFeature<?, ?>) this.worldGenRegion.registryAccess()
-				.registryOrThrow(Registries.CONFIGURED_FEATURE)
+				.lookupOrThrow(Registries.CONFIGURED_FEATURE)
 				.getValueOrThrow(key);
 }
 
