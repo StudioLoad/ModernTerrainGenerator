@@ -20,7 +20,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DataCommand extends BaseCommand
 {
@@ -80,7 +80,7 @@ public class DataCommand extends BaseCommand
 			}
 		}
 
-		Set<ResourceLocation> set = registry.keySet();
+		Set<Identifier> set = registry.keySet();
 		new Thread(() -> {
 			try
 			{
@@ -94,7 +94,7 @@ public class DataCommand extends BaseCommand
 				String fileName = "data-output-" + type + ".txt".toLowerCase();
 				File output = new File(folder, fileName);
 				FileWriter writer = new FileWriter(output);
-				for (ResourceLocation key : set)
+				for (Identifier key : set)
 				{
 					writer.write(key.toString() + "\n");
 				}
