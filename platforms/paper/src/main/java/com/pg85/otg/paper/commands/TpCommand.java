@@ -24,7 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 
@@ -78,7 +78,7 @@ public class TpCommand extends BaseCommand
 
 		Preset preset = ((OTGNoiseChunkGenerator) world.getChunkSource().getGenerator()).getPreset();
 
-		ResourceLocation key = ResourceLocation.parse(new OTGBiomeResourceLocation(preset.getPresetFolder(),
+		Identifier key = Identifier.parse(new OTGBiomeResourceLocation(preset.getPresetFolder(),
 				preset.getShortPresetName(), preset.getMajorVersion(), biome).toResourceLocationString());
 
 		var t = world.findNearestBiome(p -> p.is(key),
