@@ -222,33 +222,38 @@ public class ShadowChunkGenerator
 				}
 			}
 
-			Set<Biome> biomesInArea = new HashSet<>();
-
-			for(ChunkCoordinate chunkToHandle : chunksToHandle)
+			for (ChunkCoordinate chunkToHandle : chunksToHandle)
 			{
-				chunk = new ProtoChunk(new ChunkPos(chunkToHandle.getChunkX(), chunkToHandle.getChunkZ()), null, serverWorld, serverWorld.registryAccess().registryOrThrow(Registries.BIOME), null);
-				chunkpos = chunk.getPos();
-				biomesInArea.add(((PaperBiome) cachedBiomeProvider.getNoiseBiome((chunkpos.x << 2) + 2, (chunkpos.z << 2) + 2)).getBiome());
-			}
+				int distance = (int) Math.floor(Math.sqrt(
+						Math.pow(chunkToHandle.getChunkX() - chunkCoordinate.getChunkX(), 2)
+								+ Math.pow(chunkToHandle.getChunkZ() - chunkCoordinate.getChunkZ(), 2)));
 
-			for(ChunkCoordinate chunkToHandle : chunksToHandle)
-			{
-				chunk = new ProtoChunk(new ChunkPos(chunkToHandle.getChunkX(), chunkToHandle.getChunkZ()), null, serverWorld, serverWorld.registryAccess().registryOrThrow(Registries.BIOME), null);
-				chunkpos = chunk.getPos();
-				int distance = (int)Math.floor(Math.sqrt(Math.pow (chunkToHandle.getChunkX() - chunkCoordinate.getChunkX(), 2) + Math.pow (chunkToHandle.getChunkZ() - chunkCoordinate.getChunkZ(), 2)));
+				// The noise generator owns the current structure placements and understands
+				// 1.21.11's structure-set API. Use it to avoid generating shadow chunks near
+				// vanilla structures, where density smoothing affects the terrain.
+				boolean hasStructure = chunkGenerator instanceof OTGNoiseChunkGenerator otgGenerator
+						&& otgGenerator.checkForVanillaStructure(chunkToHandle);
+				int affectedRadius = hasStructure ? radiusInChunks - 1 : 0;
+				chunksHandled.put(chunkToHandle, affectedRadius);
 
-				// Borrowed from STRUCTURE_STARTS phase of chunkgen, only determines structure start point
-				// based on biome and resource settings (distance etc). Does not plot any structure components.
-
-				// TODO: Optimise this for biome lookups, fetch a whole region of noise biome info at once?
-				IBiome biome = cachedBiomeProvider.getNoiseBiome((chunkpos.x << 2) + 2, (chunkpos.z << 2) + 2);
-				// TODO: Should we store this in the biomes? Would save creating them anew here -auth
-				ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.parse(biome.getBiomeConfig().getRegistryKey().toResourceLocationString()));
-				// TODO: This only checks for villages for now, needs reworking. The forge approach won't work.
-				// The former 1.18 structure-feature scan did not enumerate any structure sets.
-				// Leave the chunk unmarked rather than incorrectly treating it as a structure smoothing area.
-
-				chunksHandled.putIfAbsent(chunkToHandle, 0);
+				if (affectedRadius > 0 && affectedRadius >= distance)
+				{
+					if (noiseAffectingStructuresOnly)
+					{
+						synchronized (this.hasVanillaNoiseStructureChunkCache)
+						{
+							this.hasVanillaNoiseStructureChunkCache.putAll(chunksHandled);
+						}
+					}
+					else
+					{
+						synchronized (this.hasVanillaStructureChunkCache)
+						{
+							this.hasVanillaStructureChunkCache.putAll(chunksHandled);
+						}
+					}
+					return true;
+				}
 			}
 			if(noiseAffectingStructuresOnly)
 			{
