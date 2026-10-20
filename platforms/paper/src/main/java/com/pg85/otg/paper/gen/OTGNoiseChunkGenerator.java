@@ -210,14 +210,14 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			ObjectList<JigsawStructureData> junctions = new ObjectArrayList<>(32);
 
 			ChunkPos pos = new ChunkPos(chunkCoord.getChunkX(), chunkCoord.getChunkZ());
-			findNoiseStructures(pos, world.structureManager(), structures, junctions);
+			findNoiseStructures(pos, world.structureManager(), structures, junctions, this.internalGenerator.getMinY());
 
 			this.internalGenerator.populateNoise(random, buffer, buffer.getChunkCoordinate(), structures, junctions);
 			this.shadowChunkGenerator.setChunkGenerated(chunkCoord);			
 		}
 	}
 
-	public static void findNoiseStructures(ChunkPos pos, StructureManager manager, ObjectList<JigsawStructureData> structures, ObjectList<JigsawStructureData> junctions) {
+	public static void findNoiseStructures(ChunkPos pos, StructureManager manager, ObjectList<JigsawStructureData> structures, ObjectList<JigsawStructureData> junctions, int minY) {
 
 		int chunkX = pos.x;
 		int chunkZ = pos.z;
@@ -236,13 +236,13 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 						BoundingBox box = piece.getBoundingBox();
 						if (piece instanceof PoolElementStructurePiece villagePiece) {
 							if (villagePiece.getElement().getProjection() == StructureTemplatePool.Projection.RIGID) {
-								structures.add(new JigsawStructureData(box.minX(), box.minY(), box.minZ(), box.maxX(), villagePiece.getGroundLevelDelta(), box.maxZ(), true, 0, 0, 0));
+								structures.add(new JigsawStructureData(box.minX(), box.minY() - minY, box.minZ(), box.maxX(), villagePiece.getGroundLevelDelta(), box.maxZ(), true, 0, 0, 0));
 							}
 							for (JigsawJunction junction : villagePiece.getJunctions()) {
 								int sourceX = junction.getSourceX();
 								int sourceZ = junction.getSourceZ();
 								if (sourceX > startX - 12 && sourceZ > startZ - 12 && sourceX < startX + 27 && sourceZ < startZ + 27) {
-									junctions.add(new JigsawStructureData(0, 0, 0, 0, 0, 0, false, sourceX, junction.getSourceGroundY(), sourceZ));
+									junctions.add(new JigsawStructureData(0, 0, 0, 0, 0, 0, false, sourceX, junction.getSourceGroundY() - minY, sourceZ));
 								}
 							}
 						} else {
@@ -289,7 +289,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 			ChunkPos pos = new ChunkPos(chunkCoord.getChunkX(), chunkCoord.getChunkZ());
 
-			findNoiseStructures(pos, accessor, structures, junctions);
+			findNoiseStructures(pos, accessor, structures, junctions, this.internalGenerator.getMinY());
 
 			this.internalGenerator.populateNoise(random, buffer, buffer.getChunkCoordinate(), structures, junctions);
 			this.shadowChunkGenerator.setChunkGenerated(chunkCoord);
