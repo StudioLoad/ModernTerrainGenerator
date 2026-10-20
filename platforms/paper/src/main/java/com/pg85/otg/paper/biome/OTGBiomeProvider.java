@@ -47,7 +47,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 
 	public OTGBiomeProvider (String presetFolderName, long seed, Registry<Biome> registry)
 	{
-		super(getAllBiomesByPreset(presetFolderName, registry));
+		super();
 		this.presetFolderName = presetFolderName;
 		this.seed = seed;
 		this.registry = registry;
@@ -83,7 +83,13 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		{
 			biomesForPreset = new ArrayList<>();
 		}
-		return biomesForPreset.stream().map(p -> Holder.direct(registry.getOrThrow(p)));
+		return biomesForPreset.stream().map(registry::getOrThrow);
+	}
+
+	@Override
+	protected Stream<Holder<Biome>> collectPossibleBiomes()
+	{
+		return getAllBiomesByPreset(this.presetFolderName, this.registry);
 	}
 
 	protected com.mojang.serialization.MapCodec<? extends BiomeSource> codec ()
@@ -95,7 +101,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 	@Override
 	public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler p_186738_)
 	{
-		return this.registry.getHolderOrThrow(this.keyLookup.get(this.layer.get().sample(biomeX, biomeZ)));
+		return this.registry.getOrThrow(this.keyLookup.get(this.layer.get().sample(biomeX, biomeZ)));
 	}
 
 	@Override
