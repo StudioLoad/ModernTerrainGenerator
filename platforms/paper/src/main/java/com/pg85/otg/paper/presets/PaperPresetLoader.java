@@ -447,7 +447,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 			Biome biomeBase = null;
 			if(biome != null)
 			{
-				biomeBase = BuiltInRegistries.BIOME.get(Identifier.parse(biome.getKey().toString()));
+				biomeBase = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().lookupOrThrow(Registries.BIOME).getValue(Identifier.parse(biome.getKey().toString()));
 			}
 			if(biomeBase != null)
 			{
