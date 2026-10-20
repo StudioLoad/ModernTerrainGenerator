@@ -14,7 +14,8 @@ public class LegacyRegistry {
             case "crimson_fungi":
                 return "crimson_fungus";
             case "birch_other":
-                return "minecraft:trees_birch_and_oak";
+                // 1.21.11 renamed the old mixed birch/oak placement feature.
+                return "minecraft:trees_birch_and_oak_leaf_litter";
             case "seagrass_swamp":
             case "seagrass_deep_warm":
             case "seagrass_warm":
