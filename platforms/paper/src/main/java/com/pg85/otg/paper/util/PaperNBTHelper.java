@@ -74,6 +74,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 				case TAG_Byte_Array:
 				case TAG_String:
 				case TAG_Int_Array:
+				case TAG_Long_Array:
 					compoundTag.addTag(new NamedBinaryTag(type, key, getValueFromNms(nmsChildTag)));
 					break;
 				case TAG_List:
@@ -111,7 +112,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 			return null;
 		}
 
-		NamedBinaryTag.Type listType = NamedBinaryTag.Type.values()[nmsListTag.size()];
+		NamedBinaryTag.Type listType = NamedBinaryTag.Type.values()[nmsListTag.get(0).getId()];
 		NamedBinaryTag listTag = new NamedBinaryTag(name, listType);
 
 		// Add all child tags
@@ -119,20 +120,23 @@ public class PaperNBTHelper extends LocalNBTHelper
 		{
 			switch (listType)
 			{
-				case TAG_Int_Array:
-					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getIntArray(i).orElseGet(() -> new int[0])));
-					break;
+					case TAG_Byte:
+				case TAG_Short:
+				case TAG_Int:
+				case TAG_Long:
 				case TAG_Float:
-					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getFloat(i)));
-					break;
 				case TAG_Double:
-					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getDouble(i)));
-					break;
+				case TAG_Byte_Array:
 				case TAG_String:
-					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getStringOr(i, "")));
+				case TAG_Int_Array:
+				case TAG_Long_Array:
+					listTag.addTag(new NamedBinaryTag(listType, null, getValueFromNms(nmsListTag.get(i))));
 					break;
 				case TAG_Compound:
 					listTag.addTag(getNBTFromNMSTagCompound(null, (CompoundTag) nmsListTag.get(i)));
+					break;
+				case TAG_List:
+					listTag.addTag(getNBTFromNMSTagList(null, (ListTag) nmsListTag.get(i)));
 					break;
 				default:
 					if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.CUSTOM_OBJECTS))
@@ -175,6 +179,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 				case TAG_Byte_Array -> ((ByteArrayTag) nmsTag).getAsByteArray();
 				case TAG_String -> ((StringTag) nmsTag).value();
 				case TAG_Int_Array -> ((IntArrayTag) nmsTag).getAsIntArray();
+				case TAG_Long_Array -> ((LongArrayTag) nmsTag).getAsLongArray();
 				default ->
 					// Cannot read this from a tag
 					throw new IllegalArgumentException(type + "doesn't have a simple value!");
@@ -205,6 +210,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 				case TAG_Byte_Array:
 				case TAG_String:
 				case TAG_Int_Array:
+				case TAG_Long_Array:
 					nmsTag.put(tag.getName(), createTagNms(tag.getType(), tag.getValue()));
 					break;
 				case TAG_List:
@@ -282,6 +288,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 				case TAG_Byte_Array -> new ByteArrayTag((byte[]) value);
 				case TAG_String -> StringTag.valueOf((String) value);
 				case TAG_Int_Array -> new IntArrayTag((int[]) value);
+				case TAG_Long_Array -> new LongArrayTag((long[]) value);
 				default ->
 					// Cannot make this into a tag
 					throw new IllegalArgumentException(type + "doesn't have a simple value!");
