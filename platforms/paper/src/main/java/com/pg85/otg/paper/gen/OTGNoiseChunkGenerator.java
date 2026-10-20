@@ -623,47 +623,47 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		// Structures with a radius of 4
 		PaperBiome biome = (PaperBiome) getCachedBiomeProvider().getNoiseBiome((x << 2) + 2, (z << 2) + 2);
 		if (biome.getBiomeConfig().getVillageType() != SettingsEnums.VillageType.disabled)
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.VILLAGES, worldSeed, x, z, 4))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.VILLAGE), worldSeed, x, z, 4))
 				return true;
 		if (biome.getBiomeConfig().getBastionRemnantEnabled())
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.NETHER_COMPLEXES, worldSeed, x, z, 4))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.BASTION_REMNANT), worldSeed, x, z, 4))
 				return true;
 		if (biome.getBiomeConfig().getEndCityEnabled())
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.END_CITIES, worldSeed, x, z, 4))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.END_CITY), worldSeed, x, z, 4))
 				return true;
 		if (biome.getBiomeConfig().getOceanMonumentsEnabled())
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.OCEAN_MONUMENTS, worldSeed, x, z, 4))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.OCEAN_MONUMENT), worldSeed, x, z, 4))
 				return true;
 		if (biome.getBiomeConfig().getWoodlandMansionsEnabled())
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.WOODLAND_MANSIONS, worldSeed, x, z, 4))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.WOODLAND_MANSION), worldSeed, x, z, 4))
 				return true;
 		switch (biome.getBiomeConfig().getRareBuildingType()) {
 			case disabled -> {}
 			case desertPyramid -> {
-				if (this.hasFeatureChunkInRange(BuiltinStructureSets.DESERT_PYRAMIDS, worldSeed, x, z, 1))
+				if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.DESERT_PYRAMID), worldSeed, x, z, 1))
 					return true;
 			}
 			case jungleTemple -> {
-				if (this.hasFeatureChunkInRange(BuiltinStructureSets.JUNGLE_TEMPLES, worldSeed, x, z, 1))
+				if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.JUNGLE_TEMPLE), worldSeed, x, z, 1))
 					return true;
 			}
 			case swampHut -> {
-				if (this.hasFeatureChunkInRange(BuiltinStructureSets.SWAMP_HUTS, worldSeed, x, z, 1))
+				if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.SWAMP_HUT), worldSeed, x, z, 1))
 					return true;
 			}
 			case igloo -> {
-				if (this.hasFeatureChunkInRange(BuiltinStructureSets.IGLOOS, worldSeed, x, z, 1))
+				if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.IGLOO), worldSeed, x, z, 1))
 					return true;
 			}
 		}
 		if (biome.getBiomeConfig().getShipWreckEnabled() || biome.getBiomeConfig().getShipWreckBeachedEnabled())
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.SHIPWRECKS, worldSeed, x, z, 1))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.SHIPWRECK), worldSeed, x, z, 1))
 				return true;
 		if (biome.getBiomeConfig().getPillagerOutpostEnabled())
-			if (this.hasFeatureChunkInRange(BuiltinStructureSets.PILLAGER_OUTPOSTS, worldSeed, x, z, 1))
+			if (this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.PILLLAGER_OUTPOST), worldSeed, x, z, 1))
 				return true;
 		if (biome.getBiomeConfig().getOceanRuinsType() != SettingsEnums.OceanRuinsType.disabled)
-			return this.hasFeatureChunkInRange(BuiltinStructureSets.OCEAN_RUINS, worldSeed, x, z, 1);
+			return this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.OCEAN_RUINS), worldSeed, x, z, 1);
 		return false;
     }
 	public boolean hasFeatureChunkInRange(StructurePlacement structureplacement, long i, int j, int k, int l)
