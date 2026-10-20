@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -34,7 +35,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		(instance) -> instance.group(
 			Codec.STRING.fieldOf("preset_name").stable().forGetter((provider) -> provider.presetFolderName),
 			Codec.LONG.fieldOf("seed").stable().forGetter((provider) -> provider.seed),
-			RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter((provider) -> provider.registry)
+			RegistryOps.retrieveRegistry(Registries.BIOME).forGetter((provider) -> provider.registry)
 		).apply(instance, instance.stable(OTGBiomeProvider::new))
 	);
 	private final long seed;
@@ -65,7 +66,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		{
 			IBiomeConfig config = biomeLookup[biomeId].getBiomeConfig();
 
-			ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, Identifier.parse(config.getRegistryKey().toResourceLocationString()));
+			ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.parse(config.getRegistryKey().toResourceLocationString()));
 			this.keyLookup.put(biomeId, key);
 		}
 	}
