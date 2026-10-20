@@ -169,7 +169,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 
 			// When using TemplateForBiome, we'll fetch the non-OTG biome from the registry, including any settings registered to it.
 			// For normal biomes we create our own new OTG biome and apply settings from the biome config.
-			ResourceLocation resourceLocation = new ResourceLocation(biomeConfig.getKey().toResourceLocationString());
+			ResourceLocation resourceLocation = ResourceLocation.parse(biomeConfig.getKey().toResourceLocationString());
 			ResourceKey<Biome> registryKey;
 			Biome biome;
 			if(!(biomeConfig.getKey() instanceof OTGBiomeResourceLocation)) {
@@ -436,7 +436,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 			Biome biomeBase = null;
 			if(biome != null)
 			{
-				biomeBase = BuiltInRegistries.BIOME.get(new ResourceLocation(biome.getKey().toString()));
+				biomeBase = BuiltInRegistries.BIOME.get(ResourceLocation.parse(biome.getKey().toString()));
 			}
 			if(biomeBase != null)
 			{
