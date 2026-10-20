@@ -19,6 +19,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -68,11 +69,11 @@ public class DataCommand extends BaseCommand
 		Registry<?> registry;
 
 		switch (type.toLowerCase()) {
-			case "biome" -> registry = source.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-			case "block" -> registry = Registry.BLOCK;
-			case "entity" -> registry = Registry.ENTITY_TYPE;
-			case "sound" -> registry = Registry.SOUND_EVENT;
-			case "particle" -> registry = Registry.PARTICLE_TYPE;
+			case "biome" -> registry = source.getServer().registryAccess().registryOrThrow(Registries.BIOME);
+			case "block" -> registry = BuiltInRegistries.BLOCK;
+			case "entity" -> registry = BuiltInRegistries.ENTITY_TYPE;
+			case "sound" -> registry = BuiltInRegistries.SOUND_EVENT;
+			case "particle" -> registry = BuiltInRegistries.PARTICLE_TYPE;
 			case "configured_feature" -> registry = BuiltInRegistries.CONFIGURED_FEATURE;
 			default -> {
 				source.sendSuccess(() -> (Component.literal(getUsage())), false);
