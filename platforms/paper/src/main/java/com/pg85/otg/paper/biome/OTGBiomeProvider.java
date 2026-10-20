@@ -104,7 +104,6 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		return this.registry.getOrThrow(this.keyLookup.get(this.layer.get().sample(biomeX, biomeZ)));
 	}
 
-	@Override
 	public CachingLayerSampler getSampler ()
 	{
 		return this.layer.get();
