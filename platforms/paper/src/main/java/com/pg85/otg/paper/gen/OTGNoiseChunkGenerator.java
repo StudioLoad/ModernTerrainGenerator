@@ -384,7 +384,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			int chunkX = region.getCenter().x;
 			int chunkZ = region.getCenter().z;
 			IBiome biome = this.internalGenerator.getCachedBiomeProvider().getBiome(chunkX * Constants.CHUNK_SIZE, chunkZ * Constants.CHUNK_SIZE);
-			WorldgenRandom sharedseedrandom = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.seedUniquifier()));
+			WorldgenRandom sharedseedrandom = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));
 			sharedseedrandom.setDecorationSeed(region.getSeed(), chunkX << 4, chunkZ << 4);
 			NaturalSpawner.spawnMobsForChunkGeneration(region, ((PaperBiome)biome).getHolder(), region.getCenter(), sharedseedrandom);
 			}
