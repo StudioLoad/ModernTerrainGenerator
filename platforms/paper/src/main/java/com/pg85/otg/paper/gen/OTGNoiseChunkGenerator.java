@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
 
 import com.pg85.otg.paper.util.ObfuscationHelper;
 import com.pg85.otg.util.gen.DecorationArea;
@@ -437,8 +436,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 	// Samples the noise at a column and provides a view of the blockstates, or fills a heightmap.
 	// Samples OTG's fixed 8-block noise columns inside the requested world build range.
-	private int sampleHeightmap(int x, int z, @Nullable BlockState[] blockStates,
-			@Nullable Predicate<BlockState> predicate, int minGenY, int maxGenY)
+	private int sampleHeightmap(int x, int z, BlockState[] blockStates,
+			Predicate<BlockState> predicate, int minGenY, int maxGenY)
 	{
 		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
 		int cellWidth = noiseSettings.getCellWidth();
