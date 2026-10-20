@@ -666,15 +666,31 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			return this.hasFeatureChunkInRange(this.structurePlacementSettings.get(StructureType.OCEAN_RUINS), worldSeed, x, z, 1);
 		return false;
     }
-	public boolean hasFeatureChunkInRange(StructurePlacement structureplacement, long i, int j, int k, int l)
+	public boolean hasFeatureChunkInRange(StructurePlacement placement, long seed, int chunkX, int chunkZ, int radius)
 	{
-		for (int i1 = j - l; i1 <= j + l; ++i1) {
-			for (int j1 = k - l; j1 <= k + l; ++j1) {
-				if (structureplacement.isFeatureChunk(this, i, i1, j1)) {
+		if (!(placement instanceof RandomSpreadStructurePlacement spread)) {
+			return false;
+		}
+
+		int minChunkX = chunkX - radius;
+		int maxChunkX = chunkX + radius;
+		int minChunkZ = chunkZ - radius;
+		int maxChunkZ = chunkZ + radius;
+		int spacing = spread.spacing();
+
+		int minRegionX = Math.floorDiv(minChunkX, spacing);
+		int maxRegionX = Math.floorDiv(maxChunkX, spacing);
+		int minRegionZ = Math.floorDiv(minChunkZ, spacing);
+		int maxRegionZ = Math.floorDiv(maxChunkZ, spacing);
+
+		for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
+			for (int regionZ = minRegionZ; regionZ <= maxRegionZ; regionZ++) {
+				ChunkPos candidate = spread.getPotentialStructureChunk(seed, regionX * spacing, regionZ * spacing);
+				if (candidate.x >= minChunkX && candidate.x <= maxChunkX
+						&& candidate.z >= minChunkZ && candidate.z <= maxChunkZ) {
 					return true;
 				}
 			}
 		}
 		return false;
-	}
-}
+	}}
