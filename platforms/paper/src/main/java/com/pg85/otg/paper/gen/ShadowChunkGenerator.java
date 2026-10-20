@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
@@ -340,30 +341,35 @@ public class ShadowChunkGenerator
 			chunk = getUnloadedChunk(otgChunkGenerator, worldRandom, chunkCoord, level).getChunk();
 			this.unloadedChunksCache.put(chunkCoord, chunk);
 		}
-		int totalHeight = otgChunkGenerator.getMaxY() - otgChunkGenerator.getMinY();
+		int minY = otgChunkGenerator.getMinY();
+		int maxY = otgChunkGenerator.getMaxY();
+		int totalHeight = maxY - minY + 1;
 		cachedColumn = new LocalMaterialData[totalHeight];
+		Arrays.fill(cachedColumn, PaperMaterialData.ofBlockData(Blocks.AIR.defaultBlockState()));
 
-		LocalMaterialData[] blocksInColumn = new LocalMaterialData[totalHeight];
-		BlockState blockInChunk;
-		for (int y = otgChunkGenerator.getMinY(); y <= otgChunkGenerator.getMaxY(); y++)
+		for (int y = minY; y <= maxY; y++)
 		{
-			blockInChunk = chunk.getBlockState(new BlockPos(blockX, y, blockZ));
-			if (blockInChunk != null)
+			BlockState blockInChunk = chunk.getBlockState(new BlockPos(blockX, y, blockZ));
+			if (blockInChunk == null)
 			{
-				blocksInColumn[y] = PaperMaterialData.ofBlockData(blockInChunk);
-			} else {
 				break;
 			}
+			cachedColumn[y - minY] = PaperMaterialData.ofBlockData(blockInChunk);
 		}
-		this.unloadedBlockColumnsCache.put(blockPos, cachedColumn);
 
-		return blocksInColumn;
+		this.unloadedBlockColumnsCache.put(blockPos, cachedColumn);
+		return cachedColumn;
 	}
 
 	public LocalMaterialData getMaterialInUnloadedChunk(OTGChunkGenerator otgChunkGenerator, Random worldRandom, int x, int y, int z, ServerLevel level)
 	{
+		int minY = otgChunkGenerator.getMinY();
+		if (y < minY || y > otgChunkGenerator.getMaxY())
+		{
+			return PaperMaterialData.ofBlockData(Blocks.AIR.defaultBlockState());
+		}
 		LocalMaterialData[] blockColumn = getBlockColumnInUnloadedChunk(otgChunkGenerator, worldRandom, x, z, level);
-		return blockColumn[y];
+		return blockColumn[y - minY];
 	}
 
 	public int getHighestBlockYInUnloadedChunk(OTGChunkGenerator otgChunkGenerator, Random worldRandom, int x, int z, boolean findSolid, boolean findLiquid, boolean ignoreLiquid, boolean ignoreSnow, ServerLevel level)
@@ -375,9 +381,10 @@ public class ShadowChunkGenerator
 		boolean isLiquid;
 		boolean isSolid;
 
-		for (int y = 255; y >= 0; y--)
+				int minY = otgChunkGenerator.getMinY();
+		for (int y = otgChunkGenerator.getMaxY(); y >= minY; y--)
 		{
-			material = (PaperMaterialData) blockColumn[y];
+			material = (PaperMaterialData) blockColumn[y - minY];
 			isLiquid = material.isLiquid();
 			isSolid = material.isSolid() || (!ignoreSnow && material.isMaterial(LocalMaterials.SNOW));
 			if (!(isLiquid && ignoreLiquid))
