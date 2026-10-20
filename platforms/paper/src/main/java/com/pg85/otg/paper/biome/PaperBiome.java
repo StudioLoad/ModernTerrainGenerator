@@ -39,6 +39,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.attribute.AmbientAdditionsSettings;
+import net.minecraft.world.attribute.AmbientMoodSettings;
+import net.minecraft.world.attribute.AmbientParticle;
+import net.minecraft.world.attribute.AmbientSounds;
+import net.minecraft.world.attribute.BackgroundMusic;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import net.minecraft.world.level.block.Block;
@@ -159,52 +165,39 @@ public class PaperBiome implements IBiome
 			safeTemperature = safeTemperature >= 1.5 ? 0.2f : 0.1f;
 		}
 
-		// BiomeFog == BiomeAmbient in forge
+		// Minecraft 1.21.11 stores atmospheric colors, particles and sounds as environment attributes.
 		BiomeSpecialEffects.Builder biomeAmbienceBuilder =
 				new BiomeSpecialEffects.Builder()
-						.fogColor(biomeConfig.getFogColor() != BiomeStandardValues.FOG_COLOR.getDefaultValue(null) ? biomeConfig.getFogColor() : worldConfig.getFogColor())
-						.waterColor(biomeConfig.getWaterColor() != BiomeStandardValues.WATER_COLOR.getDefaultValue() ? biomeConfig.getWaterColor() : 4159204)
-						.waterFogColor(biomeConfig.getWaterFogColor() != BiomeStandardValues.WATER_FOG_COLOR.getDefaultValue() ? biomeConfig.getWaterFogColor() : 329011)
-						.skyColor(biomeConfig.getSkyColor() != BiomeStandardValues.SKY_COLOR.getDefaultValue() ? biomeConfig.getSkyColor() : getSkyColorForTemp(safeTemperature))
-				//.e() // TODO: Sky color is normally based on temp, make a setting for that?
-				;
+						.waterColor(biomeConfig.getWaterColor() != BiomeStandardValues.WATER_COLOR.getDefaultValue()
+								? biomeConfig.getWaterColor() : 4159204);
 
-
+		List<AmbientParticle> ambientParticles = new ArrayList<>();
 		Optional<ParticleType<?>> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
-		if (particleType.isPresent() && particleType.get() instanceof ParticleOptions)
+		if (particleType.isPresent() && particleType.get() instanceof ParticleOptions particleOptions)
 		{
-			biomeAmbienceBuilder.ambientParticle(new AmbientParticleSettings((ParticleOptions) particleType.get(), biomeConfig.getParticleProbability()));
+			ambientParticles.add(new AmbientParticle(particleOptions, biomeConfig.getParticleProbability()));
 		}
 
-		var music = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getMusic())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
-		music.ifPresent(soundEffect ->
-				biomeAmbienceBuilder.backgroundMusic(
-						new Music(
-								soundEffect,
-								biomeConfig.getMusicMinDelay(),
-								biomeConfig.getMusicMaxDelay(),
-								biomeConfig.isReplaceCurrentMusic()
-						)
-				)
-		);
+		Optional<Music> music = BuiltInRegistries.SOUND_EVENT
+				.getOptional(Identifier.parse(biomeConfig.getMusic()))
+				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder)
+				.map(sound -> new Music(sound, biomeConfig.getMusicMinDelay(), biomeConfig.getMusicMaxDelay(), biomeConfig.isReplaceCurrentMusic()));
 
-		var ambientSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getAmbientSound())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
-		ambientSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientLoopSound(ambientSound.get()));
+		Optional<Holder<SoundEvent>> ambientSound = BuiltInRegistries.SOUND_EVENT
+				.getOptional(Identifier.parse(biomeConfig.getAmbientSound()))
+				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
 
-		var moodSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getMoodSound())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
-		moodSound.ifPresent(soundEffect ->
-				biomeAmbienceBuilder.ambientMoodSound(
-						new AmbientMoodSettings(
-								moodSound.get(),
-								biomeConfig.getMoodSoundDelay(),
-								biomeConfig.getMoodSearchRange(),
-								biomeConfig.getMoodOffset()
-						)
-				)
-		);
+		Optional<AmbientMoodSettings> moodSound = BuiltInRegistries.SOUND_EVENT
+				.getOptional(Identifier.parse(biomeConfig.getMoodSound()))
+				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder)
+				.map(sound -> new AmbientMoodSettings(sound, biomeConfig.getMoodSoundDelay(),
+						biomeConfig.getMoodSearchRange(), biomeConfig.getMoodOffset()));
 
-		var additionsSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getAdditionsSound())).map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
-		additionsSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientAdditionsSound(new AmbientAdditionsSettings(additionsSound.get(), biomeConfig.getAdditionsTickChance())));
+		List<AmbientAdditionsSettings> additionsSounds = BuiltInRegistries.SOUND_EVENT
+				.getOptional(Identifier.parse(biomeConfig.getAdditionsSound()))
+				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder)
+				.map(sound -> List.of(new AmbientAdditionsSettings(sound, biomeConfig.getAdditionsTickChance())))
+				.orElseGet(List::of);
 
 		if (biomeConfig.getFoliageColor() != 0xffffff)
 		{
@@ -225,14 +218,24 @@ public class PaperBiome implements IBiome
 
 		Biome.BiomeBuilder builder = new Biome.BiomeBuilder()
 				.hasPrecipitation(biomeConfig.getBiomeWetness() > 0.0001)
-				//.depth(biomeConfig.getBiomeHeight())
-				//.scale(biomeConfig.getBiomeVolatility())
 				.temperature(safeTemperature)
 				.downfall(biomeConfig.getBiomeWetness())
+				.setAttribute(EnvironmentAttributes.FOG_COLOR,
+						biomeConfig.getFogColor() != BiomeStandardValues.FOG_COLOR.getDefaultValue(null)
+								? biomeConfig.getFogColor() : worldConfig.getFogColor())
+				.setAttribute(EnvironmentAttributes.WATER_FOG_COLOR,
+						biomeConfig.getWaterFogColor() != BiomeStandardValues.WATER_FOG_COLOR.getDefaultValue()
+								? biomeConfig.getWaterFogColor() : 329011)
+				.setAttribute(EnvironmentAttributes.SKY_COLOR,
+						biomeConfig.getSkyColor() != BiomeStandardValues.SKY_COLOR.getDefaultValue()
+								? biomeConfig.getSkyColor() : getSkyColorForTemp(safeTemperature))
+				.setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, ambientParticles)
+				.setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, new AmbientSounds(ambientSound, moodSound, additionsSounds))
 				.specialEffects(biomeAmbienceBuilder.build())
 				.mobSpawnSettings(mobSpawnInfoBuilder.build())
-				// All other biome settings...
 				.generationSettings(biomeGenerationSettingsBuilder.build());
+
+		music.ifPresent(value -> builder.setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(value)));
 
 		if(biomeConfig.useFrozenOceanTemperature())
 		{
