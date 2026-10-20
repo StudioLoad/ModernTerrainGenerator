@@ -228,7 +228,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 //			}
 
 			ResourceKey<Biome> k = biomeRegistry.getResourceKey(biome).get();
-			IBiome otgBiome = new PaperBiome(biomeRegistry.getHolderOrThrow(k), biomeConfig.getValue());
+			IBiome otgBiome = new PaperBiome(biomeRegistry.getOrThrow(k), biomeConfig.getValue());
 			if(otgBiomeId >= presetIdMapping.length)
 			{
 				OTG.getEngine().getLogger().log(LogLevel.FATAL, LogCategory.CONFIGS, "Fatal error while registering OTG biome id's for preset " + preset.getFolderName() + ", most likely you've assigned a DefaultOceanBiome that doesn't exist.");
