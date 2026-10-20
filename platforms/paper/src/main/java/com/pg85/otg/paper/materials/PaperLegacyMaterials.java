@@ -162,7 +162,7 @@ public class PaperLegacyMaterials
 			case "mob_spawner":
 				return Blocks.INFESTED_STONE.defaultBlockState();
 			case "double_step":
-				return Registry.BLOCK.get(new ResourceLocation("minecraft:smooth_stone_slab"))
+				return Registry.BLOCK.get(ResourceLocation.parse("minecraft:smooth_stone_slab"))
 						.defaultBlockState().setValue(SlabBlock.TYPE,
 								SlabType.DOUBLE);
 			case "smooth_brick":
@@ -814,7 +814,7 @@ public class PaperLegacyMaterials
 		{
 			throw new NullPointerException();
 		}
-		return new ResourceLocation(result);
+		return ResourceLocation.parse(result);
 	}
 
 	private static BlockState getAnvilWithData (int material, int data)
