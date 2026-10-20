@@ -24,7 +24,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
@@ -169,7 +169,7 @@ public class BiomeCommand extends BaseCommand
 		showSpawns(source, biome.getMobSettings().getMobs(MobCategory.MISC));
 	}
 
-	public void showSpawns(CommandSourceStack source, WeightedRandomList<SpawnerData> spawns)
+	public void showSpawns(CommandSourceStack source, WeightedList<SpawnerData> spawns)
 	{
 		spawns.unwrap().forEach(spawn -> source
 				.sendSuccess(() -> (createComponent("   - Entity: ", BuiltInRegistries.ENTITY_TYPE.getKey(spawn.type).toString(), ChatFormatting.GOLD, ChatFormatting.GREEN)
