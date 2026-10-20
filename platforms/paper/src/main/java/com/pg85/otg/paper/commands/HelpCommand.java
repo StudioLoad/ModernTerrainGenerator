@@ -45,7 +45,7 @@ public class HelpCommand extends BaseCommand
 		} else
 		{
 
-			if (cmd.matches("\\\\d+"))
+			if (cmd.chars().allMatch(Character::isDigit))
 			{
 				showHelp(source, Integer.parseInt(cmd));
 			} else
