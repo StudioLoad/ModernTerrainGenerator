@@ -545,8 +545,12 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 				default:
 					throw new RuntimeException("Failed to handle tree of type " + type);
 			}
-			if (tree != null ) tree.place(this.worldGenRegion, this.chunkGenerator, rand, blockPos);
-			else other.place(this.worldGenRegion, this.chunkGenerator, rand, blockPos);
+			RandomSource randomSource = RandomSource.create(rand.nextLong());
+			if (tree != null) {
+				tree.place(this.worldGenRegion, this.chunkGenerator, randomSource, blockPos);
+			} else {
+				other.place(this.worldGenRegion, this.chunkGenerator, randomSource, blockPos);
+			}
 			return true;
 		}
 		catch (NullPointerException ex)
