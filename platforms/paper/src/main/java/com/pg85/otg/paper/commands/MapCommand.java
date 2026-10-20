@@ -364,13 +364,13 @@ public class MapCommand extends BaseCommand
 						//int worldWaterLevel = 63;
 						//int min = worldWaterLevel - worldHeight;
 						//int max = worldWaterLevel + worldHeight;
-						// Color depth relative to 0-255
-						int min = 0;
-						int max = 255;
-						int range = max - min;
-						int distance = -min + highestBlockInfo.y;
-						float relativeDistance = (float)distance / (float)range;
-						int shadePercentage = (int)Math.floor(relativeDistance * 2 * 100);
+						// Shade relative to the active world's build range, including negative Y.
+						int min = this.generator.getMinY();
+						int max = min + this.generator.getGeneratorSettingsHolder().value().noiseSettings().height();
+						int range = Math.max(1, max - min);
+						int distance = Math.max(0, Math.min(range, highestBlockInfo.y - min));
+						float relativeDistance = (float) distance / (float) range;
+						int shadePercentage = (int) Math.floor(relativeDistance * 2 * 100);
 						int rgbColor = shadeColor(highestBlockInfo.material.internalBlock().getBlock().defaultMaterialColor().col, shadePercentage);
 						synchronized(imgLock)
 						{
@@ -385,7 +385,7 @@ public class MapCommand extends BaseCommand
 		{
 			// TODO: Just use heightmaps?
 			BlockState blockInChunk;
-			for (int y = chunk.getHighestBlockForColumn(internalX, internalZ); y >= 0; y--)
+			for (int y = chunk.getHighestBlockForColumn(internalX, internalZ); y >= chunk.getChunk().getMinBuildHeight(); y--)
 			{
 				blockInChunk = chunk.getChunk().getBlockState(new BlockPos(internalX, y, internalZ));
 				if (blockInChunk != null && blockInChunk.getBlock() != Blocks.AIR)
