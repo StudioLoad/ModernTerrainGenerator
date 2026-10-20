@@ -74,7 +74,7 @@ public class DataCommand extends BaseCommand
 			case "entity" -> registry = BuiltInRegistries.ENTITY_TYPE;
 			case "sound" -> registry = BuiltInRegistries.SOUND_EVENT;
 			case "particle" -> registry = BuiltInRegistries.PARTICLE_TYPE;
-			case "configured_feature" -> registry = BuiltInRegistries.CONFIGURED_FEATURE;
+			case "configured_feature" -> registry = source.getServer().registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
 			default -> {
 				source.sendSuccess(() -> (Component.literal(getUsage())), false);
 				return 0;
