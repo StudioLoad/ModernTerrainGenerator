@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -46,7 +45,7 @@ public class HelpCommand extends BaseCommand
 		} else
 		{
 
-			if (StringUtils.isNumeric(cmd))
+			if (cmd.matches("\\\\d+"))
 			{
 				showHelp(source, Integer.parseInt(cmd));
 			} else
@@ -79,7 +78,7 @@ public class HelpCommand extends BaseCommand
 
 	private void showHelp(CommandSourceStack source, int page)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return;
 		}
@@ -91,7 +90,7 @@ public class HelpCommand extends BaseCommand
 		{
 			BaseCommand command = commands.get(i);
 
-			if (!source.hasPermission(2, command.getPermission())) continue;
+			if (!source.getBukkitSender().hasPermission(command.getPermission())) continue;
 
 			source.sendSuccess(() -> (Component.literal("/otg " + command.getName() + ": ").withStyle(ChatFormatting.GOLD).append(
 							Component.literal(command.getHelpMessage()).withStyle(ChatFormatting.GREEN))),
