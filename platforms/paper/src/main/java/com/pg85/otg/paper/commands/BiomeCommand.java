@@ -90,7 +90,7 @@ public class BiomeCommand extends BaseCommand
 							.append(Component.literal(" biome.").withStyle(ChatFormatting.GOLD))),
 					false);
 		}
-		source.sendSuccess(() -> (createComponent("Biome registry name: ", source.getServer().registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).toString(),
+		source.sendSuccess(() -> (createComponent("Biome registry name: ", source.getServer().registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome).toString(),
 				ChatFormatting.GOLD, ChatFormatting.GREEN)), false);
 
 		switch (option)
