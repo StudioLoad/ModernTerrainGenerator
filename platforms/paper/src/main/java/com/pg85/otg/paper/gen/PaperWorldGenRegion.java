@@ -644,7 +644,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		// Create and spawn entities according to group size
 		for (int r = 0; r < entityData.getGroupSize(); r++)
 		{
-			Entity entity = type.create(this.worldGenRegion.getMinecraftWorld());
+			Entity entity = type.create(this.worldGenRegion.getMinecraftWorld(), EntitySpawnReason.CHUNK_GENERATION);
 			if (entity == null)
 			{
 				if(this.logger.getLogCategoryEnabled(LogCategory.CUSTOM_OBJECTS))
@@ -693,7 +693,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			{
 				// Make sure Entity() mobs don't de-spawn, regardless of nbt data
 				mobEntity.setPersistenceRequired();
-				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())), EntitySpawnReason.CHUNK_GENERATION, null, compoundTag);
+				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())), EntitySpawnReason.CHUNK_GENERATION, null);
 			}
 			this.worldGenRegion.addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.DEFAULT);
 		}
