@@ -533,6 +533,6 @@ public class EditCommand extends BaseCommand
 		"acacia_leaves",
 		"dark_oak_leaves",
 		"vine")
-		.map(ResourceLocation::new)
+		.map(ResourceLocation::parse)
 		.collect(Collectors.toCollection(HashSet::new));
 }
