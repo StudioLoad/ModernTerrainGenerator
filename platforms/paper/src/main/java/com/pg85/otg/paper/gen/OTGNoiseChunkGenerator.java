@@ -1,5 +1,7 @@
 package com.pg85.otg.paper.gen;
 
+import net.minecraft.core.registries.Registries;
+
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.*;
@@ -82,8 +84,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			.group(
 				Codec.STRING.fieldOf("preset_folder_name").forGetter(p -> p.getPreset().getFolderName()),
 				BiomeSource.CODEC.fieldOf("biome_source").forGetter(p -> p.biomeSource),
-				RegistryOps.retrieveRegistry(Registry.STRUCTURE_SET_REGISTRY).forGetter(p -> p.structureSets),
-				RegistryOps.retrieveRegistry(Registry.NOISE_REGISTRY).forGetter(p -> p.noises),
+				RegistryOps.retrieveRegistry(Registries.STRUCTURE_SET).forGetter(p -> p.structureSets),
+				RegistryOps.retrieveRegistry(Registries.NOISE).forGetter(p -> p.noises),
 				Codec.LONG.fieldOf("seed").stable().forGetter(p -> p.worldSeed),
 				NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(p -> p.generatorSettingsHolder)
 			).apply(
@@ -439,7 +441,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			int length = featuresPerStep.size();
 
 			try {
-				Registry<PlacedFeature> placedRegistry = worldGenRegion.registryAccess().registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+				Registry<PlacedFeature> placedRegistry = worldGenRegion.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
 				int steps = Math.max(GenerationStep.Decoration.values().length, length);
 
 				for(int step = 0; step < steps; ++step)
