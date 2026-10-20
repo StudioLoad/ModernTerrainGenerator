@@ -82,7 +82,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 	public void registerBiomes()
 	{
 		DedicatedServer server = ((CraftServer)Bukkit.getServer()).getServer();
-		WritableRegistry<Biome> biomeRegistry = (WritableRegistry<Biome>) server.registryAccess().ownedRegistryOrThrow(BIOME_KEY);
+		WritableRegistry<Biome> biomeRegistry = (WritableRegistry<Biome>) server.registryAccess().lookupOrThrow(BIOME_KEY);
 
 		Field frozen;
 		try
