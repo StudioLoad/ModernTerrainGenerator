@@ -1,4 +1,5 @@
 name: Java CI with Gradle
+# Temporary verification branch; no runtime behavior changes.
 
 on:
   push:
