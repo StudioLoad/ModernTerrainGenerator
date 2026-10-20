@@ -176,7 +176,7 @@ public class PaperBiome implements IBiome
 			biomeAmbienceBuilder.ambientParticle(new AmbientParticleSettings((ParticleOptions) particleType.get(), biomeConfig.getParticleProbability()));
 		}
 
-		Optional<SoundEvent> music = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getMusic()));
+		var music = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getMusic()));
 		music.ifPresent(soundEffect ->
 				biomeAmbienceBuilder.backgroundMusic(
 						new Music(
@@ -188,10 +188,10 @@ public class PaperBiome implements IBiome
 				)
 		);
 
-		Optional<SoundEvent> ambientSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getAmbientSound()));
+		var ambientSound = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getAmbientSound()));
 		ambientSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientLoopSound(ambientSound.get()));
 
-		Optional<SoundEvent> moodSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getMoodSound()));
+		var moodSound = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getMoodSound()));
 		moodSound.ifPresent(soundEffect ->
 				biomeAmbienceBuilder.ambientMoodSound(
 						new AmbientMoodSettings(
@@ -203,7 +203,7 @@ public class PaperBiome implements IBiome
 				)
 		);
 
-		Optional<SoundEvent> additionsSound = BuiltInRegistries.SOUND_EVENT.getOptional(Identifier.parse(biomeConfig.getAdditionsSound()));
+		var additionsSound = BuiltInRegistries.SOUND_EVENT.getHolder(Identifier.parse(biomeConfig.getAdditionsSound()));
 		additionsSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientAdditionsSound(new AmbientAdditionsSettings(additionsSound.get(), biomeConfig.getAdditionsTickChance())));
 
 		if (biomeConfig.getFoliageColor() != 0xffffff)
