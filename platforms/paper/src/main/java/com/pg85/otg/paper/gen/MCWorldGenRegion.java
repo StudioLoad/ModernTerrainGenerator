@@ -116,7 +116,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 
 		if (material.isLiquid())
 		{
-			this.worldGenRegion.getFluidTicks().schedule(new ScheduledTick<Fluid>(((PaperMaterialData)material).internalBlock().getFluidState().getType(), pos, 0L, 0L));
+			this.worldGenRegion.getFluidTicks().schedule(new ScheduledTick(((PaperMaterialData)material).internalBlock().getFluidState().getType(), pos, 0L, 0L));
 		}
 
 		if (nbt != null)
