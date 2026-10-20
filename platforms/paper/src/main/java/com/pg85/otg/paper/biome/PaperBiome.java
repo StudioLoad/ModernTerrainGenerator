@@ -113,14 +113,14 @@ public class PaperBiome implements IBiome
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
 				Registry<PlacedFeature> placedFeatures = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE);
 				String featureName = registryResource.getFeatureKey();
-				Identifier featureId = Identifier.tryParse(featureName);
+				Identifier featureId = featureName == null ? null : Identifier.tryParse(featureName);
 				Holder<PlacedFeature> featureHolder = featureId == null ? null :
 						placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, featureId)).orElse(null);
 
 				if (featureHolder == null)
 				{
 					String legacyFeatureName = LegacyRegistry.convertLegacyResourceLocation(featureName);
-					Identifier legacyFeatureId = Identifier.tryParse(legacyFeatureName);
+					Identifier legacyFeatureId = legacyFeatureName == null ? null : Identifier.tryParse(legacyFeatureName);
 					if (legacyFeatureId != null)
 					{
 						featureHolder = placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, legacyFeatureId)).orElse(null);
