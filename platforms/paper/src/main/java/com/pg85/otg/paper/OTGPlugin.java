@@ -22,7 +22,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -95,8 +95,8 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
 			e.printStackTrace();
 		}
-		Registry.register(Registry.BIOME_SOURCE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
-		Registry.register(Registry.CHUNK_GENERATOR, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
+		Registry.register(Registry.BIOME_SOURCE, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
+		Registry.register(Registry.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
 
 		// Re-freeze the two registries
 		try
@@ -267,7 +267,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	}
 
 	private DensityFunction getFunction(String string) {
-		return BuiltInRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, ResourceLocation.parse(string))).value();
+		return BuiltInRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, Identifier.parse(string))).value();
 	}
 
 	private NoiseSettings getNoiseSettings(IWorldConfig worldConfig) {
