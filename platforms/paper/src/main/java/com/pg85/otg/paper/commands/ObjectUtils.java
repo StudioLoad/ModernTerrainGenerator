@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.CraftWorld;
 
 import com.pg85.otg.constants.Constants;
 import com.pg85.otg.core.OTG;
@@ -26,7 +26,7 @@ import com.pg85.otg.util.materials.LocalMaterials;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class ObjectUtils
 {
@@ -243,10 +243,10 @@ public class ObjectUtils
 
 			if (verbose && fixedObject != null)
 			{
-				source.sendSuccess(new TextComponent("Successfully updated " + type.getType() + " " + inputObject.getName()), false);
+				source.sendSuccess(Component.literal("Successfully updated " + type.getType() + " " + inputObject.getName()), false);
 				OTG.getEngine().getCustomObjectManager().getGlobalObjects().addObjectToPreset(presetFolderName, fixedObject.getName(), fixedObject.getConfig().getFile(), inputObject);
 			} else if (verbose) {
-				source.sendSuccess(new TextComponent("Failed to update "+type.getType()+" " + inputObject.getName()), false);
+				source.sendSuccess(Component.literal("Failed to update "+type.getType()+" " + inputObject.getName()), false);
 			}
 			cleanArea(worldGenRegion, region.getMin(), region.getMax(), false);
 		};
