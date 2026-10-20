@@ -224,9 +224,7 @@ public class PaperBiome implements IBiome
 		}
 
 		Biome.BiomeBuilder builder = new Biome.BiomeBuilder()
-				.precipitation(biomeConfig.getBiomeWetness() <= 0.0001 ? Biome.Precipitation.NONE :
-						biomeConfig.getBiomeTemperature() > Constants.SNOW_AND_ICE_TEMP ? Biome.Precipitation.RAIN :
-								Biome.Precipitation.SNOW)
+				.hasPrecipitation(biomeConfig.getBiomeWetness() > 0.0001)
 				//.depth(biomeConfig.getBiomeHeight())
 				//.scale(biomeConfig.getBiomeVolatility())
 				.temperature(safeTemperature)
