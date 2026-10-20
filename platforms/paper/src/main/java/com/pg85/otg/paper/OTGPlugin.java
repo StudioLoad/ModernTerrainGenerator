@@ -202,7 +202,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 				registryAccess.registryOrThrow(Registries.STRUCTURE_SET),
 				registryAccess.registryOrThrow(Registries.NOISE),
 				world.getSeed(),
-				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), 63, false, true, true, false))
+				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), java.util.List.of(), 63, false, true, true, false))
 			);
 			// add the weird Spigot config; it was complaining about this
 			OTGDelegate.conf = serverWorld.spigotConfig;
@@ -243,10 +243,10 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	}
 
 	// Taken from vanilla NoiseRouterData::overworldWithoutCaves
-	private NoiseRouterWithOnlyNoises getNoiseRouter(NoiseSettings noiseSettings, RegistryAccess registryAccess) {
+	private NoiseRouter getNoiseRouter(NoiseSettings noiseSettings, RegistryAccess registryAccess) {
 		DensityFunction shiftX = getFunction("shift_x", registryAccess);
 		DensityFunction shiftZ = getFunction("shift_z", registryAccess);
-		return new NoiseRouterWithOnlyNoises(
+		return new NoiseRouter(
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
@@ -258,7 +258,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 				getFunction("overworld/depth", registryAccess),
 				getFunction("overworld/ridges", registryAccess),
 				DensityFunctions.mul(DensityFunctions.constant(4.0D), DensityFunctions.mul(getFunction("overworld/depth", registryAccess), DensityFunctions.cache2d(getFunction("overworld/factor", registryAccess))).quarterNegative()),
-				DensityFunctions.mul(DensityFunctions.interpolated(DensityFunctions.blendDensity(DensityFunctions.slide(noiseSettings, getFunction("overworld/sloped_cheese", registryAccess)))), DensityFunctions.constant(0.64D)).squeeze(),
+				DensityFunctions.mul(DensityFunctions.interpolated(DensityFunctions.blendDensity(getFunction("overworld/sloped_cheese", registryAccess))), DensityFunctions.constant(0.64D)).squeeze(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero()
