@@ -77,7 +77,8 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		List<ResourceKey<Biome>> biomesForPreset = ((PaperPresetLoader) OTG.getEngine().getPresetLoader()).getBiomeRegistryKeys(presetFolderName);
 		if (biomesForPreset == null)
 		{
-			((PaperPresetLoader) OTG.getEngine().getPresetLoader()).getBiomeRegistryKeys(OTG.getEngine().getPresetLoader().getDefaultPresetFolderName());
+			biomesForPreset = ((PaperPresetLoader) OTG.getEngine().getPresetLoader())
+					.getBiomeRegistryKeys(OTG.getEngine().getPresetLoader().getDefaultPresetFolderName());
 		}
 		if (biomesForPreset == null)
 		{
