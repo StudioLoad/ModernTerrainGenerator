@@ -80,8 +80,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			.group(
 				Codec.STRING.fieldOf("preset_folder_name").forGetter(p -> p.getPreset().getFolderName()),
 				BiomeSource.CODEC.fieldOf("biome_source").forGetter(p -> p.biomeSource),
-				RegistryOps.retrieveGetter(Registries.STRUCTURE_SET).forGetter(p -> p.structureSets),
-				RegistryOps.retrieveGetter(Registries.NOISE).forGetter(p -> p.noises),
+				RegistryOps.retrieveGetter(Registries.STRUCTURE_SET),
+				RegistryOps.retrieveGetter(Registries.NOISE),
 				Codec.LONG.fieldOf("seed").stable().forGetter(p -> p.worldSeed),
 				NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(p -> p.generatorSettingsHolder)
 			).apply(
