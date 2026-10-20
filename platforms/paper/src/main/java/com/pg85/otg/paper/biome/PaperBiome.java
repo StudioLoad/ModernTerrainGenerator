@@ -31,9 +31,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -182,10 +184,20 @@ public class PaperBiome implements IBiome
 								? biomeConfig.getWaterColor() : 4159204);
 
 		List<AmbientParticle> ambientParticles = new ArrayList<>();
-		Optional<ParticleType> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
-		if (particleType.isPresent() && particleType.get() instanceof ParticleOptions particleOptions)
+		Optional<ParticleType<?>> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
+		if (particleType.isPresent())
 		{
-			ambientParticles.add(new AmbientParticle(particleOptions, biomeConfig.getParticleProbability()));
+			// OTG presets currently store a particle identifier, not its extra parameters.
+			// SimpleParticleType also implements ParticleOptions, so these can be used directly.
+			if (particleType.get() instanceof SimpleParticleType simpleParticleType)
+			{
+				ambientParticles.add(new AmbientParticle(simpleParticleType, biomeConfig.getParticleProbability()));
+			}
+			else
+			{
+				OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
+						"Particle " + biomeConfig.getParticleType() + " needs options that are not supported by the current OTG biome configuration");
+			}
 		}
 
 		Optional<Music> music = BuiltInRegistries.SOUND_EVENT
