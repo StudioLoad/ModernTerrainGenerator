@@ -5,7 +5,6 @@ import com.pg85.otg.util.materials.LocalMaterialTag;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
