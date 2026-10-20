@@ -56,11 +56,11 @@ ModernTerrainGenerator is a fork of <a href="https://github.com/PG85/OpenTerrain
 * <a href="https://github.com/rutgerkok">Rutgerkok - TerrainControl</a>
 * <a href="https://github.com/bloodmc">BloodMC - TerrainControl</a>
 * <a href="https://github.com/PG85">PG85</a>
-* MCPitman
-* <a href="https://github.com/authvin">Authvin</a>
-* <a href="https://github.com/Coll1234567">Josh</a>
-* <a href="https://github.com/SuperCoder7979">SuperCoder79</a>
-* <a href="https://github.com/SXRWahrheit">Wahrheit</a>
+* MCPitman - OpenTerrainGenerator
+* <a href="https://github.com/authvin">Authvin - OpenTerrainGenerator</a>
+* <a href="https://github.com/Coll1234567">Josh - OpenTerrainGenerator</a>
+* <a href="https://github.com/SuperCoder7979">SuperCoder79 - OpenTerrainGenerator</a>
+* <a href="https://github.com/SXRWahrheit">Wahrheit - OpenTerrainGenerator</a>
 
 [contributors-shield]: https://img.shields.io/github/contributors/StudioLoad/ModernTerrainGenerator.svg?style=for-the-badge
 [contributors-url]: https://github.com/StudioLoad/ModernTerrainGenerator/graphs/contributors
