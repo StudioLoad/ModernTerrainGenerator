@@ -33,8 +33,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build universal JAR
-        run: ./gradlew --no-daemon clean universalJar
+      - name: Compile Paper module
+        run: ./gradlew --no-daemon clean :platforms:paper:compileJava
+
+      - name: Build production and universal JARs
+        run: ./gradlew --no-daemon :platforms:paper:reobfJar universalJar
 
       - name: Upload build output
         if: success()
