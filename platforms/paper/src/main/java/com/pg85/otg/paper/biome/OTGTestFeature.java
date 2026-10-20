@@ -21,12 +21,12 @@ public class OTGTestFeature extends Feature<CountConfiguration> {
     public static final Feature<CountConfiguration> FEATURE = Registry.register(Registry.FEATURE, "otg_test", new OTGTestFeature(CountConfiguration.CODEC));
     public static final ConfiguredFeature<?, ?> CONFIGURED = Registry
             .register(
-                    BuiltinRegistries.CONFIGURED_FEATURE,
+                    BuiltInRegistries.CONFIGURED_FEATURE,
                     "otg_test",
                     FEATURE.configured(new CountConfiguration(20)));
     public static final PlacedFeature PLACED = Registry
             .register(
-                    BuiltinRegistries.PLACED_FEATURE,
+                    BuiltInRegistries.PLACED_FEATURE,
                     "otg_test",
                     CONFIGURED.placed(RarityFilter.onAverageOnceEvery(16), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome()));
 
