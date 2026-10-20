@@ -10,7 +10,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.datafix.fixes.ItemStackTheFlatteningFix;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.piston.PistonHeadBlock;
@@ -809,14 +808,179 @@ public class PaperLegacyMaterials
 		return null;
 	}
 
-	private static Identifier getFlatKey (String name, int data) throws NullPointerException
+	private static final String[] LEGACY_DYE_COLORS = {
+			"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+			"light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
+	};
+
+	/**
+	 * Converts the legacy 1.12 block names and metadata still accepted by OTG presets
+	 * into the flattened block identifiers used by modern Minecraft versions.
+	 */
+	private static Identifier getFlatKey(String name, int data) throws NullPointerException
 	{
-		String result = ItemStackTheFlatteningFix.updateItem(name, data);
-		if (result == null)
+		if (name == null || name.isBlank())
 		{
-			throw new NullPointerException();
+			throw new NullPointerException("Legacy block name is empty");
 		}
-		return Identifier.parse(result);
+
+		String path = name.startsWith("minecraft:") ? name.substring("minecraft:".length()) : name;
+		int metadata = Math.floorMod(data, 16);
+		String color = LEGACY_DYE_COLORS[metadata];
+		String flattened = switch (path)
+		{
+			case "banner" -> color + "_banner";
+			case "bed" -> color + "_bed";
+			case "carpet" -> color + "_carpet";
+			case "concrete" -> color + "_concrete";
+			case "concrete_powder" -> color + "_concrete_powder";
+			case "wool" -> color + "_wool";
+			case "stained_glass" -> color + "_stained_glass";
+			case "stained_glass_pane" -> color + "_stained_glass_pane";
+			case "stained_hardened_clay" -> color + "_terracotta";
+			case "dirt" -> switch (metadata)
+			{
+				case 1 -> "coarse_dirt";
+				case 2 -> "podzol";
+				default -> "dirt";
+			};
+			case "double_plant" -> switch (metadata & 7)
+			{
+				case 0 -> "sunflower";
+				case 1 -> "lilac";
+				case 2 -> "tall_grass";
+				case 3 -> "large_fern";
+				case 4 -> "rose_bush";
+				case 5 -> "peony";
+				default -> null;
+			};
+			case "stone_slab" -> switch (metadata & 7)
+			{
+				case 0 -> "smooth_stone_slab";
+				case 1 -> "sandstone_slab";
+				case 2 -> "petrified_oak_slab";
+				case 3 -> "cobblestone_slab";
+				case 4 -> "brick_slab";
+				case 5 -> "stone_brick_slab";
+				case 6 -> "nether_brick_slab";
+				case 7 -> "quartz_slab";
+				default -> null;
+			};
+			case "wooden_slab" -> switch (metadata & 7)
+			{
+				case 0 -> "oak_slab";
+				case 1 -> "spruce_slab";
+				case 2 -> "birch_slab";
+				case 3 -> "jungle_slab";
+				case 4 -> "acacia_slab";
+				case 5 -> "dark_oak_slab";
+				default -> null;
+			};
+			case "leaves" -> switch (metadata & 3)
+			{
+				case 0 -> "oak_leaves";
+				case 1 -> "spruce_leaves";
+				case 2 -> "birch_leaves";
+				case 3 -> "jungle_leaves";
+				default -> null;
+			};
+			case "leaves2" -> switch (metadata & 3)
+			{
+				case 0 -> "acacia_leaves";
+				case 1 -> "dark_oak_leaves";
+				default -> null;
+			};
+			case "monster_egg" -> switch (metadata & 7)
+			{
+				case 0 -> "infested_stone";
+				case 1 -> "infested_cobblestone";
+				case 2 -> "infested_stone_bricks";
+				case 3 -> "infested_mossy_stone_bricks";
+				case 4 -> "infested_cracked_stone_bricks";
+				case 5 -> "infested_chiseled_stone_bricks";
+				default -> null;
+			};
+			case "planks" -> switch (metadata & 7)
+			{
+				case 0 -> "oak_planks";
+				case 1 -> "spruce_planks";
+				case 2 -> "birch_planks";
+				case 3 -> "jungle_planks";
+				case 4 -> "acacia_planks";
+				case 5 -> "dark_oak_planks";
+				default -> null;
+			};
+			case "prismarine" -> switch (metadata & 3)
+			{
+				case 0 -> "prismarine";
+				case 1 -> "prismarine_bricks";
+				case 2 -> "dark_prismarine";
+				default -> null;
+			};
+			case "red_flower" -> switch (metadata & 15)
+			{
+				case 0 -> "poppy";
+				case 1 -> "blue_orchid";
+				case 2 -> "allium";
+				case 3 -> "azure_bluet";
+				case 4 -> "red_tulip";
+				case 5 -> "orange_tulip";
+				case 6 -> "white_tulip";
+				case 7 -> "pink_tulip";
+				case 8 -> "oxeye_daisy";
+				default -> null;
+			};
+			case "red_sandstone" -> switch (metadata & 3)
+			{
+				case 0 -> "red_sandstone";
+				case 1 -> "cut_red_sandstone";
+				case 2 -> "smooth_red_sandstone";
+				default -> null;
+			};
+			case "sandstone" -> switch (metadata & 3)
+			{
+				case 0 -> "sandstone";
+				case 1 -> "chiseled_sandstone";
+				case 2 -> "cut_sandstone";
+				default -> null;
+			};
+			case "sapling" -> switch (metadata & 7)
+			{
+				case 0 -> "oak_sapling";
+				case 1 -> "spruce_sapling";
+				case 2 -> "birch_sapling";
+				case 3 -> "jungle_sapling";
+				case 4 -> "acacia_sapling";
+				case 5 -> "dark_oak_sapling";
+				default -> null;
+			};
+			case "stone" -> switch (metadata & 7)
+			{
+				case 0 -> "stone";
+				case 1 -> "granite";
+				case 2 -> "polished_granite";
+				case 3 -> "diorite";
+				case 4 -> "polished_diorite";
+				case 5 -> "andesite";
+				case 6 -> "polished_andesite";
+				default -> null;
+			};
+			case "stonebrick" -> switch (metadata & 3)
+			{
+				case 0 -> "stone_bricks";
+				case 1 -> "mossy_stone_bricks";
+				case 2 -> "cracked_stone_bricks";
+				case 3 -> "chiseled_stone_bricks";
+				default -> null;
+			};
+			default -> null;
+		};
+
+		if (flattened == null)
+		{
+			throw new NullPointerException("Unsupported legacy block: " + name + ":" + data);
+		}
+		return Identifier.fromNamespaceAndPath("minecraft", flattened);
 	}
 
 	private static BlockState getAnvilWithData (int material, int data)
