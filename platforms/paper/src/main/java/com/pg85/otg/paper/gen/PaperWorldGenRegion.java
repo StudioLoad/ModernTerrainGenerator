@@ -201,7 +201,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		}
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.LIQUID_CARVERS))
+		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return null;
 		}
@@ -229,7 +229,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		}
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.LIQUID_CARVERS))
+		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return -1;
 		}
@@ -760,7 +760,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			chunk = this.worldGenRegion.getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ(), ChunkStatus.EMPTY, false);
 		}
 		// isAtLeast() -> b()
-		if ((chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.LIQUID_CARVERS)))
+		if ((chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS)))
 		{
 			return this.chunkGenerator.getMaterialInUnloadedChunk(this.getWorldRandom(), x, y, z, this.worldGenRegion.getLevel());
 		}
@@ -788,7 +788,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 
 		// If the chunk doesn't exist and we're doing something outside the
 		// decoration sequence, return the material without loading the chunk.
-		if ((chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.LIQUID_CARVERS)))
+		if ((chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS)))
 		{
 			return this.chunkGenerator.getHighestBlockYInUnloadedChunk(this.getWorldRandom(), x, z, findSolid, findLiquid, ignoreLiquid, ignoreSnow, this.worldGenRegion.getLevel());
 		}
