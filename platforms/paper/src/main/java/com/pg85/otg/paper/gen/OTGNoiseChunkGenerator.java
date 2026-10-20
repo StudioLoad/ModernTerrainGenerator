@@ -117,13 +117,13 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		this("default", biomeSource, structureSetRegistry, noiseRegistry, seed, generatorSettings);
 	}
 
-	public OTGNoiseChunkGenerator (String presetName, BiomeSource biomeSource, Registry<StructureSet> structureSetRegistry, Registry<NormalNoise.NoiseParameters> noiseRegistry, long seed, Holder<NoiseGeneratorSettings> generatorSettings)
+	public OTGNoiseChunkGenerator (String presetName, BiomeSource biomeSource, HolderGetter<StructureSet> structureSetRegistry, HolderGetter<NormalNoise.NoiseParameters> noiseRegistry, long seed, Holder<NoiseGeneratorSettings> generatorSettings)
 	{
 		this(presetName, biomeSource, biomeSource, structureSetRegistry, noiseRegistry, seed, generatorSettings);
 	}
 
 	// Vanilla has two biome sources, where the first is population and the second is runtime. Don't know the practical difference this makes.
-	private OTGNoiseChunkGenerator (String presetFolderName, BiomeSource populationSource, BiomeSource runtimeSource, Registry<StructureSet> structureSetRegistry, Registry<NormalNoise.NoiseParameters> noiseRegistry, long worldSeed, Holder<NoiseGeneratorSettings> generatorSettings)
+	private OTGNoiseChunkGenerator (String presetFolderName, BiomeSource populationSource, BiomeSource runtimeSource, HolderGetter<StructureSet> structureSetRegistry, HolderGetter<NormalNoise.NoiseParameters> noiseRegistry, long worldSeed, Holder<NoiseGeneratorSettings> generatorSettings)
 	{
 		super(runtimeSource);
 		this.structureSets = structureSetRegistry;
@@ -508,7 +508,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 
 	public ChunkGenerator withSeed(long seed)
 	{
-		return new OTGNoiseChunkGenerator(this.biomeSource.withSeed(seed), seed, this.structureSets, this.noises, this.generatorSettingsHolder);
+		return new OTGNoiseChunkGenerator(this.preset.getFolderName(), this.biomeSource.withSeed(seed), this.structureSets, this.noises, seed, this.generatorSettingsHolder);
 	}
 
 	@Override
