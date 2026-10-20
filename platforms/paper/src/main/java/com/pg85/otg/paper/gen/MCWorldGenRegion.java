@@ -62,7 +62,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 		ChunkAccess chunk = this.worldGenRegion.getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ(), ChunkStatus.EMPTY, false);
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
+		if (chunk == null || !chunk.getPersistedStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return null;
 		}
@@ -83,7 +83,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 		ChunkAccess chunk = this.worldGenRegion.getChunkIfLoadedImmediately(chunkCoord.getChunkX(), chunkCoord.getChunkZ());
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
+		if (chunk == null || !chunk.getPersistedStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return -1;
 		}
