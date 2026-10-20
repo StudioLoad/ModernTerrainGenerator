@@ -61,7 +61,7 @@ public class DataCommand extends BaseCommand
 		// /otg data music
 
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 
@@ -75,7 +75,7 @@ public class DataCommand extends BaseCommand
 			case "particle" -> registry = Registry.PARTICLE_TYPE;
 			case "configured_feature" -> registry = BuiltInRegistries.CONFIGURED_FEATURE;
 			default -> {
-				source.sendSuccess(Component.literal(getUsage()), false);
+				source.sendSuccess(() -> (Component.literal(getUsage())), false);
 				return 0;
 			}
 		}
@@ -99,7 +99,7 @@ public class DataCommand extends BaseCommand
 					writer.write(key.toString() + "\n");
 				}
 				writer.close();
-				source.sendSuccess(Component.literal("File exported as " + output.getPath()), true);
+				source.sendSuccess(() -> (Component.literal("File exported as " + output.getPath())), true);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
