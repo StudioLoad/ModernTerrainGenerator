@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -699,10 +700,10 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 	}
 
 	@Override
-	public boolean isInsideWorldBorder (ChunkCoordinate chunkCoordinate)
+	public boolean isInsideWorldBorder(ChunkCoordinate chunkCoordinate)
 	{
-		// TODO: Implement this.
-		return true;
+		ChunkPos chunkPos = new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ());
+		return this.worldGenRegion.getLevel().getWorldBorder().isWithinBounds(chunkPos);
 	}
 	
 	// Edit command
