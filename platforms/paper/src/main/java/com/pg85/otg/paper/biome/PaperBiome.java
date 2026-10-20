@@ -119,9 +119,10 @@ public class PaperBiome implements IBiome
 				Holder<PlacedFeature> featureHolder = featureId == null ? null :
 						placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, featureId)).orElse(null);
 
+				String legacyFeatureName = null;
 				if (featureHolder == null)
 				{
-					String legacyFeatureName = LegacyRegistry.convertLegacyResourceLocation(featureName);
+					legacyFeatureName = LegacyRegistry.convertLegacyResourceLocation(featureName);
 					Identifier legacyFeatureId = legacyFeatureName == null ? null : Identifier.tryParse(legacyFeatureName);
 					if (legacyFeatureId != null)
 					{
