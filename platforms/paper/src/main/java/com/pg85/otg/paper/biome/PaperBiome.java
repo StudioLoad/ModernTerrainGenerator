@@ -86,7 +86,9 @@ public class PaperBiome implements IBiome
 
 	public static Biome createOTGBiome (boolean isOceanBiome, IWorldConfig worldConfig, IBiomeConfig biomeConfig, RegistryAccess registryAccess)
 	{
-		BiomeGenerationSettings.Builder biomeGenerationSettingsBuilder = new BiomeGenerationSettings.Builder();
+		BiomeGenerationSettings.Builder biomeGenerationSettingsBuilder = new BiomeGenerationSettings.Builder(
+				registryAccess.lookupOrThrow(Registries.PLACED_FEATURE),
+				registryAccess.lookupOrThrow(Registries.CONFIGURED_CARVER));
 
 		MobSpawnSettings.Builder mobSpawnInfoBuilder = createMobSpawnInfo(biomeConfig);
 
