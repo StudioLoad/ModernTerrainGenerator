@@ -55,7 +55,7 @@ ModernTerrainGenerator is a fork of [OpenTerrainGenerator](https://github.com/PG
 * <a href="https://github.com/Timethor">Timethor - TerrainControl</a>
 * <a href="https://github.com/rutgerkok">Rutgerkok - TerrainControl</a>
 * <a href="https://github.com/bloodmc">BloodMC - TerrainControl</a>
-* <a href="https://github.com/PG85">PG85</a>
+* <a href="https://github.com/PG85">PG85 - OpenTerrainGenerator</a>
 * MCPitman - OpenTerrainGenerator
 * <a href="https://github.com/authvin">Authvin - OpenTerrainGenerator</a>
 * <a href="https://github.com/Coll1234567">Josh - OpenTerrainGenerator</a>
