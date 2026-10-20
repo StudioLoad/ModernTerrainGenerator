@@ -251,6 +251,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 				case TAG_Byte_Array:
 				case TAG_String:
 				case TAG_Int_Array:
+				case TAG_Long_Array:
 					nmsTag.add(createTagNms(tag.getType(), tag.getValue()));
 					break;
 				case TAG_List:
