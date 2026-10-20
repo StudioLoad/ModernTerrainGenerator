@@ -5,9 +5,9 @@ plugins {
 defaultTasks = arrayListOf("build", "publishToMavenLocal")
 
 allprojects {
-    group = "com.pg85.otg"
+    group = "com.rodriaum.mtg"
     version = "1.21.11-0.0.28"
-    description = "Open Terrain Generator: Generate anything!"
+    description = "Modern Terrain Generator: Generate anything!"
 }
 
 subprojects {

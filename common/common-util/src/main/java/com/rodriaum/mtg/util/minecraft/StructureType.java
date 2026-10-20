@@ -1,0 +1,22 @@
+package com.rodriaum.mtg.util.minecraft;
+
+public enum StructureType {
+    SWAMP_HUT,
+    IGLOO,
+    DESERT_PYRAMID,
+    JUNGLE_TEMPLE,
+    VILLAGE,
+    PILLLAGER_OUTPOST,
+    STRONGHOLD,
+    OCEAN_MONUMENT,
+    END_CITY,
+    WOODLAND_MANSION,
+    BURIED_TREASURE,
+    MINESHAFT,
+    RUINED_PORTAL,
+    SHIPWRECK,
+    OCEAN_RUINS,
+    BASTION_REMNANT,
+    FORTRESS,
+    NETHER_FOSSIL
+}

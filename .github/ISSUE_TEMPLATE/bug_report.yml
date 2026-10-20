@@ -52,11 +52,11 @@ body:
       required: true
 
   - type: input
-    id: otgversion
+    id: mtgversion
     attributes:
-      label: OTG Version
-      description: What version of OTG are you using? Use the "/otg version" command in-game or in your console ("otg version", no slash) and paste the output here.
-      placeholder: ex. OTG 1.18.2 0.0.24
+      label: MTG Version
+      description: What version of MTG are you using? Use the "/mtg version" command in-game or in your console ("mtg version", no slash) and paste the output here.
+      placeholder: ex. MTG 1.18.2 0.0.24
     validations:
       required: true
 

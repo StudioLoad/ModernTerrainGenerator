@@ -49,6 +49,6 @@ tasks {
     }
 }
 
-otgPlatform {
+mtgPlatform {
     productionJar.set(tasks.reobfJar.flatMap { it.outputJar })
 }

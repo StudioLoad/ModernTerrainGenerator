@@ -1,0 +1,117 @@
+package com.rodriaum.mtg.paper.biome;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.rodriaum.mtg.core.OTG;
+import com.rodriaum.mtg.gen.biome.layers.BiomeLayers;
+import com.rodriaum.mtg.gen.biome.layers.util.CachingLayerSampler;
+import com.rodriaum.mtg.interfaces.IBiome;
+import com.rodriaum.mtg.interfaces.IBiomeConfig;
+import com.rodriaum.mtg.interfaces.ILayerSource;
+import com.rodriaum.mtg.paper.presets.PaperPresetLoader;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
+
+public class OTGBiomeProvider extends BiomeSource implements ILayerSource
+{
+	public static final MapCodec<OTGBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
+		(instance) -> instance.group(
+			Codec.STRING.fieldOf("preset_name").stable().forGetter((provider) -> provider.presetFolderName),
+			Codec.LONG.fieldOf("seed").stable().forGetter((provider) -> provider.seed),
+			RegistryOps.retrieveGetter(Registries.BIOME)
+		).apply(instance, instance.stable(OTGBiomeProvider::new))
+	);
+	private final long seed;
+	private final HolderGetter<Biome> registry;
+	private final ThreadLocal<CachingLayerSampler> layer;
+	private final Int2ObjectMap<ResourceKey<Biome>> keyLookup;
+	private final String presetFolderName;
+
+	public OTGBiomeProvider (String presetFolderName, long seed, HolderGetter<Biome> registry)
+	{
+		super();
+		this.presetFolderName = presetFolderName;
+		this.seed = seed;
+		this.registry = registry;
+		this.layer = ThreadLocal.withInitial(() -> BiomeLayers.create(seed, ((PaperPresetLoader)OTG.getEngine().getPresetLoader()).getPresetGenerationData().get(presetFolderName), OTG.getEngine().getLogger()));
+		this.keyLookup = new Int2ObjectOpenHashMap<>();
+
+		// Default to let us know if we did anything wrong
+		this.keyLookup.defaultReturnValue(Biomes.OCEAN);
+
+		IBiome[] biomeLookup = ((PaperPresetLoader) OTG.getEngine().getPresetLoader()).getGlobalIdMapping(presetFolderName);
+		if(biomeLookup == null)
+		{
+			throw new RuntimeException("No MTG preset found with name \"" + presetFolderName + "\". Install the correct preset or update your server.properties.");
+		}
+
+		for (int biomeId = 0; biomeId < biomeLookup.length; biomeId++)
+		{
+			IBiomeConfig config = biomeLookup[biomeId].getBiomeConfig();
+
+			ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.parse(config.getRegistryKey().toResourceLocationString()));
+			this.keyLookup.put(biomeId, key);
+		}
+	}
+
+	private static Stream<Holder<Biome>> getAllBiomesByPreset (String presetFolderName, HolderGetter<Biome> registry)
+	{
+		List<ResourceKey<Biome>> biomesForPreset = ((PaperPresetLoader) OTG.getEngine().getPresetLoader()).getBiomeRegistryKeys(presetFolderName);
+		if (biomesForPreset == null)
+		{
+			biomesForPreset = ((PaperPresetLoader) OTG.getEngine().getPresetLoader())
+					.getBiomeRegistryKeys(OTG.getEngine().getPresetLoader().getDefaultPresetFolderName());
+		}
+		if (biomesForPreset == null)
+		{
+			biomesForPreset = new ArrayList<>();
+		}
+		return biomesForPreset.stream().map(registry::getOrThrow);
+	}
+
+	@Override
+	protected Stream<Holder<Biome>> collectPossibleBiomes()
+	{
+		return getAllBiomesByPreset(this.presetFolderName, this.registry);
+	}
+
+	protected com.mojang.serialization.MapCodec<? extends BiomeSource> codec ()
+	{
+		return CODEC;
+	}
+
+	// This is only used by MC internally, OTG fetches all biomes via CachedBiomeProvider.
+	@Override
+	public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler p_186738_)
+	{
+		return this.registry.getOrThrow(this.keyLookup.get(this.layer.get().sample(biomeX, biomeZ)));
+	}
+
+	@Override
+	public CachingLayerSampler getSampler ()
+	{
+		return this.layer.get();
+	}
+	
+	// OTG utility method. BiomeSource no longer declares withSeed in Minecraft 1.21.11.
+	public OTGBiomeProvider withSeed(long seed)
+	{
+		return new OTGBiomeProvider(this.presetFolderName, seed, this.registry);
+	}
+}
