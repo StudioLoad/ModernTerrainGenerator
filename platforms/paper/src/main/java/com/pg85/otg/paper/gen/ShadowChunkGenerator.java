@@ -200,7 +200,7 @@ public class ShadowChunkGenerator
 		int radiusInChunks = 5;
 		ProtoChunk chunk;
 		ChunkPos chunkpos;
-		if (serverWorld.getServer().getWorldData().worldGenSettings().generateFeatures())
+		if (serverWorld.getServer().getWorldData().worldGenOptions().generateStructures())
 		{
 			List<ChunkCoordinate> chunksToHandle = new ArrayList<>();
 			Map<ChunkCoordinate,Integer> chunksHandled = new HashMap<>();
