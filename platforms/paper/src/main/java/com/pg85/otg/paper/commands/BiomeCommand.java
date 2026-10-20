@@ -60,7 +60,7 @@ public class BiomeCommand extends BaseCommand
 
 	private int showBiome(CommandSourceStack source, String option)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -71,7 +71,7 @@ public class BiomeCommand extends BaseCommand
 		}
 
 		Biome biome = source.getLevel()
-				.getBiome(new BlockPos(source.getPosition().x, source.getPosition().y, source.getPosition().z)).value();
+				.getBiome(BlockPos.containing(source.getPosition().x, source.getPosition().y, source.getPosition().z)).value();
 		IBiomeConfig config = ((OTGNoiseChunkGenerator) source.getLevel().getChunkSource().getGenerator())
 				.getCachedBiomeProvider().getBiomeConfig((int) source.getPosition().x, (int) source.getPosition().z);
 
@@ -147,7 +147,7 @@ public class BiomeCommand extends BaseCommand
 		source.sendSuccess(() -> (createComponent("Base Temperature: ", String.format("%.2f", biome.getBaseTemperature()),
 				ChatFormatting.GOLD, ChatFormatting.GREEN)
 						.append(createComponent(" Current Temperature: ",
-								String.format("%.2f", biome.getTemperature(new BlockPos(source.getPosition()))),
+								String.format("%.2f", biome.getTemperature(BlockPos.containing(source.getPosition().x, source.getPosition().y, source.getPosition().z))),
 								ChatFormatting.GOLD, ChatFormatting.GREEN))),
 				false);
 	}
