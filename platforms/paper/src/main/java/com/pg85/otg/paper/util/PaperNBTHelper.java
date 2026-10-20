@@ -24,7 +24,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 		{
 			return null;
 		}
-		CompoundTag nmsTag = tileEntity.saveWithFullMetadata();
+		CompoundTag nmsTag = tileEntity.saveWithFullMetadata(((PaperWorldGenRegion) world).getInternal().registryAccess());
 		nmsTag.remove("x");
 		nmsTag.remove("y");
 		nmsTag.remove("z");
