@@ -96,7 +96,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			e.printStackTrace();
 		}
 		Registry.register(Registry.BIOME_SOURCE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
-		Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
+		Registry.register(Registry.CHUNK_GENERATOR, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
 
 		// Re-freeze the two registries
 		try
