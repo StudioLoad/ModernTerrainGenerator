@@ -1,4 +1,5 @@
 name: Java CI with Gradle
+# Temporary verification PR: compile the current dev source against Paper 1.21.11.
 
 on:
   push:
