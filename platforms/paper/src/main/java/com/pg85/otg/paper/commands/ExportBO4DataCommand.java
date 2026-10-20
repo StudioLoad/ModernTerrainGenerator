@@ -28,7 +28,7 @@ import com.pg85.otg.util.logging.LogLevel;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class ExportBO4DataCommand extends BaseCommand
 {
@@ -57,14 +57,14 @@ public class ExportBO4DataCommand extends BaseCommand
 	{
 		if (!(sender instanceof Player))
 		{
-			sender.sendSuccess(new TextComponent("\u00a7cOnly players can execute this command!"), false);
+			sender.sendSuccess(Component.literal("\u00a7cOnly players can execute this command!"), false);
 			return 0;
 		}
 		Player player = (Player) sender;
 
 		if (!(sender.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			sender.sendSuccess(new TextComponent("\u00a7cOTG is not enabled in this world!"), false);
+			sender.sendSuccess(Component.literal("\u00a7cOTG is not enabled in this world!"), false);
 			return 0;
 		}
 
