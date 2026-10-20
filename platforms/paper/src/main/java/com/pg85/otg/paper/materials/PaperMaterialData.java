@@ -232,29 +232,21 @@ public class PaperMaterialData extends LocalMaterialData
 				if (property.getValueClass() == Direction.class)
 				{
 					Direction direction = (Direction) state.getValue(property);
-					switch (direction)
-					{
-						case DOWN:
-						case UP:
-							break;
-						case NORTH:
-							state = state.setValue((Property<Direction>) property, Direction.WEST);
-							break;
-						case SOUTH:
-							state = state.setValue((DirectionProperty) property, Direction.EAST);
-							break;
-						case WEST:
-							state = state.setValue((DirectionProperty) property, Direction.SOUTH);
-							break;
-						case EAST:
-							state = state.setValue((DirectionProperty) property, Direction.NORTH);
-							break;
+					@SuppressWarnings("unchecked")
+					Property<Direction> directionProperty = (Property<Direction>) property;
+					switch (direction) {
+						case DOWN, UP -> {
+						}
+						case NORTH -> state = state.setValue(directionProperty, Direction.WEST);
+						case SOUTH -> state = state.setValue(directionProperty, Direction.EAST);
+						case WEST -> state = state.setValue(directionProperty, Direction.SOUTH);
+						case EAST -> state = state.setValue(directionProperty, Direction.NORTH);
 					}
 				}
 			}
 			if (state.hasProperty(RotatedPillarBlock.AXIS)) // All pillar blocks (logs, hay, chain(?), basalt, purpur, quartz)
 			{
-				state = ((RotatedPillarBlock)state.getBlock()).rotate(this.blockData, Rotation.COUNTERCLOCKWISE_90);
+				state = this.blockData.rotate(Rotation.COUNTERCLOCKWISE_90);
 			}
 			if (state.hasProperty(CrossCollisionBlock.EAST)) // fence or glass pane
 			{

@@ -19,6 +19,7 @@ import com.pg85.otg.util.ChunkCoordinate;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.level.storage.LevelResource;
 
 public class StructureCommand extends BaseCommand
@@ -39,7 +40,7 @@ public class StructureCommand extends BaseCommand
 	
 	private int showStructureInfo(CommandSourceStack source)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.hasPermission(Permissions.COMMANDS_GAMEMASTER, getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}

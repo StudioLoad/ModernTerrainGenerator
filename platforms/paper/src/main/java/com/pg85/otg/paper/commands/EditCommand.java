@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import net.minecraft.server.permissions.Permissions;
 import org.bukkit.Location;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -98,7 +99,7 @@ public class EditCommand extends BaseCommand
 
 	public int execute(CommandContext<CommandSourceStack> context)
 	{
-		if (!context.getSource().hasPermission(2, getPermission())) {
+		if (!context.getSource().hasPermission(Permissions.COMMANDS_GAMEMASTER, getPermission())) {
 			context.getSource().sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -138,12 +139,14 @@ public class EditCommand extends BaseCommand
 			}
 			catch (InvalidConfigException e)
 			{
-				source.sendSuccess(() -> (Component.literal("Error loading object " + objectName)), false);
+				String finalObjectName = objectName;
+				source.sendSuccess(() -> (Component.literal("Error loading object " + finalObjectName)), false);
 				return 0;
 			}
 			if (inputObject == null)
 			{
-				source.sendSuccess(() -> (Component.literal("Could not find " + objectName)), false);
+				String finalObjectName1 = objectName;
+				source.sendSuccess(() -> (Component.literal("Could not find " + finalObjectName1)), false);
 				return 0;
 			}
 
@@ -152,7 +155,8 @@ public class EditCommand extends BaseCommand
 			Preset preset = ObjectUtils.getPresetOrDefault(presetFolderName);
 			if (preset == null)
 			{
-				source.sendSuccess(() -> (Component.literal("Could not find preset " + (presetFolderName == null ? "" : presetFolderName))), false);
+				String finalPresetFolderName = presetFolderName;
+				source.sendSuccess(() -> (Component.literal("Could not find preset " + (finalPresetFolderName == null ? "" : finalPresetFolderName))), false);
 				return 0;
 			}
 

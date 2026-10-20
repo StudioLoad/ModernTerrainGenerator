@@ -165,7 +165,8 @@ public class ExportCommand extends BaseCommand
 			Preset preset = ObjectUtils.getPresetOrDefault(presetName);
 			if (preset == null)
 			{
-				source.sendSuccess(() -> (Component.literal("Could not find preset " + (presetName == null ? "" : presetName))), false);
+				String finalPresetName = presetName;
+				source.sendSuccess(() -> (Component.literal("Could not find preset " + (finalPresetName == null ? "" : finalPresetName))), false);
 				return 0;
 			}
 
@@ -203,7 +204,8 @@ public class ExportCommand extends BaseCommand
 				OTG.getEngine().getCustomObjectManager(), OTG.getEngine().getPresetLoader().getMaterialReader(preset.getFolderName()),
 				OTG.getEngine().getCustomObjectResourcesManager(), OTG.getEngine().getModLoadedChecker()))
 			{
-				source.sendSuccess(() -> (Component.literal("Failed to load template \"" + templateName + "\"")), false);
+				String finalTemplateName = templateName;
+				source.sendSuccess(() -> (Component.literal("Failed to load template \"" + finalTemplateName + "\"")), false);
 				return 0;
 			}
 
@@ -230,7 +232,9 @@ public class ExportCommand extends BaseCommand
 			// Send feedback, and register the BO3 for immediate use
 			if (object != null)
 			{
-				source.sendSuccess(() -> (Component.literal("Successfully created " + type.getType() + " " + objectName)), false);
+				ObjectType finalType = type;
+				String finalObjectName = objectName;
+				source.sendSuccess(() -> (Component.literal("Successfully created " + finalType.getType() + " " + finalObjectName)), false);
 				if (isGlobal)
 				{
 					OTG.getEngine().getCustomObjectManager().registerGlobalObject(object, object.getConfig().getFile());
@@ -239,7 +243,9 @@ public class ExportCommand extends BaseCommand
 						.addObjectToPreset(preset.getFolderName(), object.getName().toLowerCase(Locale.ROOT), object.getConfig().getFile(), object);
 				}
 			} else {
-				source.sendSuccess(() -> (Component.literal("Failed to create " + type.getType() + " " + objectName)), false);
+				ObjectType finalType = type;
+				String finalObjectName = objectName;
+				source.sendSuccess(() -> (Component.literal("Failed to create " + finalType.getType() + " " + finalObjectName)), false);
 			}
 		} catch (Exception e) {
 			source.sendSuccess(() -> (Component.literal("Something went wrong, please check the logs")), false);

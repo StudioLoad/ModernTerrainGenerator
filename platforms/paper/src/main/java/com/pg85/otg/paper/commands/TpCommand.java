@@ -25,6 +25,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 
 public class TpCommand extends BaseCommand
@@ -62,7 +63,7 @@ public class TpCommand extends BaseCommand
 	@SuppressWarnings("resource")
 	private int locateBiome(CommandSourceStack source, String biome, int range) throws CommandSyntaxException
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.hasPermission(Permissions.COMMANDS_GAMEMASTER, getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -80,19 +81,38 @@ public class TpCommand extends BaseCommand
 		Identifier key = Identifier.parse(new OTGBiomeResourceLocation(preset.getPresetFolder(),
 				preset.getShortPresetName(), preset.getMajorVersion(), biome).toResourceLocationString());
 
-		var t = world.findNearestBiome(p -> p.is(key),
-				new BlockPos(source.getPosition()), range, 8);
-		BlockPos pos = t != null ? t.getFirst() : null;
+		BlockPos origin = BlockPos.containing(source.getPosition());
+
+		var result = world.getChunkSource()
+				.getGenerator()
+				.getBiomeSource()
+				.findClosestBiome3d(
+						origin,
+						range,
+						8,
+						8,
+						biomeHolder -> biomeHolder.is(key),
+						world.getChunkSource().randomState().sampler(),
+						world
+				);
+
+		BlockPos pos = result != null ? result.getFirst() : null;
 
 		if (pos == null)
 		{
 			throw ERROR_BIOME_NOT_FOUND.create(biome);
 		} else
 		{
-			int y = world.getChunkSource().getGenerator().getBaseHeight(pos.getX(), pos.getZ(),
-					Types.MOTION_BLOCKING_NO_LEAVES, world);
+			int y = world.getChunkSource().getGenerator().getBaseHeight(
+					pos.getX(),
+					pos.getZ(),
+					Types.MOTION_BLOCKING_NO_LEAVES,
+					world,
+					world.getChunkSource().randomState()
+			);
 			source.getPlayerOrException().teleportTo(pos.getX(), y, pos.getZ());
-			source.sendSuccess(() -> (Component.literal("Teleporting you to the nearest " + biome + ".")), false);
+			String finalBiome = biome;
+			source.sendSuccess(() -> (Component.literal("Teleporting you to the nearest " + finalBiome + ".")), false);
 			return 0;
 		}
 	}

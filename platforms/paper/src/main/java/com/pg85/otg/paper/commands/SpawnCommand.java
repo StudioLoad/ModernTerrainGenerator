@@ -109,7 +109,9 @@ public class SpawnCommand extends BaseCommand
 
 			if (objectToSpawn == null)
 			{
-				source.sendSuccess(() -> (Component.literal("Could not find an object by the name " + objectName + " in either " + presetName + " or Global objects")), false);
+				String finalPresetName = presetName;
+				String finalObjectName = objectName;
+				source.sendSuccess(() -> (Component.literal("Could not find an object by the name " + finalObjectName + " in either " + finalPresetName + " or Global objects")), false);
 				return 0;
 			}
 

@@ -372,7 +372,7 @@ public class MapCommand extends BaseCommand
 						int distance = Math.max(0, Math.min(range, highestBlockInfo.y - min));
 						float relativeDistance = (float) distance / (float) range;
 						int shadePercentage = (int) Math.floor(relativeDistance * 2 * 100);
-						int rgbColor = shadeColor(highestBlockInfo.material.internalBlock().getBlock().defaultMaterialColor().col, shadePercentage);
+						int rgbColor = shadeColor(highestBlockInfo.material.internalBlock().getBlock().defaultMapColor().col, shadePercentage);
 						synchronized(imgLock)
 						{
 							this.img.setRGB(x, z, rgbColor);

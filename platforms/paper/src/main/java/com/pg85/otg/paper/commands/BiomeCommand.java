@@ -144,12 +144,24 @@ public class BiomeCommand extends BaseCommand
 								ChatFormatting.GOLD, ChatFormatting.GREEN))),
 				false);
 
-		source.sendSuccess(() -> (createComponent("Base Temperature: ", String.format("%.2f", biome.getBaseTemperature()),
-				ChatFormatting.GOLD, ChatFormatting.GREEN)
-						.append(createComponent(" Current Temperature: ",
-								String.format("%.2f", biome.getTemperature(BlockPos.containing(source.getPosition().x, source.getPosition().y, source.getPosition().z))),
-								ChatFormatting.GOLD, ChatFormatting.GREEN))),
-				false);
+        source.sendSuccess(() -> createComponent(
+                        "Base Temperature: ",
+                        String.format("%.2f", biome.getBaseTemperature()),
+                        ChatFormatting.GOLD,
+                        ChatFormatting.GREEN
+                ).append(createComponent(
+                        " Current Temperature: ",
+                        String.format(
+                                "%.2f",
+                                biome.getTemperature(
+                                        BlockPos.containing(source.getPosition()),
+                                        63
+                                )
+                        ),
+                        ChatFormatting.GOLD,
+                        ChatFormatting.GREEN
+                )),
+                false);
 	}
 
 	private void showBiomeMobs(CommandSourceStack source, Biome biome, IBiomeConfig config)

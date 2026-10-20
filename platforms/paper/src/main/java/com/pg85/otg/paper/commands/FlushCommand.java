@@ -9,6 +9,7 @@ import com.pg85.otg.util.logging.LogLevel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 
 public class FlushCommand extends BaseCommand
 {	
@@ -34,7 +35,7 @@ public class FlushCommand extends BaseCommand
 	
 	protected int flushCache(CommandSourceStack source)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.hasPermission(Permissions.COMMANDS_GAMEMASTER, getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}

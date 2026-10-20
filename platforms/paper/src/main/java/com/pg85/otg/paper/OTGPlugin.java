@@ -199,7 +199,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), java.util.List.of(), 63, false, true, true, false))
 			);
 			// add the weird Spigot config; it was complaining about this
-			OTGDelegate.conf = serverWorld.spigotConfig;
+			//OTGDelegate.conf = serverWorld.spigotConfig;
 		} else {
 			OTGDelegate = OTGGen.generator;
 		}
@@ -222,7 +222,9 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			ChunkGeneratorStructureState otgStructureState = OTGDelegate.createState(
 					registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
 					otgRandomState,
-					world.getSeed());
+					world.getSeed(),
+					serverWorld.spigotConfig
+			);
 			WorldGenContext otgContext = new WorldGenContext(
 					oldContext.level(),
 					OTGDelegate,
