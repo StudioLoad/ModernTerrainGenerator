@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.ticks.ScheduledTick;
-import org.apache.commons.lang.NotImplementedException;
 
 import com.pg85.otg.interfaces.IBiome;
 import com.pg85.otg.interfaces.IBiomeConfig;
@@ -19,7 +18,7 @@ import com.pg85.otg.util.nbt.NamedBinaryTag;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 
 public class MCWorldGenRegion extends PaperWorldGenRegion
@@ -36,19 +35,19 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 	@Override
 	public IBiome getBiomeForDecoration(int worldX, int worldZ)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");		
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");		
 	}
 	
 	@Override
 	public IBiomeConfig getBiomeConfigForDecoration(int worldX, int worldZ)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 
 	@Override
 	public double getBiomeBlocksNoiseValue(int xInWorld, int zInWorld)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 		ChunkAccess chunk = this.worldGenRegion.getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ(), ChunkStatus.EMPTY, false);
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.LIQUID_CARVERS))
+		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return null;
 		}
@@ -71,7 +70,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 		// Get internal coordinates for block in chunk
 		int internalX = x & 0xF;
 		int internalZ = z & 0xF;
-		return PaperMaterialData.ofBlockData(chunk.getBlockState(internalX, y, internalZ));
+		return PaperMaterialData.ofBlockData(chunk.getBlockState(new BlockPos(x, y, z)));
 	}
 
 
@@ -84,7 +83,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 		ChunkAccess chunk = this.worldGenRegion.getChunkIfLoadedImmediately(chunkCoord.getChunkX(), chunkCoord.getChunkZ());
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.LIQUID_CARVERS))
+		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return -1;
 		}
@@ -116,7 +115,7 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 
 		if (material.isLiquid())
 		{
-			this.worldGenRegion.getFluidTicks().schedule(new ScheduledTick<Fluid>(((PaperMaterialData)material).internalBlock().getFluidState().getType(), pos, 0L, 0L));
+			this.worldGenRegion.getFluidTicks().schedule(new ScheduledTick(((PaperMaterialData)material).internalBlock().getFluidState().getType(), pos, 0L, 0L));
 		}
 
 		if (nbt != null)
@@ -128,19 +127,19 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 	@Override
 	public boolean placeTree(TreeType type, Random rand, int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}	
 	
 	@Override
 	public void placeDungeon (Random random, int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 
 	@Override
 	public void placeFossil(Random random, int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 	
 	// Shadowgen
@@ -148,23 +147,23 @@ public class MCWorldGenRegion extends PaperWorldGenRegion
 	@Override
 	public LocalMaterialData getMaterialWithoutLoading(int x, int y, int z)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}	
 	
 	@Override
 	public int getHighestBlockYAtWithoutLoading(int x, int z, boolean findSolid, boolean findLiquid, boolean ignoreLiquid, boolean ignoreSnow, boolean ignoreLeaves)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature."); 
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature."); 
 	}
 	
 	@Override
 	public boolean chunkHasDefaultStructure (ChunkCoordinate chunkCoordinate)
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 	@Override
 	public long getSeed()
 	{
-		throw new NotImplementedException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
+		throw new UnsupportedOperationException("This method is not available for non-OTG worlds, you're trying to use an unsupported feature.");
 	}
 }

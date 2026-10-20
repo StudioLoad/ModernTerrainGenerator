@@ -7,7 +7,7 @@ import com.pg85.otg.util.ChunkCoordinate;
 import com.pg85.otg.util.FifoMap;
 
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.util.Random;
@@ -35,8 +35,12 @@ public class OTGPaperChunkGen extends ChunkGenerator
 		if (generator == null)
 		{
 			((PaperEngine) OTG.getEngine()).getPlugin().injectInternalGenerator(world);
-			generator.fixBiomes(chunkX, chunkZ);
+			if (generator == null)
+			{
+				throw new IllegalStateException("OTG failed to initialise its internal generator for world '" + world.getName() + "'. Check the server log for the generator injection error.");
+			}
 		}
+		generator.fixBiomes(chunkX, chunkZ);
 
 		ChunkCoordinate chunkCoord = ChunkCoordinate.fromChunkCoords(chunkX, chunkZ);
 		ChunkData chunkData = chunkDataCache.get(chunkCoord);

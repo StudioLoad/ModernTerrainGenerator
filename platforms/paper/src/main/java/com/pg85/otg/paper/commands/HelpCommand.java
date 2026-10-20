@@ -16,7 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class HelpCommand extends BaseCommand
 {
@@ -55,16 +55,16 @@ public class HelpCommand extends BaseCommand
 				OTGCommandExecutor.getCommands().stream().filter(basecmd -> basecmd.getName().equalsIgnoreCase(cmd)).findFirst()
 						.ifPresent(command ->
 						{
-							source.sendSuccess(new TextComponent("/otg " + command.getName() + ": ")
+							source.sendSuccess(() -> (Component.literal("/otg " + command.getName() + ": ")
 									.withStyle(ChatFormatting.GOLD)
-									.append(new TextComponent(command.getHelpMessage())
-											.withStyle(ChatFormatting.GREEN)),
+									.append(Component.literal(command.getHelpMessage())
+											.withStyle(ChatFormatting.GREEN))),
 									false);
-							source.sendSuccess(new TextComponent("usage: " + command.getUsage())
-									.withStyle(ChatFormatting.GRAY), false);
+							source.sendSuccess(() -> (Component.literal("usage: " + command.getUsage())
+									.withStyle(ChatFormatting.GRAY)), false);
 							for (String help : command.getDetailedHelp())
 							{
-								source.sendSuccess(new TextComponent(help).withStyle(ChatFormatting.GRAY), false);
+								source.sendSuccess(() -> (Component.literal(help).withStyle(ChatFormatting.GRAY)), false);
 							}
 						});
 			}
@@ -80,7 +80,7 @@ public class HelpCommand extends BaseCommand
 	private void showHelp(CommandSourceStack source, int page)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return;
 		}
 		int start = (page - 1) * 5;
@@ -93,15 +93,12 @@ public class HelpCommand extends BaseCommand
 
 			if (!source.hasPermission(2, command.getPermission())) continue;
 
-			source.sendSuccess(
-					new TextComponent("/otg " + command.getName() + ": ").withStyle(ChatFormatting.GOLD).append(
-							new TextComponent(command.getHelpMessage()).withStyle(ChatFormatting.GREEN)),
+			source.sendSuccess(() -> (Component.literal("/otg " + command.getName() + ": ").withStyle(ChatFormatting.GOLD).append(
+							Component.literal(command.getHelpMessage()).withStyle(ChatFormatting.GREEN))),
 					false);
-			source.sendSuccess(
-					new TextComponent(" - usage: " + command.getUsage()).withStyle(ChatFormatting.GRAY), false);
+			source.sendSuccess(() -> (Component.literal(" - usage: " + command.getUsage()).withStyle(ChatFormatting.GRAY)), false);
 		}
-		source.sendSuccess(
-				new TextComponent("Use /otg help <page> for more commands.").withStyle(ChatFormatting.GOLD),
+		source.sendSuccess(() -> (Component.literal("Use /otg help <page> for more commands.").withStyle(ChatFormatting.GOLD)),
 				false);
 	}
 

@@ -7,8 +7,9 @@ import com.pg85.otg.util.minecraft.BlockNames;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.datafix.fixes.ItemStackTheFlatteningFix;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.piston.PistonHeadBlock;
@@ -28,7 +29,7 @@ public class PaperLegacyMaterials
 {
 	static BlockState fromLegacyBlockName (String oldBlockName)
 	{
-		if (oldBlockName.matches("minecraft:[A-Za-z]+:[0-9]+")) {
+		if (oldBlockName.matches("minecraft:[A-Za-z0-9_]+:[0-9]+")) {
 			int stateId = Integer.parseInt(oldBlockName.split(":")[2]);
 			return fromLegacyBlockNameOrIdWithData(oldBlockName.split(":")[1], stateId);
 		}
@@ -123,7 +124,7 @@ public class PaperLegacyMaterials
 				return Blocks.PURPUR_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.EAST);
 			case "wooden_button":
 			case "wood_button":
-				return Blocks.OAK_BUTTON.defaultBlockState().setValue(WoodButtonBlock.FACING, Direction.NORTH);
+				return Blocks.OAK_BUTTON.defaultBlockState().setValue(ButtonBlock.FACING, Direction.NORTH);
 			case "waterlily":
 				return Blocks.LILY_PAD.defaultBlockState();
 			case "quartz_ore":
@@ -150,7 +151,7 @@ public class PaperLegacyMaterials
 			case "magma":
 				return Blocks.MAGMA_BLOCK.defaultBlockState();
 			case "tallgrass":
-				return Blocks.GRASS.defaultBlockState();
+				return Blocks.SHORT_GRASS.defaultBlockState();
 			case "cobble_wall":
 				return Blocks.COBBLESTONE_WALL.defaultBlockState();
 			case "iron_fence":
@@ -162,7 +163,7 @@ public class PaperLegacyMaterials
 			case "mob_spawner":
 				return Blocks.INFESTED_STONE.defaultBlockState();
 			case "double_step":
-				return Registry.BLOCK.get(new ResourceLocation("minecraft:smooth_stone_slab"))
+				return BuiltInRegistries.BLOCK.getValue(Identifier.parse("minecraft:smooth_stone_slab"))
 						.defaultBlockState().setValue(SlabBlock.TYPE,
 								SlabType.DOUBLE);
 			case "smooth_brick":
@@ -260,16 +261,16 @@ public class PaperLegacyMaterials
 					// Legacy blocks with block data that are now their own block
 				case "banner":
 				case "white_banner":
-					return Registry.BLOCK.get(getFlatKey("minecraft:banner", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:banner", data)).defaultBlockState();
 
 				// TODO: How does facing for bed blocks in bo's work for 1.12.2, can only specify color via data?
 				case "bed":
 				case "white_bed":
-					return Registry.BLOCK.get(getFlatKey("minecraft:bed", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:bed", data)).defaultBlockState();
 
 				case "carpet":
 				case "white_carpet":
-					return Registry.BLOCK.get(getFlatKey("minecraft:carpet", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:carpet", data)).defaultBlockState();
 
 				case "cobblestone_wall":
 				case "cobble_wall":
@@ -283,55 +284,55 @@ public class PaperLegacyMaterials
 					}
 				case "concrete":
 				case "white_concrete":
-					return Registry.BLOCK.get(getFlatKey("minecraft:concrete", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:concrete", data)).defaultBlockState();
 
 				case "concrete_powder":
 				case "white_concrete_powder":
-					return Registry.BLOCK.get(getFlatKey("minecraft:concrete_powder", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:concrete_powder", data)).defaultBlockState();
 
 				case "dirt":
-					return Registry.BLOCK.get(getFlatKey("minecraft:dirt", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:dirt", data)).defaultBlockState();
 
 				// TODO: This only spawns the bottom half?
 				case "double_plant":
 				case "sunflower":
 				case "rose_bush":
 				case "tall_grass":
-					return Registry.BLOCK.get(getFlatKey("minecraft:double_plant", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:double_plant", data)).defaultBlockState();
 
 				case "double_stone_slab":
 				case "smooth_stone":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stone_slab", data))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone_slab", data))
 							.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE);
 
 				// TODO: Did this even exist for 1.12.2?
 				case "double_wooden_slab":
 				case "wood_double_step":
-					return Registry.BLOCK.get(getFlatKey("minecraft:wooden_slab", data))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:wooden_slab", data))
 							.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE);
 
 				case "leaves":
 				case "oak_leaves":
-					return Registry.BLOCK.get(getFlatKey("minecraft:leaves", data % 4))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:leaves", data % 4))
 							.defaultBlockState().setValue(LeavesBlock.DISTANCE, 1);
 
 				case "leaves2":
 				case "leaves_2":
 				case "acacia_leaves":
-					return Registry.BLOCK.get(getFlatKey("minecraft:leaves2", data % 4)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:leaves2", data % 4)).defaultBlockState();
 
 				case "monster_egg":
 				case "monster_eggs":
 				case "infested_stone":
-					return Registry.BLOCK.get(getFlatKey("minecraft:monster_egg", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:monster_egg", data)).defaultBlockState();
 
 				case "planks":
 				case "wood":
 				case "oak_planks":
-					return Registry.BLOCK.get(getFlatKey("minecraft:planks", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:planks", data)).defaultBlockState();
 
 				case "prismarine":
-					return Registry.BLOCK.get(getFlatKey("minecraft:prismarine", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:prismarine", data)).defaultBlockState();
 
 				case "purpur_slab":
 					return Blocks.PURPUR_SLAB.defaultBlockState()
@@ -344,10 +345,10 @@ public class PaperLegacyMaterials
 
 				case "red_flower":
 				case "red_rose":
-					return Registry.BLOCK.get(getFlatKey("minecraft:red_flower", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:red_flower", data)).defaultBlockState();
 
 				case "red_sandstone":
-					return Registry.BLOCK.get(getFlatKey("minecraft:red_sandstone", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:red_sandstone", data)).defaultBlockState();
 
 				case "red_sandstone_slab":
 				case "stone_slab2":
@@ -374,11 +375,11 @@ public class PaperLegacyMaterials
 					}
 
 				case "sandstone":
-					return Registry.BLOCK.get(getFlatKey("minecraft:sandstone", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:sandstone", data)).defaultBlockState();
 
 				case "sapling":
 				case "oak_sapling":
-					return Registry.BLOCK.get(getFlatKey("minecraft:sapling", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:sapling", data)).defaultBlockState();
 
 				case "skull":
 				case "skeleton_skull":
@@ -394,35 +395,35 @@ public class PaperLegacyMaterials
 					}
 				case "stained_glass":
 				case "white_stained_glass":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stained_glass", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stained_glass", data)).defaultBlockState();
 
 				case "stained_glass_pane":
 				case "white_stained_glass_pane":
 				case "thin_glass":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stained_glass_pane", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stained_glass_pane", data)).defaultBlockState();
 
 				case "stained_hardened_clay":
 				case "stained_clay":
 				case "white_terracotta":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stained_hardened_clay", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stained_hardened_clay", data)).defaultBlockState();
 
 				case "stone":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stone", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone", data)).defaultBlockState();
 
 				case "stone_slab":
 				case "step":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stone_slab", data % 8))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone_slab", data % 8))
 						.defaultBlockState().setValue(SlabBlock.TYPE,
 							data >= 8 ? SlabType.TOP : SlabType.BOTTOM);
 
 				case "double_step":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stone_slab", data % 8))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone_slab", data % 8))
 						.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE);					
 					
 				case "stonebrick":
 				case "stone_bricks":
 				case "smooth_brick":
-					return Registry.BLOCK.get(getFlatKey("minecraft:stonebrick", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stonebrick", data)).defaultBlockState();
 
 				case "tallgrass":
 				case "long_grass":
@@ -430,20 +431,20 @@ public class PaperLegacyMaterials
 					{
 						case 1:
 						default:
-							return Blocks.GRASS.defaultBlockState();
+							return Blocks.SHORT_GRASS.defaultBlockState();
 						case 2:
 							return Blocks.FERN.defaultBlockState();
 					}
 				case "wooden_slab":
 				case "wood_step":
 				case "oak_slab":
-					return Registry.BLOCK.get(getFlatKey("minecraft:wooden_slab", data % 8))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:wooden_slab", data % 8))
 							.defaultBlockState().setValue(SlabBlock.TYPE,
 									data >= 8 ? SlabType.TOP : SlabType.BOTTOM);
 
 				case "wool":
 				case "white_wool":
-					return Registry.BLOCK.get(getFlatKey("minecraft:wool", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:wool", data)).defaultBlockState();
 
 
 				// Blocks with data
@@ -807,14 +808,187 @@ public class PaperLegacyMaterials
 		return null;
 	}
 
-	private static ResourceLocation getFlatKey (String name, int data) throws NullPointerException
+	private static final String[] LEGACY_DYE_COLORS = {
+			"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+			"light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
+	};
+
+	/**
+	 * Converts the legacy 1.12 block names and metadata still accepted by OTG presets
+	 * into the flattened block identifiers used by modern Minecraft versions.
+	 */
+	private static Identifier getFlatKey(String name, int data) throws NullPointerException
 	{
-		String result = ItemStackTheFlatteningFix.updateItem(name, data);
-		if (result == null)
+		if (name == null || name.isBlank())
 		{
-			throw new NullPointerException();
+			throw new NullPointerException("Legacy block name is empty");
 		}
-		return new ResourceLocation(result);
+
+		String path = name.startsWith("minecraft:") ? name.substring("minecraft:".length()) : name;
+		int metadata = Math.floorMod(data, 16);
+		String color = LEGACY_DYE_COLORS[metadata];
+		String flattened = switch (path)
+		{
+			case "banner" -> LEGACY_DYE_COLORS[15 - metadata] + "_banner";
+			case "bed" -> color + "_bed";
+			case "carpet" -> color + "_carpet";
+			case "concrete" -> color + "_concrete";
+			case "concrete_powder" -> color + "_concrete_powder";
+			case "wool" -> color + "_wool";
+			case "stained_glass" -> color + "_stained_glass";
+			case "stained_glass_pane" -> color + "_stained_glass_pane";
+			case "stained_hardened_clay" -> color + "_terracotta";
+			case "dirt" -> switch (metadata)
+			{
+				case 1 -> "coarse_dirt";
+				case 2 -> "podzol";
+				default -> "dirt";
+			};
+			case "double_plant" -> switch (metadata & 7)
+			{
+				case 0 -> "sunflower";
+				case 1 -> "lilac";
+				case 2 -> "tall_grass";
+				case 3 -> "large_fern";
+				case 4 -> "rose_bush";
+				case 5 -> "peony";
+				default -> null;
+			};
+			case "stone_slab" -> switch (metadata & 7)
+			{
+				case 0 -> "smooth_stone_slab";
+				case 1 -> "sandstone_slab";
+				case 2 -> "petrified_oak_slab";
+				case 3 -> "cobblestone_slab";
+				case 4 -> "brick_slab";
+				case 5 -> "stone_brick_slab";
+				case 6 -> "nether_brick_slab";
+				case 7 -> "quartz_slab";
+				default -> null;
+			};
+			case "wooden_slab" -> switch (metadata & 7)
+			{
+				case 0 -> "oak_slab";
+				case 1 -> "spruce_slab";
+				case 2 -> "birch_slab";
+				case 3 -> "jungle_slab";
+				case 4 -> "acacia_slab";
+				case 5 -> "dark_oak_slab";
+				default -> null;
+			};
+			case "leaves" -> switch (metadata & 3)
+			{
+				case 0 -> "oak_leaves";
+				case 1 -> "spruce_leaves";
+				case 2 -> "birch_leaves";
+				case 3 -> "jungle_leaves";
+				default -> null;
+			};
+			case "leaves2" -> switch (metadata & 3)
+			{
+				case 0 -> "acacia_leaves";
+				case 1 -> "dark_oak_leaves";
+				default -> null;
+			};
+			case "monster_egg" -> switch (metadata & 7)
+			{
+				case 0 -> "infested_stone";
+				case 1 -> "infested_cobblestone";
+				case 2 -> "infested_stone_bricks";
+				case 3 -> "infested_mossy_stone_bricks";
+				case 4 -> "infested_cracked_stone_bricks";
+				case 5 -> "infested_chiseled_stone_bricks";
+				default -> null;
+			};
+			case "planks" -> switch (metadata & 7)
+			{
+				case 0 -> "oak_planks";
+				case 1 -> "spruce_planks";
+				case 2 -> "birch_planks";
+				case 3 -> "jungle_planks";
+				case 4 -> "acacia_planks";
+				case 5 -> "dark_oak_planks";
+				default -> null;
+			};
+			case "prismarine" -> switch (metadata & 3)
+			{
+				case 0 -> "prismarine";
+				case 1 -> "prismarine_bricks";
+				case 2 -> "dark_prismarine";
+				default -> null;
+			};
+			case "red_flower" -> switch (metadata & 15)
+			{
+				case 0 -> "poppy";
+				case 1 -> "blue_orchid";
+				case 2 -> "allium";
+				case 3 -> "azure_bluet";
+				case 4 -> "red_tulip";
+				case 5 -> "orange_tulip";
+				case 6 -> "white_tulip";
+				case 7 -> "pink_tulip";
+				case 8 -> "oxeye_daisy";
+				default -> null;
+			};
+			case "red_sandstone" -> switch (metadata & 3)
+			{
+				case 0 -> "red_sandstone";
+				case 1 -> "chiseled_red_sandstone";
+				case 2 -> "smooth_red_sandstone";
+				case 3 -> "cut_red_sandstone";
+				default -> null;
+			};
+			case "sandstone" -> switch (metadata & 3)
+			{
+				case 0 -> "sandstone";
+				case 1 -> "chiseled_sandstone";
+				case 2 -> "smooth_sandstone";
+				case 3 -> "cut_sandstone";
+				default -> null;
+			};
+			case "sapling" -> switch (metadata & 7)
+			{
+				case 0 -> "oak_sapling";
+				case 1 -> "spruce_sapling";
+				case 2 -> "birch_sapling";
+				case 3 -> "jungle_sapling";
+				case 4 -> "acacia_sapling";
+				case 5 -> "dark_oak_sapling";
+				default -> null;
+			};
+			case "stone" -> switch (metadata & 7)
+			{
+				case 0 -> "stone";
+				case 1 -> "granite";
+				case 2 -> "polished_granite";
+				case 3 -> "diorite";
+				case 4 -> "polished_diorite";
+				case 5 -> "andesite";
+				case 6 -> "polished_andesite";
+				default -> null;
+			};
+			case "stonebrick" -> switch (metadata & 3)
+			{
+				case 0 -> "stone_bricks";
+				case 1 -> "mossy_stone_bricks";
+				case 2 -> "cracked_stone_bricks";
+				case 3 -> "chiseled_stone_bricks";
+				default -> null;
+			};
+			default -> null;
+		};
+
+		if (flattened == null)
+		{
+			String directName = name.contains(":") ? name : "minecraft:" + name;
+			Identifier directId = Identifier.tryParse(directName);
+			if (directId != null && BuiltInRegistries.BLOCK.containsKey(directId))
+			{
+				return directId;
+			}
+			throw new NullPointerException("Unsupported legacy block: " + name + ":" + data);
+		}
+		return Identifier.fromNamespaceAndPath("minecraft", flattened);
 	}
 
 	private static BlockState getAnvilWithData (int material, int data)
@@ -1052,9 +1226,9 @@ public class PaperLegacyMaterials
 			case 0:
 				return Blocks.LEVER.defaultBlockState().setValue(LeverBlock.FACE, face).setValue(LeverBlock.FACING, getFacingLever(facing)).setValue(LeverBlock.POWERED, powered == 1);
 			case 1:
-				return Blocks.STONE_BUTTON.defaultBlockState().setValue(StoneButtonBlock.FACE, face).setValue(StoneButtonBlock.FACING, getFacingButton(facing)).setValue(StoneButtonBlock.POWERED, powered == 1);
+				return Blocks.STONE_BUTTON.defaultBlockState().setValue(ButtonBlock.FACE, face).setValue(ButtonBlock.FACING, getFacingButton(facing)).setValue(ButtonBlock.POWERED, powered == 1);
 			case 2:
-				return Blocks.OAK_BUTTON.defaultBlockState().setValue(WoodButtonBlock.FACE, face).setValue(WoodButtonBlock.FACING, getFacingButton(facing)).setValue(WoodButtonBlock.POWERED, powered == 1);
+				return Blocks.OAK_BUTTON.defaultBlockState().setValue(ButtonBlock.FACE, face).setValue(ButtonBlock.FACING, getFacingButton(facing)).setValue(ButtonBlock.POWERED, powered == 1);
 			default:
 				return null;
 		}

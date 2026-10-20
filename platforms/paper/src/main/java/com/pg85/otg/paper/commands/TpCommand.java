@@ -22,16 +22,15 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 
 public class TpCommand extends BaseCommand
 {
 	private static final DynamicCommandExceptionType ERROR_BIOME_NOT_FOUND = new DynamicCommandExceptionType(
-			object -> new TranslatableComponent("commands.locatebiome.notFound", object));
+			object -> Component.translatable("commands.locatebiome.notFound", object));
 
 	public TpCommand()
 	{
@@ -64,7 +63,7 @@ public class TpCommand extends BaseCommand
 	private int locateBiome(CommandSourceStack source, String biome, int range) throws CommandSyntaxException
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		biome = biome.toLowerCase();
@@ -72,13 +71,13 @@ public class TpCommand extends BaseCommand
 		ServerLevel world = source.getLevel();
 		if (!(world.getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			source.sendSuccess(new TextComponent("OTG is not enabled in this world"), false);
+			source.sendSuccess(() -> (Component.literal("OTG is not enabled in this world")), false);
 			return 0;
 		}
 
 		Preset preset = ((OTGNoiseChunkGenerator) world.getChunkSource().getGenerator()).getPreset();
 
-		ResourceLocation key = new ResourceLocation(new OTGBiomeResourceLocation(preset.getPresetFolder(),
+		Identifier key = Identifier.parse(new OTGBiomeResourceLocation(preset.getPresetFolder(),
 				preset.getShortPresetName(), preset.getMajorVersion(), biome).toResourceLocationString());
 
 		var t = world.findNearestBiome(p -> p.is(key),
@@ -93,7 +92,7 @@ public class TpCommand extends BaseCommand
 			int y = world.getChunkSource().getGenerator().getBaseHeight(pos.getX(), pos.getZ(),
 					Types.MOTION_BLOCKING_NO_LEAVES, world);
 			source.getPlayerOrException().teleportTo(pos.getX(), y, pos.getZ());
-			source.sendSuccess(new TextComponent("Teleporting you to the nearest " + biome + "."), false);
+			source.sendSuccess(() -> (Component.literal("Teleporting you to the nearest " + biome + ".")), false);
 			return 0;
 		}
 	}
@@ -119,7 +118,7 @@ public class TpCommand extends BaseCommand
 
 	private int showHelp(CommandSourceStack source)
 	{
-		source.sendSuccess(new TextComponent(getUsage()), false);
+		source.sendSuccess(() -> (Component.literal(getUsage())), false);
 		return 0;
 	}
 }

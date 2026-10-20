@@ -31,13 +31,22 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.attribute.AmbientAdditionsSettings;
+import net.minecraft.world.attribute.AmbientMoodSettings;
+import net.minecraft.world.attribute.AmbientParticle;
+import net.minecraft.world.attribute.AmbientSounds;
+import net.minecraft.world.attribute.BackgroundMusic;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.biome.Biome.TemperatureModifier;
 import net.minecraft.world.level.block.Block;
@@ -79,7 +88,9 @@ public class PaperBiome implements IBiome
 
 	public static Biome createOTGBiome (boolean isOceanBiome, IWorldConfig worldConfig, IBiomeConfig biomeConfig, RegistryAccess registryAccess)
 	{
-		BiomeGenerationSettings.Builder biomeGenerationSettingsBuilder = new BiomeGenerationSettings.Builder();
+		BiomeGenerationSettings.Builder biomeGenerationSettingsBuilder = new BiomeGenerationSettings.Builder(
+				registryAccess.lookupOrThrow(Registries.PLACED_FEATURE),
+				registryAccess.lookupOrThrow(Registries.CONFIGURED_CARVER));
 
 		MobSpawnSettings.Builder mobSpawnInfoBuilder = createMobSpawnInfo(biomeConfig);
 
@@ -100,24 +111,33 @@ public class PaperBiome implements IBiome
 			if (res instanceof RegistryResource registryResource)
 			{
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
-				PlacedFeature registry = BuiltinRegistries.PLACED_FEATURE.get(new ResourceLocation(registryResource.getFeatureKey()));
-				if (registry == null)
+				Registry<PlacedFeature> placedFeatures = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE);
+				String featureName = registryResource.getFeatureKey();
+				Identifier featureId = featureName == null ? null : Identifier.tryParse(featureName);
+				Holder<PlacedFeature> featureHolder = featureId == null ? null :
+						placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, featureId)).orElse(null);
+
+				if (featureHolder == null)
 				{
-					String newResourceLocation = LegacyRegistry.convertLegacyResourceLocation(registryResource.getFeatureKey());
-					if (newResourceLocation != null) {
-						registry = BuiltinRegistries.PLACED_FEATURE.get(new ResourceLocation(newResourceLocation));
-						if (registry == null) {
-							OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Somehow you broke the universe! Feature: "+newResourceLocation+" is not in the registry");
-						} else {
-							biomeGenerationSettingsBuilder.addFeature(stage, Holder.direct(registry));
-						}
-					} else {
-						OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Could not find feature " + registryResource.getFeatureKey() + " in the registry, please check spelling");
+					String legacyFeatureName = LegacyRegistry.convertLegacyResourceLocation(featureName);
+					Identifier legacyFeatureId = legacyFeatureName == null ? null : Identifier.tryParse(legacyFeatureName);
+					if (legacyFeatureId != null)
+					{
+						featureHolder = placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, legacyFeatureId)).orElse(null);
 					}
-				} else {
-					biomeGenerationSettingsBuilder.addFeature(stage, Holder.direct(registry));
+				}
+
+				if (featureHolder == null)
+				{
+					OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
+							"Could not find placed feature " + featureName + " in the registry; check the feature key");
+				}
+				else
+				{
+					biomeGenerationSettingsBuilder.addFeature(stage, featureHolder);
 				}
 			}
+
 			if (res instanceof GlowLichenResource glow)
 			{
 				List<BlockState> list = new ArrayList<>();
@@ -154,56 +174,45 @@ public class PaperBiome implements IBiome
 		float safeTemperature = biomeConfig.getBiomeTemperature();
 		if (safeTemperature >= 0.1 && safeTemperature <= 0.2)
 		{
-			// Avoid temperatures between 0.1 and 0.2, Minecraft restriction
-			safeTemperature = safeTemperature >= 1.5 ? 0.2f : 0.1f;
+			// Avoid the unsupported temperature interval while preserving the nearest boundary.
+			safeTemperature = safeTemperature >= 0.15f ? 0.2f : 0.1f;
 		}
 
-		// BiomeFog == BiomeAmbient in forge
+		// Minecraft 1.21.11 stores atmospheric colors, particles and sounds as environment attributes.
 		BiomeSpecialEffects.Builder biomeAmbienceBuilder =
 				new BiomeSpecialEffects.Builder()
-						.fogColor(biomeConfig.getFogColor() != BiomeStandardValues.FOG_COLOR.getDefaultValue(null) ? biomeConfig.getFogColor() : worldConfig.getFogColor())
-						.waterColor(biomeConfig.getWaterColor() != BiomeStandardValues.WATER_COLOR.getDefaultValue() ? biomeConfig.getWaterColor() : 4159204)
-						.waterFogColor(biomeConfig.getWaterFogColor() != BiomeStandardValues.WATER_FOG_COLOR.getDefaultValue() ? biomeConfig.getWaterFogColor() : 329011)
-						.skyColor(biomeConfig.getSkyColor() != BiomeStandardValues.SKY_COLOR.getDefaultValue() ? biomeConfig.getSkyColor() : getSkyColorForTemp(safeTemperature))
-				//.e() // TODO: Sky color is normally based on temp, make a setting for that?
-				;
+						.waterColor(biomeConfig.getWaterColor() != BiomeStandardValues.WATER_COLOR.getDefaultValue()
+								? biomeConfig.getWaterColor() : 4159204);
 
-
-		Optional<ParticleType<?>> particleType = Registry.PARTICLE_TYPE.getOptional(new ResourceLocation(biomeConfig.getParticleType()));
-		if (particleType.isPresent() && particleType.get() instanceof ParticleOptions)
+		List<AmbientParticle> ambientParticles = new ArrayList<>();
+		Optional<ParticleType<?>> particleType = getRegisteredValue(BuiltInRegistries.PARTICLE_TYPE, biomeConfig.getParticleType());
+		if (particleType.isPresent())
 		{
-			biomeAmbienceBuilder.ambientParticle(new AmbientParticleSettings((ParticleOptions) particleType.get(), biomeConfig.getParticleProbability()));
+			// OTG presets currently store a particle identifier, not its extra parameters.
+			// SimpleParticleType also implements ParticleOptions, so these can be used directly.
+			if (particleType.get() instanceof SimpleParticleType simpleParticleType)
+			{
+				ambientParticles.add(new AmbientParticle(simpleParticleType, biomeConfig.getParticleProbability()));
+			}
+			else
+			{
+				OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
+						"Particle " + biomeConfig.getParticleType() + " needs options that are not supported by the current OTG biome configuration");
+			}
 		}
 
-		Optional<SoundEvent> music = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getMusic()));
-		music.ifPresent(soundEffect ->
-				biomeAmbienceBuilder.backgroundMusic(
-						new Music(
-								soundEffect,
-								biomeConfig.getMusicMinDelay(),
-								biomeConfig.getMusicMaxDelay(),
-								biomeConfig.isReplaceCurrentMusic()
-						)
-				)
-		);
+		Optional<Music> music = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getMusic())
+				.map(sound -> new Music(sound, biomeConfig.getMusicMinDelay(), biomeConfig.getMusicMaxDelay(), biomeConfig.isReplaceCurrentMusic()));
 
-		Optional<SoundEvent> ambientSound = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getAmbientSound()));
-		ambientSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientLoopSound(ambientSound.get()));
+		Optional<Holder<SoundEvent>> ambientSound = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getAmbientSound());
 
-		Optional<SoundEvent> moodSound = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getMoodSound()));
-		moodSound.ifPresent(soundEffect ->
-				biomeAmbienceBuilder.ambientMoodSound(
-						new AmbientMoodSettings(
-								moodSound.get(),
-								biomeConfig.getMoodSoundDelay(),
-								biomeConfig.getMoodSearchRange(),
-								biomeConfig.getMoodOffset()
-						)
-				)
-		);
+		Optional<AmbientMoodSettings> moodSound = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getMoodSound())
+				.map(sound -> new AmbientMoodSettings(sound, biomeConfig.getMoodSoundDelay(),
+						biomeConfig.getMoodSearchRange(), biomeConfig.getMoodOffset()));
 
-		Optional<SoundEvent> additionsSound = Registry.SOUND_EVENT.getOptional(new ResourceLocation(biomeConfig.getAdditionsSound()));
-		additionsSound.ifPresent(soundEffect -> biomeAmbienceBuilder.ambientAdditionsSound(new AmbientAdditionsSettings(additionsSound.get(), biomeConfig.getAdditionsTickChance())));
+		List<AmbientAdditionsSettings> additionsSounds = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getAdditionsSound())
+				.map(sound -> List.of(new AmbientAdditionsSettings(sound, biomeConfig.getAdditionsTickChance())))
+				.orElseGet(List::of);
 
 		if (biomeConfig.getFoliageColor() != 0xffffff)
 		{
@@ -223,26 +232,50 @@ public class PaperBiome implements IBiome
 		}
 
 		Biome.BiomeBuilder builder = new Biome.BiomeBuilder()
-				.precipitation(biomeConfig.getBiomeWetness() <= 0.0001 ? Biome.Precipitation.NONE :
-						biomeConfig.getBiomeTemperature() > Constants.SNOW_AND_ICE_TEMP ? Biome.Precipitation.RAIN :
-								Biome.Precipitation.SNOW)
-				//.depth(biomeConfig.getBiomeHeight())
-				//.scale(biomeConfig.getBiomeVolatility())
+				.hasPrecipitation(biomeConfig.getBiomeWetness() > 0.0001)
 				.temperature(safeTemperature)
 				.downfall(biomeConfig.getBiomeWetness())
+				.setAttribute(EnvironmentAttributes.FOG_COLOR,
+						biomeConfig.getFogColor() != BiomeStandardValues.FOG_COLOR.getDefaultValue(null)
+								? biomeConfig.getFogColor() : worldConfig.getFogColor())
+				.setAttribute(EnvironmentAttributes.WATER_FOG_COLOR,
+						biomeConfig.getWaterFogColor() != BiomeStandardValues.WATER_FOG_COLOR.getDefaultValue()
+								? biomeConfig.getWaterFogColor() : 329011)
+				.setAttribute(EnvironmentAttributes.SKY_COLOR,
+						biomeConfig.getSkyColor() != BiomeStandardValues.SKY_COLOR.getDefaultValue()
+								? biomeConfig.getSkyColor() : getSkyColorForTemp(safeTemperature))
+				.setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, ambientParticles)
+				.setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, new AmbientSounds(ambientSound, moodSound, additionsSounds))
 				.specialEffects(biomeAmbienceBuilder.build())
 				.mobSpawnSettings(mobSpawnInfoBuilder.build())
-				// All other biome settings...
 				.generationSettings(biomeGenerationSettingsBuilder.build());
+
+		music.ifPresent(value -> builder.setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC,
+				new BackgroundMusic(Optional.of(value), Optional.empty(), Optional.empty())));
 
 		if(biomeConfig.useFrozenOceanTemperature())
 		{
 			builder.temperatureAdjustment(TemperatureModifier.FROZEN);
 		}
 
-		builder.biomeCategory(Biome.BiomeCategory.byName(biomeConfig.getBiomeCategory()));
 
 		return builder.build();
+	}
+
+	private static <T> Optional<T> getRegisteredValue(Registry<T> registry, String rawIdentifier)
+	{
+		if (rawIdentifier == null || rawIdentifier.isBlank())
+		{
+			return Optional.empty();
+		}
+
+		Identifier identifier = Identifier.tryParse(rawIdentifier);
+		return identifier == null ? Optional.empty() : registry.getOptional(identifier);
+	}
+
+	private static <T> Optional<Holder<T>> getRegisteredHolder(Registry<T> registry, String rawIdentifier)
+	{
+		return getRegisteredValue(registry, rawIdentifier).map(registry::wrapAsHolder);
 	}
 
 	private static int getSkyColorForTemp (float safeTemperature)
@@ -485,11 +518,7 @@ public class PaperBiome implements IBiome
 		}*/
 	}
 
-	// StructureFeatures.register()
-	private static <FC extends FeatureConfiguration, F extends StructureFeature<FC>> ConfiguredStructureFeature<FC, F> register (String name, ConfiguredStructureFeature<FC, F> structure)
-	{
-		return Registry.register(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, name, structure);
-	}
+	
 
 	private static MobSpawnSettings.Builder createMobSpawnInfo (IBiomeConfig biomeConfig)
 	{
@@ -512,7 +541,7 @@ public class PaperBiome implements IBiome
 			Optional<EntityType<?>> entityType = EntityType.byString(mobSpawnGroup.getInternalName());
 			if (entityType.isPresent())
 			{
-				mobSpawnInfoBuilder.addSpawn(creatureType, new MobSpawnSettings.SpawnerData(entityType.get(), mobSpawnGroup.getWeight(), mobSpawnGroup.getMin(), mobSpawnGroup.getMax()));
+				mobSpawnInfoBuilder.addSpawn(creatureType, mobSpawnGroup.getWeight(), new MobSpawnSettings.SpawnerData(entityType.get(), mobSpawnGroup.getMin(), mobSpawnGroup.getMax()));
 			} else {
 				if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.MOBS))
 				{

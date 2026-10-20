@@ -17,22 +17,24 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.SurfaceRuleData;
-import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.chunk.status.WorldGenContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.generator.CustomChunkGenerator;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.generator.CustomChunkGenerator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
@@ -56,17 +58,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 
 	public static OTGPlugin plugin;
 
-	static
-	{
-		try
-		{
-			Field field = CustomChunkGenerator.class.getDeclaredField("delegate");
-			field.setAccessible(true);
-		} catch (ReflectiveOperationException ex)
-		{
-			ex.printStackTrace();
-		}
-	}
+
 
 	@Override
 	public void onDisable ()
@@ -86,24 +78,24 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			// Make the frozen boolean accessible
 			frozen.setAccessible(true);
 			// Set the 'frozen' boolean to false for this registry
-			frozen.set(Registry.BIOME_SOURCE, false);
-			frozen.set(Registry.CHUNK_GENERATOR, false);
+			frozen.set(BuiltInRegistries.BIOME_SOURCE, false);
+			frozen.set(BuiltInRegistries.CHUNK_GENERATOR, false);
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
 			e.printStackTrace();
 		}
-		Registry.register(Registry.BIOME_SOURCE, new ResourceLocation(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
-		Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
+		Registry.register(BuiltInRegistries.BIOME_SOURCE, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
+		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
 
 		// Re-freeze the two registries
 		try
 		{
 			frozen = ObfuscationHelper.getField(MappedRegistry.class, "frozen", "bL");
 			frozen.setAccessible(true);
-			frozen.set(Registry.BIOME_SOURCE, true);
-			frozen.set(Registry.CHUNK_GENERATOR, true);
+			frozen.set(BuiltInRegistries.BIOME_SOURCE, true);
+			frozen.set(BuiltInRegistries.CHUNK_GENERATOR, true);
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
@@ -114,11 +106,11 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		OTG.startEngine(new PaperEngine(this));
 		
 		OTGCommandExecutor.registerArguments();
-		OTGCommandExecutor.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+		OTGCommandExecutor.register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
 		// Does this go here?
 		OTG.getEngine().getPresetLoader().registerBiomes();
 
-		Registry<Biome> biome_registry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().ownedRegistryOrThrow(Registry.BIOME_REGISTRY);
+		Registry<Biome> biome_registry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().lookupOrThrow(Registries.BIOME);
 		int i = 0;
 
 		if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY))
@@ -167,6 +159,8 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	public void injectInternalGenerator(World world)
 	{
 		initLock.lock();
+		try
+		{
 		if (processedWorlds.contains(world.getName()))
 		{
 			// We have already processed this world, return
@@ -189,20 +183,20 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		}
 		// We have a CustomChunkGenerator and a NoiseChunkGenerator
 		OTGNoiseChunkGenerator OTGDelegate;
+		RegistryAccess registryAccess = ((CraftServer) Bukkit.getServer()).getServer().registryAccess();
 		// If generator is null, it has not been initialized yet. Initialize it.
 		// The lock is used to avoid the accidental creation of two separate objects, in case
 		// of a race condition.
 		if (OTGGen.generator == null)
 		{
-			RegistryAccess registryAccess = ((CraftServer) Bukkit.getServer()).getServer().registryAccess();
 			NoiseSettings noiseSettings = getNoiseSettings(OTGGen.getPreset().getWorldConfig());
 			OTGDelegate = new OTGNoiseChunkGenerator(
 				OTGGen.getPreset().getFolderName(),
-				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.registryOrThrow(Registry.BIOME_REGISTRY)),
-				registryAccess.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY),
-				registryAccess.registryOrThrow(Registry.NOISE_REGISTRY),
+				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.lookupOrThrow(Registries.BIOME)),
+				registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
+				registryAccess.lookupOrThrow(Registries.NOISE),
 				world.getSeed(),
-				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings), SurfaceRuleData.overworld(), 63, false, true, true, false))
+				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), java.util.List.of(), 63, false, true, true, false))
 			);
 			// add the weird Spigot config; it was complaining about this
 			OTGDelegate.conf = serverWorld.spigotConfig;
@@ -212,20 +206,59 @@ public class OTGPlugin extends JavaPlugin implements Listener
 
 		try
 		{
-			
-			//Field finalGenerator = ObfuscationHelper.getField(ChunkMap.class, "generator", "t");
-			Field finalGenerator = ObfuscationHelper.getField(ChunkMap.class, "generator", "u");
-			finalGenerator.setAccessible(true);
+			ChunkMap chunkMap = serverWorld.getChunkSource().chunkMap;
+			Field contextField = ChunkMap.class.getDeclaredField("worldGenContext");
+			Field randomStateField = ChunkMap.class.getDeclaredField("randomState");
+			Field structureStateField = ChunkMap.class.getDeclaredField("chunkGeneratorState");
+			contextField.setAccessible(true);
+			randomStateField.setAccessible(true);
+			structureStateField.setAccessible(true);
 
-			finalGenerator.set(serverWorld.getChunkSource().chunkMap, OTGDelegate);
+			WorldGenContext oldContext = (WorldGenContext) contextField.get(chunkMap);
+			RandomState otgRandomState = RandomState.create(
+					OTGDelegate.getGeneratorSettingsHolder().value(),
+					registryAccess.lookupOrThrow(Registries.NOISE),
+					world.getSeed());
+			ChunkGeneratorStructureState otgStructureState = OTGDelegate.createState(
+					registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
+					otgRandomState,
+					world.getSeed());
+			WorldGenContext otgContext = new WorldGenContext(
+					oldContext.level(),
+					OTGDelegate,
+					oldContext.structureManager(),
+					oldContext.lightEngine(),
+					oldContext.mainThreadExecutor(),
+					oldContext.unsavedListener());
 
-			/*Field pcmGen = ObfuscationHelper.getField(ChunkMap.class, "generator", "r");
-			pcmGen.setAccessible(true);
-
-			pcmGen.set(serverWorld.getChunkSource().chunkMap, OTGDelegate);*/
+			Object oldRandomState = randomStateField.get(chunkMap);
+			Object oldStructureState = structureStateField.get(chunkMap);
+			try
+			{
+				randomStateField.set(chunkMap, otgRandomState);
+				structureStateField.set(chunkMap, otgStructureState);
+				contextField.set(chunkMap, otgContext);
+			}
+			catch (ReflectiveOperationException ex)
+			{
+				try
+				{
+					randomStateField.set(chunkMap, oldRandomState);
+					structureStateField.set(chunkMap, oldStructureState);
+				}
+				catch (ReflectiveOperationException rollbackException)
+				{
+					ex.addSuppressed(rollbackException);
+				}
+				throw ex;
+			}
 		} catch (ReflectiveOperationException ex)
 		{
-			ex.printStackTrace();
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN,
+					"Failed to install the OTG chunk generator for world " + world.getName()
+							+ ". The world will not be marked as processed.");
+			OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, ex);
+			return;
 		}
 
 		if (OTGGen.generator == null)
@@ -238,46 +271,45 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.MAIN, "Success!");
 
 		processedWorlds.add(world.getName());
-
-		initLock.unlock();
+		}
+		finally
+		{
+			initLock.unlock();
+		}
 	}
 
 	// Taken from vanilla NoiseRouterData::overworldWithoutCaves
-	private NoiseRouterWithOnlyNoises getNoiseRouter(NoiseSettings noiseSettings) {
-		DensityFunction shiftX = getFunction("shift_x");
-		DensityFunction shiftZ = getFunction("shift_z");
-		return new NoiseRouterWithOnlyNoises(
+	private NoiseRouter getNoiseRouter(NoiseSettings noiseSettings, RegistryAccess registryAccess) {
+		DensityFunction shiftX = getFunction("shift_x", registryAccess);
+		DensityFunction shiftZ = getFunction("shift_z", registryAccess);
+		return new NoiseRouter(
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
-				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, BuiltinRegistries.NOISE.getHolderOrThrow(Noises.TEMPERATURE)),
-				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, BuiltinRegistries.NOISE.getHolderOrThrow(Noises.VEGETATION)),
-				getFunction("overworld/continents"),
-				getFunction("overworld/erosion"),
-				getFunction("overworld/depth"),
-				getFunction("overworld/ridges"),
-				DensityFunctions.mul(DensityFunctions.constant(4.0D), DensityFunctions.mul(getFunction("overworld/depth"), DensityFunctions.cache2d(getFunction("overworld/factor"))).quarterNegative()),
-				DensityFunctions.mul(DensityFunctions.interpolated(DensityFunctions.blendDensity(DensityFunctions.slide(noiseSettings, getFunction("overworld/sloped_cheese")))), DensityFunctions.constant(0.64D)).squeeze(),
+				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, registryAccess.lookupOrThrow(Registries.NOISE).getOrThrow(Noises.TEMPERATURE)),
+				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, registryAccess.lookupOrThrow(Registries.NOISE).getOrThrow(Noises.VEGETATION)),
+				getFunction("overworld/continents", registryAccess),
+				getFunction("overworld/erosion", registryAccess),
+				getFunction("overworld/depth", registryAccess),
+				getFunction("overworld/ridges", registryAccess),
+				DensityFunctions.mul(DensityFunctions.constant(4.0D), DensityFunctions.mul(getFunction("overworld/depth", registryAccess), DensityFunctions.cache2d(getFunction("overworld/factor", registryAccess))).quarterNegative()),
+				DensityFunctions.mul(DensityFunctions.interpolated(DensityFunctions.blendDensity(getFunction("overworld/sloped_cheese", registryAccess))), DensityFunctions.constant(0.64D)).squeeze(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero()
 		);
 	}
 
-	private DensityFunction getFunction(String string) {
-		return BuiltinRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(string))).value();
+	private DensityFunction getFunction(String string, RegistryAccess registryAccess) {
+		return registryAccess.lookupOrThrow(Registries.DENSITY_FUNCTION).getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, Identifier.parse(string))).value();
 	}
 
 	private NoiseSettings getNoiseSettings(IWorldConfig worldConfig) {
 		return NoiseSettings.create(
 				worldConfig.getWorldMinY(),
 				worldConfig.getWorldHeight(),
-				new NoiseSamplingSettings(1.0D, 1.0D, 80.0D, 160.0D),
-				new NoiseSlider(-0.078125D, 2, 8),
-				new NoiseSlider(0.1171875D, 3, 0),
 				1,
-				2,
-				TerrainProvider.overworld(false));
+				2);
 	}
 }

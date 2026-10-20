@@ -19,16 +19,37 @@ public class PaperChunkBuffer extends ChunkBuffer
 	private ChunkCoordinate chunkCoord = null;
 	private ChunkGenerator.ChunkData chunkData = null;
 	private ChunkAccess chunk = null;
+	private final int yOffset;
 
+	/**
+	 * Creates a buffer whose Y coordinates are absolute world coordinates.
+	 * Keep this constructor for code such as carvers, which already use world Y.
+	 */
 	public PaperChunkBuffer(ChunkAccess chunk)
 	{
+		this(chunk, 0);
+	}
+
+	/**
+	 * Creates a buffer which translates OTG's zero-based terrain coordinates
+	 * into Minecraft's world Y coordinates.
+	 */
+	public PaperChunkBuffer(ChunkAccess chunk, int yOffset)
+	{
 		this.chunk = chunk;
+		this.yOffset = yOffset;
 	}
 
 	public PaperChunkBuffer(ChunkGenerator.ChunkData chunkData, ChunkCoordinate chunkCoord)
 	{
+		this(chunkData, chunkCoord, chunkData.getMinHeight());
+	}
+
+	public PaperChunkBuffer(ChunkGenerator.ChunkData chunkData, ChunkCoordinate chunkCoord, int yOffset)
+	{
 		this.chunkCoord = chunkCoord;
 		this.chunkData = chunkData;
+		this.yOffset = yOffset;
 	}
 
 	@Override
@@ -47,9 +68,9 @@ public class PaperChunkBuffer extends ChunkBuffer
 	{
 		if (chunkData != null)
 		{
-			this.chunkData.setBlock(blockX, blockY, blockZ, ((PaperMaterialData) material).toSpigotBlockData());
+			this.chunkData.setBlock(blockX, blockY + this.yOffset, blockZ, ((PaperMaterialData) material).toSpigotBlockData());
 		} else {
-			this.chunk.setBlockState(this.mutable.set(blockX, blockY, blockZ), ((PaperMaterialData) material).internalBlock(), false);
+			this.chunk.setBlockState(this.mutable.set(blockX, blockY + this.yOffset, blockZ), ((PaperMaterialData) material).internalBlock());
 		}
 	}
 
@@ -58,10 +79,10 @@ public class PaperChunkBuffer extends ChunkBuffer
 	{
 		if (chunkData != null)
 		{
-			Material material = this.chunkData.getType(blockX, blockY, blockZ);
+			Material material = this.chunkData.getType(blockX, blockY + this.yOffset, blockZ);
 			return PaperMaterialData.ofSpigotMaterial(material);
 		}
-		BlockState blockData = this.chunk.getBlockState(this.mutable.set(blockX, blockY, blockZ));
+		BlockState blockData = this.chunk.getBlockState(this.mutable.set(blockX, blockY + this.yOffset, blockZ));
 		return PaperMaterialData.ofBlockData(blockData);
 	}
 

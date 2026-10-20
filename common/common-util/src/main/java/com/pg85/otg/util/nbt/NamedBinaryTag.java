@@ -36,7 +36,8 @@ public class NamedBinaryTag
 		TAG_String,
 		TAG_List,
 		TAG_Compound,
-		TAG_Int_Array
+		TAG_Int_Array,
+		TAG_Long_Array
 	}
 
 	/**
@@ -131,6 +132,10 @@ public class NamedBinaryTag
 				if (!(value instanceof int[]))
 					throw new IllegalArgumentException();
 				break;
+			case TAG_Long_Array:
+				if (!(value instanceof long[]))
+					throw new IllegalArgumentException();
+				break;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -159,65 +164,80 @@ public class NamedBinaryTag
 		switch (type)
 		{
 			case TAG_End:
-				if (value != null)
+				if (newValue != null)
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Byte:
-				if (!(value instanceof Byte))
+				if (!(newValue instanceof Byte))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Short:
-				if (!(value instanceof Short))
+				if (!(newValue instanceof Short))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Int:
-				if (!(value instanceof Integer))
+				if (!(newValue instanceof Integer))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Long:
-				if (!(value instanceof Long))
+				if (!(newValue instanceof Long))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Float:
-				if (!(value instanceof Float))
+				if (!(newValue instanceof Float))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Double:
-				if (!(value instanceof Double))
+				if (!(newValue instanceof Double))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Byte_Array:
-				if (!(value instanceof byte[]))
+				if (!(newValue instanceof byte[]))
 					throw new IllegalArgumentException();
+				break;
 			case TAG_String:
-				if (!(value instanceof String))
+				if (!(newValue instanceof String))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_List:
-				if (value instanceof Type)
+				if (newValue instanceof Type)
 				{
-					this.listType = (Type) value;
-					value = new NamedBinaryTag[0];
-				} else
+					this.listType = (Type) newValue;
+					newValue = new NamedBinaryTag[0];
+				}
+				else if (newValue instanceof NamedBinaryTag[] subtags)
 				{
-					if (!(value instanceof NamedBinaryTag[]))
-						throw new IllegalArgumentException();
-					this.listType = (((NamedBinaryTag[]) value)[0]).getType();
+					if (subtags.length > 0)
+					{
+						this.listType = subtags[0].getType();
+						for (NamedBinaryTag subtag : subtags)
+						{
+							if (subtag.getType() != this.listType)
+								throw new IllegalArgumentException("All tags in an NBT list must have the same type");
+						}
+					}
+				}
+				else
+				{
+					throw new IllegalArgumentException();
 				}
 				break;
 			case TAG_Compound:
-				if (!(value instanceof NamedBinaryTag[]))
+				if (!(newValue instanceof NamedBinaryTag[]))
 					throw new IllegalArgumentException();
 				break;
 			case TAG_Int_Array:
-				if (!(value instanceof int[]))
+				if (!(newValue instanceof int[]))
+					throw new IllegalArgumentException();
+				break;
+			case TAG_Long_Array:
+				if (!(newValue instanceof long[]))
 					throw new IllegalArgumentException();
 				break;
 			default:
 				throw new IllegalArgumentException();
 		}
-
-		value = newValue;
+		this.value = newValue;
 	}
 
 	public Type getListType()
@@ -465,6 +485,12 @@ public class NamedBinaryTag
 				for (int i = 0; i < len; i++)
 					ia[i] = dis.readInt();
 				return ia;
+			case 12:
+				int longLength = dis.readInt();
+				long[] la = new long[longLength];
+				for (int i = 0; i < longLength; i++)
+					la[i] = dis.readLong();
+				return la;
 
 		}
 		return null;
@@ -553,6 +579,14 @@ public class NamedBinaryTag
 					dos.writeInt(anIa);
 				}
 				break;
+			case TAG_Long_Array:
+				long[] la = (long[]) value;
+				dos.writeInt(la.length);
+				for (long value : la)
+				{
+					dos.writeLong(value);
+				}
+				break;
 
 		}
 	}
@@ -585,6 +619,8 @@ public class NamedBinaryTag
 				return "TAG_Compound";
 			case TAG_Int_Array:
 				return "TAG_Int_Array";
+			case TAG_Long_Array:
+				return "TAG_Long_Array";
 
 		}
 		return null;

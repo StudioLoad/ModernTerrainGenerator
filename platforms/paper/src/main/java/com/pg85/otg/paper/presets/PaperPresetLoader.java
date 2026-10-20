@@ -9,16 +9,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.OptionalInt;
 import java.util.Set;
 
 import com.pg85.otg.paper.util.ObfuscationHelper;
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
+import org.bukkit.craftbukkit.CraftServer;
 import com.mojang.serialization.Lifecycle;
 import com.pg85.otg.config.biome.BiomeConfigFinder;
 import com.pg85.otg.config.biome.BiomeGroup;
@@ -49,7 +50,7 @@ import com.pg85.otg.util.minecraft.EntityCategory;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 
@@ -61,7 +62,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 	// We have to store biomes, since Spigot doesn't expose registry key on BiomeBase.
 	private final Map<Biome, IBiomeConfig> biomeConfigsByBiome = new HashMap<>();	
 
-	private final ResourceKey<Registry<Biome>> BIOME_KEY = Registry.BIOME_REGISTRY;
+	private final ResourceKey<Registry<Biome>> BIOME_KEY = Registries.BIOME;
 
 	public PaperPresetLoader(File otgRootFolder)
 	{
@@ -81,39 +82,42 @@ public class PaperPresetLoader extends LocalPresetLoader
 	public void registerBiomes()
 	{
 		DedicatedServer server = ((CraftServer)Bukkit.getServer()).getServer();
-		WritableRegistry<Biome> biomeRegistry = (WritableRegistry<Biome>) server.registryAccess().ownedRegistryOrThrow(BIOME_KEY);
+		WritableRegistry<Biome> biomeRegistry = (WritableRegistry<Biome>) server.registryAccess().lookupOrThrow(BIOME_KEY);
 
 		Field frozen;
 		try
 		{
 			frozen = ObfuscationHelper.getField(MappedRegistry.class, "frozen", "bL");
-			// Make the frozen boolean accessible
 			frozen.setAccessible(true);
-			// Set the 'frozen' boolean to false for this registry
 			frozen.set(biomeRegistry, false);
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
+					"Failed to unfreeze the biome registry; OTG biomes cannot be registered.");
 			e.printStackTrace();
-		}
-
-		for(Preset preset : this.presets.values())
-		{
-			registerBiomesForPreset(false, preset, biomeRegistry);
+			return;
 		}
 
 		try
 		{
-			frozen = ObfuscationHelper.getField(MappedRegistry.class, "frozen", "bL");
-			// Set the 'frozen' boolean to true for this registry
-			frozen.setAccessible(true);
-			frozen.set(biomeRegistry, true);
+			for (Preset preset : this.presets.values())
+			{
+				registerBiomesForPreset(false, preset, biomeRegistry);
+			}
 		}
-		catch (NoSuchFieldException | IllegalAccessException e)
+		finally
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to re-freeze registry");
-			e.printStackTrace();
+			try
+			{
+				frozen.set(biomeRegistry, true);
+			}
+			catch (IllegalAccessException e)
+			{
+				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
+						"Failed to re-freeze the biome registry after registering OTG biomes.");
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -169,7 +173,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 
 			// When using TemplateForBiome, we'll fetch the non-OTG biome from the registry, including any settings registered to it.
 			// For normal biomes we create our own new OTG biome and apply settings from the biome config.
-			ResourceLocation resourceLocation = new ResourceLocation(biomeConfig.getKey().toResourceLocationString());
+			Identifier resourceLocation = Identifier.parse(biomeConfig.getKey().toResourceLocationString());
 			ResourceKey<Biome> registryKey;
 			Biome biome;
 			if(!(biomeConfig.getKey() instanceof OTGBiomeResourceLocation)) {
@@ -182,12 +186,19 @@ public class PaperPresetLoader extends LocalPresetLoader
 			biomeConfig.getValue().setOTGBiomeId(otgBiomeId);
 			registryKey = ResourceKey.create(BIOME_KEY, resourceLocation);
 			presetBiomes.add(registryKey);
-			biome = PaperBiome.createOTGBiome(isOceanBiome, preset.getWorldConfig(), biomeConfig.getValue(), ((CraftServer)Bukkit.getServer()).getServer().registryHolder);
+			biome = PaperBiome.createOTGBiome(isOceanBiome, preset.getWorldConfig(), biomeConfig.getValue(), ((CraftServer)Bukkit.getServer()).getServer().registryAccess());
 
-			if(!refresh) {
-				biomeRegistry.register(registryKey, biome, Lifecycle.experimental());
+			java.util.Optional<Biome> existingBiome = biomeRegistry.getOptional(registryKey);
+			if (existingBiome.isPresent()) {
+				// Registry entries cannot be replaced safely after the world registry has been built.
+				// Reuse the registered instance so subsequent key lookups never operate on an unregistered biome.
+				biome = existingBiome.get();
+				if (refresh && OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY)) {
+					OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
+							"Biome " + registryKey.identifier() + " is already registered; restart the server to apply changed biome settings.");
+				}
 			} else {
-				biomeRegistry.registerOrOverride(OptionalInt.empty(), registryKey, biome, Lifecycle.experimental());
+				biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
 			}
 
 			// Populate our map for syncing
@@ -223,7 +234,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 //			}
 
 			ResourceKey<Biome> k = biomeRegistry.getResourceKey(biome).get();
-			IBiome otgBiome = new PaperBiome(biomeRegistry.getHolderOrThrow(k), biomeConfig.getValue());
+			IBiome otgBiome = new PaperBiome(biomeRegistry.getOrThrow(k), biomeConfig.getValue());
 			if(otgBiomeId >= presetIdMapping.length)
 			{
 				OTG.getEngine().getLogger().log(LogLevel.FATAL, LogCategory.CONFIGS, "Fatal error while registering OTG biome id's for preset " + preset.getFolderName() + ", most likely you've assigned a DefaultOceanBiome that doesn't exist.");
@@ -436,7 +447,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 			Biome biomeBase = null;
 			if(biome != null)
 			{
-				biomeBase = BuiltinRegistries.BIOME.get(new ResourceLocation(biome.getKey().toString()));
+				biomeBase = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().lookupOrThrow(Registries.BIOME).getValue(Identifier.parse(biome.getKey().toString()));
 			}
 			if(biomeBase != null)
 			{

@@ -7,17 +7,15 @@ import com.pg85.otg.util.materials.MaterialProperties;
 import com.pg85.otg.util.materials.MaterialProperty;
 
 import net.minecraft.core.Direction;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.Fluids;
 
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -135,21 +133,21 @@ public class PaperMaterialData extends LocalMaterialData
 		return
 			this.blockData != null &&
 			(
-				this.blockData.getMaterial() == Material.WATER ||
-				this.blockData.getMaterial() == Material.LAVA
+				this.blockData.getFluidState().getType() == Fluids.WATER ||
+				this.blockData.getFluidState().getType() == Fluids.LAVA
 			);
 	}
 
 	@Override
 	public boolean isSolid()
 	{
-		return this.blockData != null && this.blockData.getMaterial().isSolid() && this.blockData.getMaterial().isSolidBlocking();
+		return this.blockData != null && this.blockData.isSolid() && this.blockData.isSolidRender();
 	}
 
 	@Override
 	public boolean isEmptyOrAir()
 	{
-		return this.blockData == null || this.blockData.getMaterial() == Material.AIR;
+		return this.blockData == null || this.blockData.isAir();
 	}
 	
 	@Override
@@ -161,7 +159,7 @@ public class PaperMaterialData extends LocalMaterialData
 	@Override
 	public boolean isAir()
 	{
-		return this.blockData != null && this.blockData.getMaterial() == Material.AIR;
+		return this.blockData != null && this.blockData.isAir();
 	}
 
 	@Override
@@ -192,7 +190,7 @@ public class PaperMaterialData extends LocalMaterialData
 			) {
 				// TODO: Vanilla checks faceFull here, we don't since it requires coords.
 				//return Block.isFaceFull(this.blockData.getCollisionShape(blockPos, blockPos.below()), Direction.UP) || (this.blockData.is(Blocks.SNOW) && this.blockData.getValue(LAYERS) == 8);
-				return this.blockData.getMaterial().isSolid() || (this.blockData.is(Blocks.SNOW) && this.blockData.getValue(SnowLayerBlock.LAYERS) == 8);
+				return this.blockData.isSolid() || (this.blockData.is(Blocks.SNOW) && this.blockData.getValue(SnowLayerBlock.LAYERS) == 8);
 			} else {
 				return true;
 			}
@@ -231,7 +229,7 @@ public class PaperMaterialData extends LocalMaterialData
 			for (Property<?> property : properties)
 			{
 				// Anything with a direction
-				if (property instanceof DirectionProperty)
+				if (property.getValueClass() == Direction.class)
 				{
 					Direction direction = (Direction) state.getValue(property);
 					switch (direction)
@@ -240,7 +238,7 @@ public class PaperMaterialData extends LocalMaterialData
 						case UP:
 							break;
 						case NORTH:
-							state = state.setValue((DirectionProperty) property, Direction.WEST);
+							state = state.setValue((Property<Direction>) property, Direction.WEST);
 							break;
 						case SOUTH:
 							state = state.setValue((DirectionProperty) property, Direction.EAST);

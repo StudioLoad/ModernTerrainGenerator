@@ -18,7 +18,7 @@ import com.pg85.otg.util.ChunkCoordinate;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.storage.LevelResource;
 
 public class StructureCommand extends BaseCommand
@@ -40,12 +40,12 @@ public class StructureCommand extends BaseCommand
 	private int showStructureInfo(CommandSourceStack source)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (!(source.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
 		{
-			source.sendSuccess(new TextComponent("OTG is not enabled in this world"), false);
+			source.sendSuccess(() -> (Component.literal("OTG is not enabled in this world")), false);
 			return 0;
 		}
 		
@@ -76,7 +76,8 @@ public class StructureCommand extends BaseCommand
 			}
 		}
 		
-		source.sendSuccess(new TextComponent(structureInfo), false);
+		String finalStructureInfo = structureInfo;
+		source.sendSuccess(() -> Component.literal(finalStructureInfo), false);
 		return 0;
 	}
 

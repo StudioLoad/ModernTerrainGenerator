@@ -15,7 +15,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -72,15 +72,15 @@ public class RegionCommand extends BaseCommand
 	public int mark(CommandSourceStack source)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (checkForNonPlayer(source)) return 0;
 		if (playerSelectionMap.get(source.getEntity()).setPos(source.getEntity().blockPosition()))
 		{
-			source.sendSuccess(new TextComponent("Point 1 marked"), false);
+			source.sendSuccess(() -> (Component.literal("Point 1 marked")), false);
 		} else {
-			source.sendSuccess(new TextComponent("Point 2 marked"), false);
+			source.sendSuccess(() -> (Component.literal("Point 2 marked")), false);
 		}
 		return 0;
 	}
@@ -88,7 +88,7 @@ public class RegionCommand extends BaseCommand
 	public int mark(CommandSourceStack source, String input)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (checkForNonPlayer(source)) return 0;
@@ -100,7 +100,7 @@ public class RegionCommand extends BaseCommand
 			case "1":
 			{
 				r.setPos1(source.getEntity().blockPosition());
-				source.sendSuccess(new TextComponent("Point 1 marked"), false);
+				source.sendSuccess(() -> (Component.literal("Point 1 marked")), false);
 				return 0;
 			}
 			case "max":
@@ -108,18 +108,18 @@ public class RegionCommand extends BaseCommand
 			case "2":
 			{
 				r.setPos2(source.getEntity().blockPosition());
-				source.sendSuccess(new TextComponent("Point 2 marked"), false);
+				source.sendSuccess(() -> (Component.literal("Point 2 marked")), false);
 				return 0;
 			}
 			case "center":
 			{
 				r.setCenter(Region.cornerFromBlockPos(source.getEntity().blockPosition()));
-				source.sendSuccess(new TextComponent("Center marked"), false);
+				source.sendSuccess(() -> (Component.literal("Center marked")), false);
 				return 0;
 			}
 			default:
 			{
-				source.sendSuccess(new TextComponent(input + " is not recognized"), false);
+				source.sendSuccess(() -> (Component.literal(input + " is not recognized")), false);
 				return 0;
 			}
 		}
@@ -133,26 +133,26 @@ public class RegionCommand extends BaseCommand
 	public int clear(CommandSourceStack source)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (checkForNonPlayer(source)) return 0;
 		playerSelectionMap.get(source.getEntity()).clear();
-		source.sendSuccess(new TextComponent("Position cleared"), false);
+		source.sendSuccess(() -> (Component.literal("Position cleared")), false);
 		return 0;
 	}
 
 	public int expand(CommandSourceStack source, String direction, Integer value)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (checkForNonPlayer(source)) return 0;
 		Region region = playerSelectionMap.get(source.getEntity());
 		if (region.getMax() == null)
 		{
-			source.sendSuccess(new TextComponent("Please mark two positions before modifying or exporting the region"), false);
+			source.sendSuccess(() -> (Component.literal("Please mark two positions before modifying or exporting the region")), false);
 			return 0;
 		}
 
@@ -195,18 +195,18 @@ public class RegionCommand extends BaseCommand
 					region.setPos1(region.pos1.below(value));
 				break;
 			default:
-				source.sendSuccess(new TextComponent("Unrecognized direction " + direction), false);
+				source.sendSuccess(() -> (Component.literal("Unrecognized direction " + direction)), false);
 				return 0;
 		}
 
-		source.sendSuccess(new TextComponent("Region modified"), false);
+		source.sendSuccess(() -> (Component.literal("Region modified")), false);
 		return 0;
 	}
 
 	public int shrink(CommandSourceStack source, String direction, Integer value)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		if (checkForNonPlayer(source)) return 0;
@@ -220,7 +220,7 @@ public class RegionCommand extends BaseCommand
 	{
 		if (!(source.getEntity() instanceof ServerPlayer))
 		{
-			source.sendSuccess(new TextComponent("Only players can execute this command"), false);
+			source.sendSuccess(() -> (Component.literal("Only players can execute this command")), false);
 			return true;
 		}
 		if (!playerSelectionMap.containsKey(source.getEntity()))

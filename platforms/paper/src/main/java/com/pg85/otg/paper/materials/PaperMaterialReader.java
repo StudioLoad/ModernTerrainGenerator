@@ -12,10 +12,12 @@ import com.pg85.otg.util.materials.LocalMaterialData;
 import com.pg85.otg.util.materials.LocalMaterialTag;
 import com.pg85.otg.util.minecraft.BlockNames;
 
-import net.minecraft.ResourceLocationException;
+import net.minecraft.IdentifierException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -140,7 +142,7 @@ public class PaperMaterialReader implements IMaterialReader
 		try
 		{
 			String newInput = blockNameCorrected.contains(":") ? blockNameCorrected : "minecraft:" + blockNameCorrected;
-			blockdata = new BlockStateParser(new StringReader(newInput), true).parse(true).getState();
+			blockdata = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, newInput, true).blockState();
 		}
 		catch (CommandSyntaxException ignored) { }
 		if (blockdata != null)
@@ -183,7 +185,7 @@ public class PaperMaterialReader implements IMaterialReader
 		try
 		{
 			// This returns AIR if block is not found ><. ----Does it for spigot too?
-			block = Registry.BLOCK.get(new ResourceLocation(blockNameCorrected));
+			block = BuiltInRegistries.BLOCK.getValue(Identifier.parse(blockNameCorrected));
 			if (block != Blocks.AIR || blockNameCorrected.toLowerCase().endsWith("air"))
 			{
 				// For leaves, add DISTANCE 1 to make them not decay.
@@ -193,7 +195,7 @@ public class PaperMaterialReader implements IMaterialReader
 				}				
 				return PaperMaterialData.ofBlockData(block.defaultBlockState(), input);
 			}
-		} catch(ResourceLocationException ignored) { }
+		} catch(IdentifierException ignored) { }
 
 		// Try legacy name again, without data.
 		blockState = PaperLegacyMaterials.fromLegacyBlockName(blockNameCorrected.replace("minecraft:", ""));

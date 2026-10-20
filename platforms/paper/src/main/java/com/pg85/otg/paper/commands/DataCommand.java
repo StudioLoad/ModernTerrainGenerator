@@ -18,9 +18,10 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class DataCommand extends BaseCommand
 {
@@ -61,26 +62,26 @@ public class DataCommand extends BaseCommand
 		// /otg data music
 
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 
 		Registry<?> registry;
 
 		switch (type.toLowerCase()) {
-			case "biome" -> registry = source.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-			case "block" -> registry = Registry.BLOCK;
-			case "entity" -> registry = Registry.ENTITY_TYPE;
-			case "sound" -> registry = Registry.SOUND_EVENT;
-			case "particle" -> registry = Registry.PARTICLE_TYPE;
-			case "configured_feature" -> registry = BuiltinRegistries.CONFIGURED_FEATURE;
+			case "biome" -> registry = source.getServer().registryAccess().lookupOrThrow(Registries.BIOME);
+			case "block" -> registry = BuiltInRegistries.BLOCK;
+			case "entity" -> registry = BuiltInRegistries.ENTITY_TYPE;
+			case "sound" -> registry = BuiltInRegistries.SOUND_EVENT;
+			case "particle" -> registry = BuiltInRegistries.PARTICLE_TYPE;
+			case "configured_feature" -> registry = source.getServer().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
 			default -> {
-				source.sendSuccess(new TextComponent(getUsage()), false);
+				source.sendSuccess(() -> (Component.literal(getUsage())), false);
 				return 0;
 			}
 		}
 
-		Set<ResourceLocation> set = registry.keySet();
+		Set<Identifier> set = registry.keySet();
 		new Thread(() -> {
 			try
 			{
@@ -94,12 +95,12 @@ public class DataCommand extends BaseCommand
 				String fileName = "data-output-" + type + ".txt".toLowerCase();
 				File output = new File(folder, fileName);
 				FileWriter writer = new FileWriter(output);
-				for (ResourceLocation key : set)
+				for (Identifier key : set)
 				{
 					writer.write(key.toString() + "\n");
 				}
 				writer.close();
-				source.sendSuccess(new TextComponent("File exported as " + output.getPath()), true);
+				source.sendSuccess(() -> (Component.literal("File exported as " + output.getPath())), true);
 			} catch (IOException e)
 			{
 				e.printStackTrace();

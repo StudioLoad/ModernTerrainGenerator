@@ -36,7 +36,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -90,7 +90,7 @@ public class ExportCommand extends BaseCommand
 	public int execute(CommandContext<CommandSourceStack> context)
 	{
 		if (!context.getSource().hasPermission(2, getPermission())) {
-			context.getSource().sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			context.getSource().sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		CommandSourceStack source = context.getSource();
@@ -98,7 +98,7 @@ public class ExportCommand extends BaseCommand
 		{
 			if (!(source.getEntity() instanceof ServerPlayer playerEntity))
 			{
-				source.sendSuccess(new TextComponent("Only players can execute this command"), false);
+				source.sendSuccess(() -> (Component.literal("Only players can execute this command")), false);
 				return 0;
 			}
 			if (!configMap.containsKey(playerEntity))
@@ -134,14 +134,14 @@ public class ExportCommand extends BaseCommand
 
 			if (objectName.equalsIgnoreCase(""))
 			{
-				source.sendSuccess(new TextComponent("Usage: /otg export <object name> (center block) [preset] [type] [template] [-a -b -o]").withStyle(ChatFormatting.LIGHT_PURPLE), false);
-				source.sendSuccess(new TextComponent("Do /otg export help for more info"), false);
+				source.sendSuccess(() -> (Component.literal("Usage: /otg export <object name> (center block) [preset] [type] [template] [-a -b -o]").withStyle(ChatFormatting.LIGHT_PURPLE)), false);
+				source.sendSuccess(() -> (Component.literal("Do /otg export help for more info")), false);
 				return 0;
 			}
 
 			if (type == ObjectType.BO2)
 			{
-				source.sendSuccess(new TextComponent("Cannot export BO2 objects"), false);
+				source.sendSuccess(() -> (Component.literal("Cannot export BO2 objects")), false);
 				return 0;
 			}
 
@@ -158,14 +158,14 @@ public class ExportCommand extends BaseCommand
 
 			if (region == null || region.getMin() == null || region.getMax() == null)
 			{
-				source.sendSuccess(new TextComponent("Please define a region with /otg region mark, or worldedit"), false);
+				source.sendSuccess(() -> (Component.literal("Please define a region with /otg region mark, or worldedit")), false);
 				return 0;
 			}
 
 			Preset preset = ObjectUtils.getPresetOrDefault(presetName);
 			if (preset == null)
 			{
-				source.sendSuccess(new TextComponent("Could not find preset " + (presetName == null ? "" : presetName)), false);
+				source.sendSuccess(() -> (Component.literal("Could not find preset " + (presetName == null ? "" : presetName))), false);
 				return 0;
 			}
 
@@ -175,7 +175,7 @@ public class ExportCommand extends BaseCommand
 			{
 				if (new File(objectPath.toFile(), objectName + "." + type.getType()).exists())
 				{
-					source.sendSuccess(new TextComponent("File already exists, run command with flag '-o' to overwrite"), false);
+					source.sendSuccess(() -> (Component.literal("File already exists, run command with flag '-o' to overwrite")), false);
 					return 0;
 				}
 			}
@@ -203,7 +203,7 @@ public class ExportCommand extends BaseCommand
 				OTG.getEngine().getCustomObjectManager(), OTG.getEngine().getPresetLoader().getMaterialReader(preset.getFolderName()),
 				OTG.getEngine().getCustomObjectResourcesManager(), OTG.getEngine().getModLoadedChecker()))
 			{
-				source.sendSuccess(new TextComponent("Failed to load template \"" + templateName + "\""), false);
+				source.sendSuccess(() -> (Component.literal("Failed to load template \"" + templateName + "\"")), false);
 				return 0;
 			}
 
@@ -230,7 +230,7 @@ public class ExportCommand extends BaseCommand
 			// Send feedback, and register the BO3 for immediate use
 			if (object != null)
 			{
-				source.sendSuccess(new TextComponent("Successfully created " + type.getType() + " " + objectName), false);
+				source.sendSuccess(() -> (Component.literal("Successfully created " + type.getType() + " " + objectName)), false);
 				if (isGlobal)
 				{
 					OTG.getEngine().getCustomObjectManager().registerGlobalObject(object, object.getConfig().getFile());
@@ -239,10 +239,10 @@ public class ExportCommand extends BaseCommand
 						.addObjectToPreset(preset.getFolderName(), object.getName().toLowerCase(Locale.ROOT), object.getConfig().getFile(), object);
 				}
 			} else {
-				source.sendSuccess(new TextComponent("Failed to create " + type.getType() + " " + objectName), false);
+				source.sendSuccess(() -> (Component.literal("Failed to create " + type.getType() + " " + objectName)), false);
 			}
 		} catch (Exception e) {
-			source.sendSuccess(new TextComponent("Something went wrong, please check the logs"), false);
+			source.sendSuccess(() -> (Component.literal("Something went wrong, please check the logs")), false);
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Error during export command: "+e.getClass().getName());
 			OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, e);
 		}
@@ -257,15 +257,15 @@ public class ExportCommand extends BaseCommand
 
 	public int helpMessage(CommandSourceStack source)
 	{
-		source.sendSuccess(new TextComponent("Usage: /otg export <object name> (center block) [preset] [type] [template] [-a -b -o]").withStyle(ChatFormatting.LIGHT_PURPLE), false);
-		source.sendSuccess(new TextComponent(" - Object name is the only required argument"), false);
-		source.sendSuccess(new TextComponent(" - Center block is optional; if set, the center will be set to the first found instance of the given block."), false);
-		source.sendSuccess(new TextComponent(" - Preset determines where the object is saved, and where templates are searched for"), false);
-		source.sendSuccess(new TextComponent(" - Type is either BO3 or BO4"), false);
-		source.sendSuccess(new TextComponent(" - Template is a BO3 file whose settings are used for the exported object"), false);
-		source.sendSuccess(new TextComponent("    - Templates have file ending .BO3Template or .BO4Template"), false);
-		source.sendSuccess(new TextComponent("    - Templates are not loaded as objects"), false);
-		source.sendSuccess(new TextComponent(" - There are three flags; -a for Air blocks, -b for Branches, -o for Override"), false);
+		source.sendSuccess(() -> (Component.literal("Usage: /otg export <object name> (center block) [preset] [type] [template] [-a -b -o]").withStyle(ChatFormatting.LIGHT_PURPLE)), false);
+		source.sendSuccess(() -> (Component.literal(" - Object name is the only required argument")), false);
+		source.sendSuccess(() -> (Component.literal(" - Center block is optional; if set, the center will be set to the first found instance of the given block.")), false);
+		source.sendSuccess(() -> (Component.literal(" - Preset determines where the object is saved, and where templates are searched for")), false);
+		source.sendSuccess(() -> (Component.literal(" - Type is either BO3 or BO4")), false);
+		source.sendSuccess(() -> (Component.literal(" - Template is a BO3 file whose settings are used for the exported object")), false);
+		source.sendSuccess(() -> (Component.literal("    - Templates have file ending .BO3Template or .BO4Template")), false);
+		source.sendSuccess(() -> (Component.literal("    - Templates are not loaded as objects")), false);
+		source.sendSuccess(() -> (Component.literal(" - There are three flags; -a for Air blocks, -b for Branches, -o for Override")), false);
 		return 0;
 	}
 	

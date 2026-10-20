@@ -33,7 +33,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -72,10 +72,10 @@ public class MapCommand extends BaseCommand
 							context -> map(context.getSource(), StringArgumentType.getString(context, "type"), 2048, 2048, 0))
 							.suggests(this::suggestTypes
 					).then(
-						Commands.argument("width", IntegerArgumentType.integer(0)).executes(
+						Commands.argument("width", IntegerArgumentType.integer(1)).executes(
 							(context) -> map(context.getSource(), StringArgumentType.getString(context, "type"), IntegerArgumentType.getInteger(context, "width"), IntegerArgumentType.getInteger(context, "width"), 1)
 						).then(
-							Commands.argument("height", IntegerArgumentType.integer(0)).executes(
+							Commands.argument("height", IntegerArgumentType.integer(1)).executes(
 								(context) -> map(context.getSource(), StringArgumentType.getString(context, "type"), IntegerArgumentType.getInteger(context, "width"), IntegerArgumentType.getInteger(context, "height"), 1)
 							).then(
 								Commands.argument("threads", IntegerArgumentType.integer(0)).executes(
@@ -87,7 +87,7 @@ public class MapCommand extends BaseCommand
 	private int map(CommandSourceStack source, String type, int width, int height, int threads)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
 		switch (type.toLowerCase())
@@ -97,7 +97,7 @@ public class MapCommand extends BaseCommand
 			case "terrain":
 				return mapTerrain(source, width, height, threads);
 			default:
-				source.sendSuccess(new TextComponent(getUsage()), false);
+				source.sendSuccess(() -> (Component.literal(getUsage())), false);
 				return 0;
 		}
 	}
@@ -114,7 +114,7 @@ public class MapCommand extends BaseCommand
 			!(source.getLevel().getChunkSource().getGenerator().getBiomeSource() instanceof OTGBiomeProvider)
 		)
 		{
-			source.sendSuccess(new TextComponent("Please run this command in an OTG world."), false);
+			source.sendSuccess(() -> (Component.literal("Please run this command in an OTG world.")), false);
 			return 1;
 		}
 		
@@ -139,7 +139,7 @@ public class MapCommand extends BaseCommand
 		String hours = "" + (duration.toHours() > 9 ? duration.toHours() : "0" + duration.toHours());
 		String minutes = "" + (duration.toMinutes() % 60 > 9 ? (duration.toMinutes() % 60) : "0" + (duration.toMinutes() % 60));
 		String seconds = "" + (duration.get(ChronoUnit.SECONDS) % 60 > 9 ? (duration.get(ChronoUnit.SECONDS) % 60) : "0" + (duration.get(ChronoUnit.SECONDS) % 60));
-		source.sendSuccess(new TextComponent("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + "."), true);
+		source.sendSuccess(() -> (Component.literal("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + ".")), true);
 		
 		return 0;
 	}
@@ -151,7 +151,7 @@ public class MapCommand extends BaseCommand
 			!(source.getLevel().getChunkSource().getGenerator().getBiomeSource() instanceof OTGBiomeProvider)
 		)
 		{
-			source.sendSuccess(new TextComponent("Please run this command in an OTG world."), false);
+			source.sendSuccess(() -> (Component.literal("Please run this command in an OTG world.")), false);
 			return 1;
 		}
 		
@@ -176,7 +176,7 @@ public class MapCommand extends BaseCommand
 		String hours = "" + (duration.toHours() > 9 ? duration.toHours() : "0" + duration.toHours());
 		String minutes = "" + (duration.toMinutes() % 60 > 9 ? (duration.toMinutes() % 60) : "0" + (duration.toMinutes() % 60));
 		String seconds = "" + (duration.get(ChronoUnit.SECONDS) % 60 > 9 ? (duration.get(ChronoUnit.SECONDS) % 60) : "0" + (duration.get(ChronoUnit.SECONDS) % 60));
-		source.sendSuccess(new TextComponent("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + "."), true);
+		source.sendSuccess(() -> (Component.literal("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + ".")), true);
 		
 		return 0;
 	}
@@ -188,9 +188,9 @@ public class MapCommand extends BaseCommand
 		List<BlockPos2D> coordsToHandle = new ArrayList<BlockPos2D>(width * height);
 		if(mapBiomes)
 		{
-			for (int chunkX = 0; chunkX < (int)Math.ceil(width / 4f); chunkX++)
+			for (int chunkX = 0; chunkX < (int)Math.ceil(width / (float) Constants.CHUNK_SIZE); chunkX++)
 			{
-				for (int chunkZ = 0; chunkZ < (int)Math.ceil(height / 4f); chunkZ++)
+				for (int chunkZ = 0; chunkZ < (int)Math.ceil(height / (float) Constants.CHUNK_SIZE); chunkZ++)
 				{
 					coordsToHandle.add(new BlockPos2D(chunkX, chunkZ));
 				}
@@ -205,10 +205,19 @@ public class MapCommand extends BaseCommand
 			}
 		}
 
-		CountDownLatch latch = new CountDownLatch(threads);
-		MapCommand outer = new MapCommand();
 		int totalSize = coordsToHandle.size();
-		for(int i = 0; i < threads; i++)
+		if (totalSize == 0)
+		{
+			return;
+		}
+
+		// A zero thread count means automatic sizing. The previous implementation
+		// started no workers when using the command's default arguments.
+		int requestedThreads = threads > 0 ? threads : Runtime.getRuntime().availableProcessors();
+		int workerCount = Math.max(1, Math.min(requestedThreads, totalSize));
+		CountDownLatch latch = new CountDownLatch(workerCount);
+		MapCommand outer = new MapCommand();
+		for (int i = 0; i < workerCount; i++)
 		{
 			outer.new Worker(latch, source, generator, img, coordsToHandle, totalSize, mapBiomes, width, height).start();
 		}
@@ -273,37 +282,43 @@ public class MapCommand extends BaseCommand
 		@Override
 		public void run()
 		{
-			//set the color
-			while(true)
+			try
 			{
-				BlockPos2D coords = null;
-				int sizeLeft;
-				synchronized(queueLock)
+				//set the color
+				while(true)
 				{
-					sizeLeft = this.coordsToHandle.size();
-					if(sizeLeft > 0)
+					BlockPos2D coords = null;
+					int sizeLeft;
+					synchronized(queueLock)
 					{
-						coords = this.coordsToHandle.remove(sizeLeft - 1);
+						sizeLeft = this.coordsToHandle.size();
+						if(sizeLeft > 0)
+						{
+							coords = this.coordsToHandle.remove(sizeLeft - 1);
+						}
 					}
-				}
-				// Send a progress update to let people know the server isn't dying
-				if (sizeLeft % this.progressUpdate == 0)
-				{
-					this.source.sendSuccess(new TextComponent((int)Math.floor(100 - (((double)sizeLeft / this.totalSize) * 100)) + "% Done mapping"), true);
-				}
-				
-				if(coords != null)
-				{
-					if(this.mapBiomes)
+					// Send a progress update to let people know the server isn't dying
+					if (sizeLeft % this.progressUpdate == 0)
 					{
-						getBiomePixel(coords);
+						this.source.sendSuccess(() -> (Component.literal((int)Math.floor(100 - (((double)sizeLeft / this.totalSize) * 100)) + "% Done mapping")), true);
+					}
+					
+					if(coords != null)
+					{
+						if(this.mapBiomes)
+						{
+							getBiomePixel(coords);
+						} else {
+							getTerrainPixel(coords);
+						}
 					} else {
-						getTerrainPixel(coords);
+						return;
 					}
-				} else {
-					this.latch.countDown();
-					return;
 				}
+			}
+			finally
+			{
+				this.latch.countDown();
 			}
 		}
 
@@ -332,7 +347,7 @@ public class MapCommand extends BaseCommand
 		
 		private void getTerrainPixel(BlockPos2D chunkCoords)
 		{
-			PaperChunkBuffer chunk = this.generator.getChunkWithoutLoadingOrCaching(this.source.getLevel().getRandom(), ChunkCoordinate.fromChunkCoords(chunkCoords.x, chunkCoords.z), this.source.getLevel());
+			PaperChunkBuffer chunk = this.generator.getChunkWithoutLoadingOrCaching(new Random(this.source.getLevel().getSeed() ^ ((long) chunkCoords.x * 341873128712L) ^ ((long) chunkCoords.z * 132897987541L)), ChunkCoordinate.fromChunkCoords(chunkCoords.x, chunkCoords.z), this.source.getLevel());
 			HighestBlockInfo highestBlockInfo;
 			for (int internalX = 0; internalX < 16; internalX++)
 			{
@@ -349,13 +364,13 @@ public class MapCommand extends BaseCommand
 						//int worldWaterLevel = 63;
 						//int min = worldWaterLevel - worldHeight;
 						//int max = worldWaterLevel + worldHeight;
-						// Color depth relative to 0-255
-						int min = 0;
-						int max = 255;
-						int range = max - min;
-						int distance = -min + highestBlockInfo.y;
-						float relativeDistance = (float)distance / (float)range;
-						int shadePercentage = (int)Math.floor(relativeDistance * 2 * 100);
+						// Shade relative to the active world's build range, including negative Y.
+						int min = this.generator.getMinY();
+						int max = min + this.generator.getGeneratorSettingsHolder().value().noiseSettings().height();
+						int range = Math.max(1, max - min);
+						int distance = Math.max(0, Math.min(range, highestBlockInfo.y - min));
+						float relativeDistance = (float) distance / (float) range;
+						int shadePercentage = (int) Math.floor(relativeDistance * 2 * 100);
 						int rgbColor = shadeColor(highestBlockInfo.material.internalBlock().getBlock().defaultMaterialColor().col, shadePercentage);
 						synchronized(imgLock)
 						{
@@ -370,7 +385,7 @@ public class MapCommand extends BaseCommand
 		{
 			// TODO: Just use heightmaps?
 			BlockState blockInChunk;
-			for (int y = chunk.getHighestBlockForColumn(internalX, internalZ); y >= 0; y--)
+			for (int y = chunk.getHighestBlockForColumn(internalX, internalZ); y >= chunk.getChunk().getMinBuildHeight(); y--)
 			{
 				blockInChunk = chunk.getChunk().getBlockState(new BlockPos(internalX, y, internalZ));
 				if (blockInChunk != null && blockInChunk.getBlock() != Blocks.AIR)
