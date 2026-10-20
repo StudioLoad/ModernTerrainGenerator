@@ -138,7 +138,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		{
 			return ChunkCoordinate.fromBlockCoords(this.getWorldConfig().getSpawnPointX(), this.getWorldConfig().getSpawnPointZ());
 		} else {
-			BlockPos spawnPos = this.worldGenRegion.getLevel().getSharedSpawnPos();
+			BlockPos spawnPos = this.worldGenRegion.getLevel().getRespawnData().pos();
 			return ChunkCoordinate.fromBlockCoords(spawnPos.getX(), spawnPos.getZ());
 		}
 	}
@@ -201,7 +201,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		}
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
+		if (chunk == null || !chunk.getPersistedStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return null;
 		}
@@ -229,7 +229,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		}
 
 		// Tried to query an unloaded chunk outside the area being decorated
-		if (chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS))
+		if (chunk == null || !chunk.getPersistedStatus().isOrAfter(ChunkStatus.CARVERS))
 		{
 			return -1;
 		}
@@ -330,7 +330,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		// TODO: Make a getLight method based on world.getLight that uses unloaded chunks.
 		ChunkCoordinate chunkCoord = ChunkCoordinate.fromBlockCoords(x, z);
 		ChunkAccess chunk = this.worldGenRegion.getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ(), ChunkStatus.EMPTY, false);
-		if (chunk != null && chunk.getStatus().isOrAfter(ChunkStatus.LIGHT))
+		if (chunk != null && chunk.getPersistedStatus().isOrAfter(ChunkStatus.LIGHT))
 		{
 			// This fetches the block and skylight as if it were day.
 			return this.worldGenRegion.getLightEmission(new BlockPos(x, y, z));
@@ -672,7 +672,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			if (entity instanceof LivingEntity)
 			{
 				// If the block is a solid block or entity is a fish out of water, cancel
-				LocalMaterialData block = PaperMaterialData.ofBlockData(this.worldGenRegion.getBlockState(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())));
+				LocalMaterialData block = PaperMaterialData.ofBlockData(this.worldGenRegion.getBlockState(BlockPos.containing(entityData.getX(), entityData.getY(), entityData.getZ())));
 				if (
 					block.isSolid() ||
 					(
@@ -694,7 +694,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			{
 				// Make sure Entity() mobs don't de-spawn, regardless of nbt data
 				mobEntity.setPersistenceRequired();
-				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())), EntitySpawnReason.CHUNK_GENERATION, null);
+				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(BlockPos.containing(entityData.getX(), entityData.getY(), entityData.getZ())), EntitySpawnReason.CHUNK_GENERATION, null);
 			}
 			this.worldGenRegion.addFreshEntity(entity);
 		}
@@ -760,7 +760,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			chunk = this.worldGenRegion.getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ(), ChunkStatus.EMPTY, false);
 		}
 		// isAtLeast() -> b()
-		if ((chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS)))
+		if ((chunk == null || !chunk.getPersistedStatus().isOrAfter(ChunkStatus.CARVERS)))
 		{
 			return this.chunkGenerator.getMaterialInUnloadedChunk(this.getWorldRandom(), x, y, z, this.worldGenRegion.getLevel());
 		}
@@ -788,7 +788,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 
 		// If the chunk doesn't exist and we're doing something outside the
 		// decoration sequence, return the material without loading the chunk.
-		if ((chunk == null || !chunk.getStatus().isOrAfter(ChunkStatus.CARVERS)))
+		if ((chunk == null || !chunk.getPersistedStatus().isOrAfter(ChunkStatus.CARVERS)))
 		{
 			return this.chunkGenerator.getHighestBlockYInUnloadedChunk(this.getWorldRandom(), x, z, findSolid, findLiquid, ignoreLiquid, ignoreSnow, this.worldGenRegion.getLevel());
 		}

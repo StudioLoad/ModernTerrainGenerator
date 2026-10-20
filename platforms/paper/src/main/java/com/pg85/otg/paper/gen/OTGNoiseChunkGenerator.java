@@ -228,7 +228,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		for (int startChunkX = chunkX - 1; startChunkX <= chunkX + 1; startChunkX++) {
 			for (int startChunkZ = chunkZ - 1; startChunkZ <= chunkZ + 1; startChunkZ++) {
 				ChunkPos startChunkPos = new ChunkPos(startChunkX, startChunkZ);
-				for (StructureStart start : manager.startsForStructure(startChunkX, startChunkZ, structure -> structure instanceof JigsawStructure)) {
+				for (StructureStart start : manager.startsForStructure(startChunkPos, structure -> structure instanceof JigsawStructure)) {
 					for (StructurePiece piece : start.getPieces()) {
 						if (!piece.isCloseToChunk(pos, 12)) {
 							continue;
@@ -365,8 +365,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		int i = chunkpos.getMinBlockX();
 		int j = chunkpos.getMinBlockZ();
 		LevelHeightAccessor levelheightaccessor = p_187718_.getHeightAccessorForGeneration();
-		int k = levelheightaccessor.getMinBuildHeight() + 1;
-		int l = levelheightaccessor.getMaxBuildHeight() - 1;
+		int k = levelheightaccessor.getMinY() + 1;
+		int l = (levelheightaccessor.getMaxY() + 1) - 1;
 		return new BoundingBox(i, k, j, i + 15, l, j + 15);
 	}
 
@@ -397,8 +397,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 	public int getBaseHeight(int x, int z, Heightmap.Types heightmap, LevelHeightAccessor world, RandomState randomState)
 	{
 		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
-		int minGenY = Math.max(noiseSettings.minY(), world.getMinBuildHeight());
-		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), world.getMaxBuildHeight());
+		int minGenY = Math.max(noiseSettings.minY(), world.getMinY());
+		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), (world.getMaxY() + 1));
 		if (maxGenY <= minGenY) {
 			return minGenY;
 		}
@@ -410,8 +410,8 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 	public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor world, RandomState randomState)
 	{
 		NoiseSettings noiseSettings = this.generatorSettingsHolder.value().noiseSettings();
-		int minGenY = Math.max(noiseSettings.minY(), world.getMinBuildHeight());
-		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), world.getMaxBuildHeight());
+		int minGenY = Math.max(noiseSettings.minY(), world.getMinY());
+		int maxGenY = Math.min(noiseSettings.minY() + noiseSettings.height(), (world.getMaxY() + 1));
 		if (maxGenY <= minGenY) {
 			return new NoiseColumn(minGenY, new BlockState[0]);
 		}

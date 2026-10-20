@@ -63,10 +63,12 @@ public class PaperBiome implements IBiome
 	private final IBiomeConfig biomeConfig;
 	private final Holder<Biome> holder;
 
-	public PaperBiome(Holder<Biome> biomeBase, IBiomeConfig biomeConfig)
+	public PaperBiome(Holder<Biome> biomeHolder, Biome biome, IBiomeConfig biomeConfig)
 	{
-		this.biomeBase = biomeBase.value();
-		this.holder = biomeBase;
+		// The registry is temporarily unfrozen while OTG registers its biomes.
+		// Holder.value() is not safe until the registry has been frozen again.
+		this.biomeBase = biome;
+		this.holder = biomeHolder;
 		this.biomeConfig = biomeConfig;
 	}
 
@@ -554,6 +556,6 @@ public class PaperBiome implements IBiome
 	@Override
 	public float getTemperatureAt (int x, int y, int z)
 	{
-		return this.biomeBase.getTemperature(new BlockPos(x, y, z));
+		return this.biomeBase.getTemperature(new BlockPos(x, y, z), y);
 	}
 }

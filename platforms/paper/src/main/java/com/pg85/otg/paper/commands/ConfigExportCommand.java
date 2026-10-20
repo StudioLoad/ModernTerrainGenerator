@@ -47,7 +47,7 @@ public class ConfigExportCommand extends BaseCommand
 			).then(
 				Commands.literal("filter").then(
 					Commands.literal("add").then(
-						Commands.argument("block", BlockStateArgument.block())
+						Commands.argument("block", BlockStateArgument.block(context.getBuildContext()))
 							.executes(context -> {
 								Entity sender = context.getSource().getEntity();
 								init(sender);
@@ -59,7 +59,7 @@ public class ConfigExportCommand extends BaseCommand
 					)
 				).then(
 					Commands.literal("remove").then(
-						Commands.argument("block", BlockStateArgument.block())
+						Commands.argument("block", BlockStateArgument.block(context.getBuildContext()))
 							.executes(context -> {
 								Entity sender = context.getSource().getEntity();
 								init(sender);
@@ -95,7 +95,7 @@ public class ConfigExportCommand extends BaseCommand
 				)
 			).then(
 				Commands.literal("centerblock").then(
-					Commands.argument("block", BlockStateArgument.block())
+					Commands.argument("block", BlockStateArgument.block(context.getBuildContext()))
 						.executes(context -> {
 							Entity sender = context.getSource().getEntity();
 							init(sender);

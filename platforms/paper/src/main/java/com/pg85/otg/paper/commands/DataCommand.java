@@ -61,7 +61,7 @@ public class DataCommand extends BaseCommand
 	{
 		// /otg data music
 
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}

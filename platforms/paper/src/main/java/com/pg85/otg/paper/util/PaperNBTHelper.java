@@ -171,12 +171,12 @@ public class PaperNBTHelper extends LocalNBTHelper
 		NamedBinaryTag.Type type = NamedBinaryTag.Type.values()[nmsTag.getId()];
 		return switch (type)
 			{
-				case TAG_Byte -> ((ByteTag) nmsTag).getAsByte();
-				case TAG_Short -> ((ShortTag) nmsTag).getAsShort();
-				case TAG_Int -> ((IntTag) nmsTag).getAsInt();
-				case TAG_Long -> ((LongTag) nmsTag).getAsLong();
-				case TAG_Float -> ((FloatTag) nmsTag).getAsFloat();
-				case TAG_Double -> ((DoubleTag) nmsTag).getAsDouble();
+				case TAG_Byte -> ((ByteTag) nmsTag).byteValue();
+				case TAG_Short -> ((ShortTag) nmsTag).shortValue();
+				case TAG_Int -> ((IntTag) nmsTag).intValue();
+				case TAG_Long -> ((LongTag) nmsTag).longValue();
+				case TAG_Float -> ((FloatTag) nmsTag).floatValue();
+				case TAG_Double -> ((DoubleTag) nmsTag).doubleValue();
 				case TAG_Byte_Array -> ((ByteArrayTag) nmsTag).getAsByteArray();
 				case TAG_String -> ((StringTag) nmsTag).value();
 				case TAG_Int_Array -> ((IntArrayTag) nmsTag).getAsIntArray();

@@ -110,12 +110,14 @@ public class PaperPresetLoader extends LocalPresetLoader
 		{
 			try
 			{
-				frozen.set(biomeRegistry, true);
+				// Calling freeze() is required to bind the newly registered holders.
+				// Merely setting MappedRegistry.frozen=true skips that binding step.
+				biomeRegistry.freeze();
 			}
-			catch (IllegalAccessException e)
+			catch (RuntimeException e)
 			{
 				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
-						"Failed to re-freeze the biome registry after registering OTG biomes.");
+						"Failed to freeze the biome registry after registering OTG biomes.");
 				e.printStackTrace();
 			}
 		}
@@ -234,7 +236,7 @@ public class PaperPresetLoader extends LocalPresetLoader
 //			}
 
 			ResourceKey<Biome> k = biomeRegistry.getResourceKey(biome).get();
-			IBiome otgBiome = new PaperBiome(biomeRegistry.getOrThrow(k), biomeConfig.getValue());
+			IBiome otgBiome = new PaperBiome(biomeRegistry.getOrThrow(k), biome, biomeConfig.getValue());
 			if(otgBiomeId >= presetIdMapping.length)
 			{
 				OTG.getEngine().getLogger().log(LogLevel.FATAL, LogCategory.CONFIGS, "Fatal error while registering OTG biome id's for preset " + preset.getFolderName() + ", most likely you've assigned a DefaultOceanBiome that doesn't exist.");

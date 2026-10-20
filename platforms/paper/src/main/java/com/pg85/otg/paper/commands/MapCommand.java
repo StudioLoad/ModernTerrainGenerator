@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
@@ -86,7 +87,7 @@ public class MapCommand extends BaseCommand
 	
 	private int map(CommandSourceStack source, String type, int width, int height, int threads)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -385,7 +386,7 @@ public class MapCommand extends BaseCommand
 		{
 			// TODO: Just use heightmaps?
 			BlockState blockInChunk;
-			for (int y = chunk.getHighestBlockForColumn(internalX, internalZ); y >= chunk.getChunk().getMinBuildHeight(); y--)
+			for (int y = chunk.getHighestBlockForColumn(internalX, internalZ); y >= chunk.getChunk().getMinY(); y--)
 			{
 				blockInChunk = chunk.getChunk().getBlockState(new BlockPos(internalX, y, internalZ));
 				if (blockInChunk != null && blockInChunk.getBlock() != Blocks.AIR)
