@@ -33,7 +33,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -87,7 +87,7 @@ public class MapCommand extends BaseCommand
 	private int map(CommandSourceStack source, String type, int width, int height, int threads)
 	{
 		if (!source.hasPermission(2, getPermission())) {
-			source.sendSuccess(new TextComponent("\u00a7cPermission denied!"), false);
+			source.sendSuccess(Component.literal("\u00a7cPermission denied!"), false);
 			return 0;
 		}
 		switch (type.toLowerCase())
@@ -97,7 +97,7 @@ public class MapCommand extends BaseCommand
 			case "terrain":
 				return mapTerrain(source, width, height, threads);
 			default:
-				source.sendSuccess(new TextComponent(getUsage()), false);
+				source.sendSuccess(Component.literal(getUsage()), false);
 				return 0;
 		}
 	}
@@ -114,7 +114,7 @@ public class MapCommand extends BaseCommand
 			!(source.getLevel().getChunkSource().getGenerator().getBiomeSource() instanceof OTGBiomeProvider)
 		)
 		{
-			source.sendSuccess(new TextComponent("Please run this command in an OTG world."), false);
+			source.sendSuccess(Component.literal("Please run this command in an OTG world."), false);
 			return 1;
 		}
 		
@@ -139,7 +139,7 @@ public class MapCommand extends BaseCommand
 		String hours = "" + (duration.toHours() > 9 ? duration.toHours() : "0" + duration.toHours());
 		String minutes = "" + (duration.toMinutes() % 60 > 9 ? (duration.toMinutes() % 60) : "0" + (duration.toMinutes() % 60));
 		String seconds = "" + (duration.get(ChronoUnit.SECONDS) % 60 > 9 ? (duration.get(ChronoUnit.SECONDS) % 60) : "0" + (duration.get(ChronoUnit.SECONDS) % 60));
-		source.sendSuccess(new TextComponent("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + "."), true);
+		source.sendSuccess(Component.literal("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + "."), true);
 		
 		return 0;
 	}
@@ -151,7 +151,7 @@ public class MapCommand extends BaseCommand
 			!(source.getLevel().getChunkSource().getGenerator().getBiomeSource() instanceof OTGBiomeProvider)
 		)
 		{
-			source.sendSuccess(new TextComponent("Please run this command in an OTG world."), false);
+			source.sendSuccess(Component.literal("Please run this command in an OTG world."), false);
 			return 1;
 		}
 		
@@ -176,7 +176,7 @@ public class MapCommand extends BaseCommand
 		String hours = "" + (duration.toHours() > 9 ? duration.toHours() : "0" + duration.toHours());
 		String minutes = "" + (duration.toMinutes() % 60 > 9 ? (duration.toMinutes() % 60) : "0" + (duration.toMinutes() % 60));
 		String seconds = "" + (duration.get(ChronoUnit.SECONDS) % 60 > 9 ? (duration.get(ChronoUnit.SECONDS) % 60) : "0" + (duration.get(ChronoUnit.SECONDS) % 60));
-		source.sendSuccess(new TextComponent("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + "."), true);
+		source.sendSuccess(Component.literal("Finished mapping in " + hours + ":" + minutes + ":" + seconds + "! The resulting image is located at " + fileName + "."), true);
 		
 		return 0;
 	}
@@ -289,7 +289,7 @@ public class MapCommand extends BaseCommand
 				// Send a progress update to let people know the server isn't dying
 				if (sizeLeft % this.progressUpdate == 0)
 				{
-					this.source.sendSuccess(new TextComponent((int)Math.floor(100 - (((double)sizeLeft / this.totalSize) * 100)) + "% Done mapping"), true);
+					this.source.sendSuccess(Component.literal((int)Math.floor(100 - (((double)sizeLeft / this.totalSize) * 100)) + "% Done mapping"), true);
 				}
 				
 				if(coords != null)
