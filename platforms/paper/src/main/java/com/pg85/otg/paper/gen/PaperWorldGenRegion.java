@@ -13,6 +13,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
@@ -412,7 +413,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			try {
 				// TODO: Check that this doesn't break anything
 				//tileEntity.load(state, nms);
-				tileEntity.load(nms);
+				tileEntity.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, this.worldGenRegion.registryAccess(), nms));
 			}
 			catch (JsonSyntaxException e)
 			{
@@ -638,7 +639,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			}
 			if (compoundTag != null)
 			{
-				entity.load(compoundTag);
+				entity.load(TagValueInput.create(ProblemReporter.DISCARDING, this.worldGenRegion.registryAccess(), compoundTag));
 			}
 			entity.setRot(this.getWorldRandom().nextFloat() * 360.0F, 0.0F);
 			entity.setPos(entityData.getX(), entityData.getY(), entityData.getZ());
