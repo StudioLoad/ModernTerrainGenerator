@@ -183,12 +183,12 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		}
 		// We have a CustomChunkGenerator and a NoiseChunkGenerator
 		OTGNoiseChunkGenerator OTGDelegate;
+		RegistryAccess registryAccess = ((CraftServer) Bukkit.getServer()).getServer().registryAccess();
 		// If generator is null, it has not been initialized yet. Initialize it.
 		// The lock is used to avoid the accidental creation of two separate objects, in case
 		// of a race condition.
 		if (OTGGen.generator == null)
 		{
-			RegistryAccess registryAccess = ((CraftServer) Bukkit.getServer()).getServer().registryAccess();
 			NoiseSettings noiseSettings = getNoiseSettings(OTGGen.getPreset().getWorldConfig());
 			OTGDelegate = new OTGNoiseChunkGenerator(
 				OTGGen.getPreset().getFolderName(),
