@@ -72,10 +72,10 @@ public class MapCommand extends BaseCommand
 							context -> map(context.getSource(), StringArgumentType.getString(context, "type"), 2048, 2048, 0))
 							.suggests(this::suggestTypes
 					).then(
-						Commands.argument("width", IntegerArgumentType.integer(0)).executes(
+						Commands.argument("width", IntegerArgumentType.integer(1)).executes(
 							(context) -> map(context.getSource(), StringArgumentType.getString(context, "type"), IntegerArgumentType.getInteger(context, "width"), IntegerArgumentType.getInteger(context, "width"), 1)
 						).then(
-							Commands.argument("height", IntegerArgumentType.integer(0)).executes(
+							Commands.argument("height", IntegerArgumentType.integer(1)).executes(
 								(context) -> map(context.getSource(), StringArgumentType.getString(context, "type"), IntegerArgumentType.getInteger(context, "width"), IntegerArgumentType.getInteger(context, "height"), 1)
 							).then(
 								Commands.argument("threads", IntegerArgumentType.integer(0)).executes(
@@ -188,9 +188,9 @@ public class MapCommand extends BaseCommand
 		List<BlockPos2D> coordsToHandle = new ArrayList<BlockPos2D>(width * height);
 		if(mapBiomes)
 		{
-			for (int chunkX = 0; chunkX < (int)Math.ceil(width / 4f); chunkX++)
+			for (int chunkX = 0; chunkX < (int)Math.ceil(width / (float) Constants.CHUNK_SIZE); chunkX++)
 			{
-				for (int chunkZ = 0; chunkZ < (int)Math.ceil(height / 4f); chunkZ++)
+				for (int chunkZ = 0; chunkZ < (int)Math.ceil(height / (float) Constants.CHUNK_SIZE); chunkZ++)
 				{
 					coordsToHandle.add(new BlockPos2D(chunkX, chunkZ));
 				}
@@ -205,10 +205,19 @@ public class MapCommand extends BaseCommand
 			}
 		}
 
-		CountDownLatch latch = new CountDownLatch(threads);
-		MapCommand outer = new MapCommand();
 		int totalSize = coordsToHandle.size();
-		for(int i = 0; i < threads; i++)
+		if (totalSize == 0)
+		{
+			return;
+		}
+
+		// A zero thread count means automatic sizing. The previous implementation
+		// started no workers when using the command's default arguments.
+		int requestedThreads = threads > 0 ? threads : Runtime.getRuntime().availableProcessors();
+		int workerCount = Math.max(1, Math.min(requestedThreads, totalSize));
+		CountDownLatch latch = new CountDownLatch(workerCount);
+		MapCommand outer = new MapCommand();
+		for (int i = 0; i < workerCount; i++)
 		{
 			outer.new Worker(latch, source, generator, img, coordsToHandle, totalSize, mapBiomes, width, height).start();
 		}
