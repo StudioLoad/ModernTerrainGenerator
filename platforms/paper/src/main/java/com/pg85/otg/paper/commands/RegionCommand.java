@@ -71,7 +71,7 @@ public class RegionCommand extends BaseCommand
 
 	public int mark(CommandSourceStack source)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -87,7 +87,7 @@ public class RegionCommand extends BaseCommand
 
 	public int mark(CommandSourceStack source, String input)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -132,7 +132,7 @@ public class RegionCommand extends BaseCommand
 
 	public int clear(CommandSourceStack source)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -144,7 +144,7 @@ public class RegionCommand extends BaseCommand
 
 	public int expand(CommandSourceStack source, String direction, Integer value)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -205,7 +205,7 @@ public class RegionCommand extends BaseCommand
 
 	public int shrink(CommandSourceStack source, String direction, Integer value)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
