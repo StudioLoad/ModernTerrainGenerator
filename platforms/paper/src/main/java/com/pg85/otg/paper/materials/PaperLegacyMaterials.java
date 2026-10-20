@@ -163,7 +163,7 @@ public class PaperLegacyMaterials
 			case "mob_spawner":
 				return Blocks.INFESTED_STONE.defaultBlockState();
 			case "double_step":
-				return BuiltInRegistries.BLOCK.get(Identifier.parse("minecraft:smooth_stone_slab"))
+				return BuiltInRegistries.BLOCK.getValue(Identifier.parse("minecraft:smooth_stone_slab"))
 						.defaultBlockState().setValue(SlabBlock.TYPE,
 								SlabType.DOUBLE);
 			case "smooth_brick":
@@ -261,16 +261,16 @@ public class PaperLegacyMaterials
 					// Legacy blocks with block data that are now their own block
 				case "banner":
 				case "white_banner":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:banner", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:banner", data)).defaultBlockState();
 
 				// TODO: How does facing for bed blocks in bo's work for 1.12.2, can only specify color via data?
 				case "bed":
 				case "white_bed":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:bed", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:bed", data)).defaultBlockState();
 
 				case "carpet":
 				case "white_carpet":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:carpet", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:carpet", data)).defaultBlockState();
 
 				case "cobblestone_wall":
 				case "cobble_wall":
@@ -284,55 +284,55 @@ public class PaperLegacyMaterials
 					}
 				case "concrete":
 				case "white_concrete":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:concrete", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:concrete", data)).defaultBlockState();
 
 				case "concrete_powder":
 				case "white_concrete_powder":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:concrete_powder", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:concrete_powder", data)).defaultBlockState();
 
 				case "dirt":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:dirt", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:dirt", data)).defaultBlockState();
 
 				// TODO: This only spawns the bottom half?
 				case "double_plant":
 				case "sunflower":
 				case "rose_bush":
 				case "tall_grass":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:double_plant", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:double_plant", data)).defaultBlockState();
 
 				case "double_stone_slab":
 				case "smooth_stone":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stone_slab", data))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone_slab", data))
 							.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE);
 
 				// TODO: Did this even exist for 1.12.2?
 				case "double_wooden_slab":
 				case "wood_double_step":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:wooden_slab", data))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:wooden_slab", data))
 							.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE);
 
 				case "leaves":
 				case "oak_leaves":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:leaves", data % 4))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:leaves", data % 4))
 							.defaultBlockState().setValue(LeavesBlock.DISTANCE, 1);
 
 				case "leaves2":
 				case "leaves_2":
 				case "acacia_leaves":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:leaves2", data % 4)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:leaves2", data % 4)).defaultBlockState();
 
 				case "monster_egg":
 				case "monster_eggs":
 				case "infested_stone":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:monster_egg", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:monster_egg", data)).defaultBlockState();
 
 				case "planks":
 				case "wood":
 				case "oak_planks":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:planks", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:planks", data)).defaultBlockState();
 
 				case "prismarine":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:prismarine", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:prismarine", data)).defaultBlockState();
 
 				case "purpur_slab":
 					return Blocks.PURPUR_SLAB.defaultBlockState()
@@ -345,10 +345,10 @@ public class PaperLegacyMaterials
 
 				case "red_flower":
 				case "red_rose":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:red_flower", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:red_flower", data)).defaultBlockState();
 
 				case "red_sandstone":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:red_sandstone", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:red_sandstone", data)).defaultBlockState();
 
 				case "red_sandstone_slab":
 				case "stone_slab2":
@@ -375,11 +375,11 @@ public class PaperLegacyMaterials
 					}
 
 				case "sandstone":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:sandstone", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:sandstone", data)).defaultBlockState();
 
 				case "sapling":
 				case "oak_sapling":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:sapling", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:sapling", data)).defaultBlockState();
 
 				case "skull":
 				case "skeleton_skull":
@@ -395,35 +395,35 @@ public class PaperLegacyMaterials
 					}
 				case "stained_glass":
 				case "white_stained_glass":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stained_glass", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stained_glass", data)).defaultBlockState();
 
 				case "stained_glass_pane":
 				case "white_stained_glass_pane":
 				case "thin_glass":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stained_glass_pane", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stained_glass_pane", data)).defaultBlockState();
 
 				case "stained_hardened_clay":
 				case "stained_clay":
 				case "white_terracotta":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stained_hardened_clay", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stained_hardened_clay", data)).defaultBlockState();
 
 				case "stone":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stone", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone", data)).defaultBlockState();
 
 				case "stone_slab":
 				case "step":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stone_slab", data % 8))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone_slab", data % 8))
 						.defaultBlockState().setValue(SlabBlock.TYPE,
 							data >= 8 ? SlabType.TOP : SlabType.BOTTOM);
 
 				case "double_step":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stone_slab", data % 8))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stone_slab", data % 8))
 						.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE);					
 					
 				case "stonebrick":
 				case "stone_bricks":
 				case "smooth_brick":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:stonebrick", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:stonebrick", data)).defaultBlockState();
 
 				case "tallgrass":
 				case "long_grass":
@@ -438,13 +438,13 @@ public class PaperLegacyMaterials
 				case "wooden_slab":
 				case "wood_step":
 				case "oak_slab":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:wooden_slab", data % 8))
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:wooden_slab", data % 8))
 							.defaultBlockState().setValue(SlabBlock.TYPE,
 									data >= 8 ? SlabType.TOP : SlabType.BOTTOM);
 
 				case "wool":
 				case "white_wool":
-					return BuiltInRegistries.BLOCK.get(getFlatKey("minecraft:wool", data)).defaultBlockState();
+					return BuiltInRegistries.BLOCK.getValue(getFlatKey("minecraft:wool", data)).defaultBlockState();
 
 
 				// Blocks with data
@@ -856,7 +856,7 @@ public class PaperLegacyMaterials
 			};
 			case "stone_slab" -> switch (metadata & 7)
 			{
-				case 0 -> "stone_slab";
+				case 0 -> "smooth_stone_slab";
 				case 1 -> "sandstone_slab";
 				case 2 -> "petrified_oak_slab";
 				case 3 -> "cobblestone_slab";
