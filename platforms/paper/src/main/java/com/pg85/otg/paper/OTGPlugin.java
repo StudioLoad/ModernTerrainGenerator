@@ -114,7 +114,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		OTG.startEngine(new PaperEngine(this));
 		
 		OTGCommandExecutor.registerArguments();
-		OTGCommandExecutor.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+		OTGCommandExecutor.register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
 		// Does this go here?
 		OTG.getEngine().getPresetLoader().registerBiomes();
 
