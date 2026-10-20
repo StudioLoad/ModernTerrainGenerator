@@ -2,7 +2,7 @@ package com.pg85.otg.paper.materials;
 
 import com.pg85.otg.util.materials.LocalMaterials;
 
-import net.minecraft.world.level.block.BambooBlock;
+import net.minecraft.world.level.block.BambooStalkBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
@@ -309,11 +309,11 @@ public class PaperMaterials extends LocalMaterials
 		VINE = PaperMaterialData.ofBlockData(Blocks.VINE.defaultBlockState());
 		WATER_LILY = PaperMaterialData.ofBlockData(Blocks.LILY_PAD.defaultBlockState());
 		SUGAR_CANE_BLOCK = PaperMaterialData.ofBlockData(Blocks.SUGAR_CANE.defaultBlockState());
-		BlockState bambooState = Blocks.BAMBOO.defaultBlockState().setValue(BambooBlock.AGE, 1).setValue(BambooBlock.LEAVES, BambooLeaves.NONE).setValue(BambooBlock.STAGE, 0);
+		BlockState bambooState = Blocks.BAMBOO.defaultBlockState().setValue(BambooStalkBlock.AGE, 1).setValue(BambooStalkBlock.LEAVES, BambooLeaves.NONE).setValue(BambooStalkBlock.STAGE, 0);
 		BAMBOO = PaperMaterialData.ofBlockData(bambooState);
-		BAMBOO_SMALL = PaperMaterialData.ofBlockData(bambooState.setValue(BambooBlock.LEAVES, BambooLeaves.SMALL));
-		BAMBOO_LARGE = PaperMaterialData.ofBlockData(bambooState.setValue(BambooBlock.LEAVES, BambooLeaves.LARGE));
-		BAMBOO_LARGE_GROWING = PaperMaterialData.ofBlockData(bambooState.setValue(BambooBlock.LEAVES, BambooLeaves.LARGE).setValue(BambooBlock.STAGE, 1));
+		BAMBOO_SMALL = PaperMaterialData.ofBlockData(bambooState.setValue(BambooStalkBlock.LEAVES, BambooLeaves.SMALL));
+		BAMBOO_LARGE = PaperMaterialData.ofBlockData(bambooState.setValue(BambooStalkBlock.LEAVES, BambooLeaves.LARGE));
+		BAMBOO_LARGE_GROWING = PaperMaterialData.ofBlockData(bambooState.setValue(BambooStalkBlock.LEAVES, BambooLeaves.LARGE).setValue(BambooStalkBlock.STAGE, 1));
 		PODZOL = PaperMaterialData.ofBlockData(Blocks.PODZOL.defaultBlockState());
 		SEAGRASS = PaperMaterialData.ofBlockData(Blocks.SEAGRASS.defaultBlockState());
 		TALL_SEAGRASS_LOWER = PaperMaterialData.ofBlockData(Blocks.TALL_SEAGRASS.defaultBlockState().setValue(TallSeagrassBlock.HALF, DoubleBlockHalf.LOWER));
