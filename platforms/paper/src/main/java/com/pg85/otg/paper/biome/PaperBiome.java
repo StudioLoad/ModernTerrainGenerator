@@ -163,8 +163,8 @@ public class PaperBiome implements IBiome
 		float safeTemperature = biomeConfig.getBiomeTemperature();
 		if (safeTemperature >= 0.1 && safeTemperature <= 0.2)
 		{
-			// Avoid temperatures between 0.1 and 0.2, Minecraft restriction
-			safeTemperature = safeTemperature >= 1.5 ? 0.2f : 0.1f;
+			// Avoid the unsupported temperature interval while preserving the nearest boundary.
+			safeTemperature = safeTemperature >= 0.15f ? 0.2f : 0.1f;
 		}
 
 		// Minecraft 1.21.11 stores atmospheric colors, particles and sounds as environment attributes.
