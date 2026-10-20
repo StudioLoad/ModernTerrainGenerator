@@ -34,8 +34,7 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.storage.LevelResource;
 
 public class SpawnCommand extends BaseCommand
@@ -235,8 +234,8 @@ public class SpawnCommand extends BaseCommand
 	                            	if(chunkCoordSpawned != null)
 	                            	{
 	                            		source.sendSuccess(() -> (Component.literal(objectToSpawn.getName() + " was spawned at: ")), false);
-	                            		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", chunkCoordSpawned.getBlockX(), "~", chunkCoordSpawned.getBlockZ())).withStyle((p_241055_1_) -> {
-	                            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + chunkCoordSpawned.getBlockX() + " ~ " + chunkCoordSpawned.getBlockZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip")));
+	                            		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", chunkCoordSpawned.getBlockX(), "~", chunkCoordSpawned.getBlockZ())).withStyle((p_241055_1_) -> {
+	                            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + chunkCoordSpawned.getBlockX() + " ~ " + chunkCoordSpawned.getBlockZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")));
 	                            		});	                            		
 	                            		source.sendSuccess(() -> (itextcomponent), false);
 	                            		return 0;
@@ -261,8 +260,8 @@ public class SpawnCommand extends BaseCommand
 				))
 				{
             		source.sendSuccess(() -> (Component.literal(objectToSpawn.getName() + " was spawned at: ")), false);
-            		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", blockPos.getX(), "~", blockPos.getZ())).withStyle((p_241055_1_) -> {
-            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + blockPos.getX() + " ~ " + blockPos.getZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip")));
+            		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", blockPos.getX(), "~", blockPos.getZ())).withStyle((p_241055_1_) -> {
+            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + blockPos.getX() + " ~ " + blockPos.getZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")));
             		});	                            		
             		source.sendSuccess(() -> (itextcomponent), false);
 				} else {
