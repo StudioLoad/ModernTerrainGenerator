@@ -109,24 +109,32 @@ public class PaperBiome implements IBiome
 			if (res instanceof RegistryResource registryResource)
 			{
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
-				PlacedFeature registry = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE).getValue(Identifier.parse(registryResource.getFeatureKey()));
-				if (registry == null)
+				Registry<PlacedFeature> placedFeatures = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE);
+				String featureName = registryResource.getFeatureKey();
+				ResourceKey<PlacedFeature> featureKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.parse(featureName));
+				Holder<PlacedFeature> featureHolder = placedFeatures.get(featureKey).orElse(null);
+
+				if (featureHolder == null)
 				{
-					String newResourceLocation = LegacyRegistry.convertLegacyResourceLocation(registryResource.getFeatureKey());
-					if (newResourceLocation != null) {
-						registry = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE).getValue(Identifier.parse(newResourceLocation));
-						if (registry == null) {
-							OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Somehow you broke the universe! Feature: "+newResourceLocation+" is not in the registry");
-						} else {
-							biomeGenerationSettingsBuilder.addFeature(stage, Holder.direct(registry));
-						}
-					} else {
-						OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY, "Could not find feature " + registryResource.getFeatureKey() + " in the registry, please check spelling");
+					String legacyFeatureName = LegacyRegistry.convertLegacyResourceLocation(featureName);
+					if (legacyFeatureName != null)
+					{
+						ResourceKey<PlacedFeature> legacyFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.parse(legacyFeatureName));
+						featureHolder = placedFeatures.get(legacyFeatureKey).orElse(null);
 					}
-				} else {
-					biomeGenerationSettingsBuilder.addFeature(stage, Holder.direct(registry));
+				}
+
+				if (featureHolder == null)
+				{
+					OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
+							"Could not find placed feature " + featureName + " in the registry; check the feature key");
+				}
+				else
+				{
+					biomeGenerationSettingsBuilder.addFeature(stage, featureHolder);
 				}
 			}
+
 			if (res instanceof GlowLichenResource glow)
 			{
 				List<BlockState> list = new ArrayList<>();
