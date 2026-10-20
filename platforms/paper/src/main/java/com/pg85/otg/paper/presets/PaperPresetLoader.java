@@ -114,11 +114,18 @@ public class PaperPresetLoader extends LocalPresetLoader
 				// Merely setting MappedRegistry.frozen=true skips that binding step.
 				biomeRegistry.freeze();
 			}
-			catch (RuntimeException e)
+			catch (IllegalStateException e)
 			{
-				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
-						"Failed to freeze the biome registry after registering OTG biomes.");
-				e.printStackTrace();
+				// The server has already bound biome tags before plugin enable. In this case
+				// MappedRegistry.freeze() binds all registry holders and sets frozen=true,
+				// then throws because the existing tags cannot be frozen a second time.
+				// Treat that specific exception as expected; rethrow anything else.
+				if (e.getMessage() == null || !e.getMessage().contains("Tags already present before freezing"))
+				{
+					OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY,
+							"Failed to freeze the biome registry after registering OTG biomes.");
+					throw e;
+				}
 			}
 		}
 	}
