@@ -5,7 +5,7 @@ import java.util.*;
 import com.pg85.otg.paper.biome.PaperBiome;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
@@ -269,7 +269,7 @@ public class ShadowChunkGenerator
 				// TODO: Optimise this for biome lookups, fetch a whole region of noise biome info at once?
 				IBiome biome = cachedBiomeProvider.getNoiseBiome((chunkpos.x << 2) + 2, (chunkpos.z << 2) + 2);
 				// TODO: Should we store this in the biomes? Would save creating them anew here -auth
-				ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, ResourceLocation.parse(biome.getBiomeConfig().getRegistryKey().toResourceLocationString()));
+				ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, Identifier.parse(biome.getBiomeConfig().getRegistryKey().toResourceLocationString()));
 				// TODO: This only checks for villages for now, needs reworking. The forge approach won't work.
 				ArrayList<ResourceKey<StructureSet>> structures = new ArrayList<>();
 				for (ResourceKey<StructureSet> structure : structures)
