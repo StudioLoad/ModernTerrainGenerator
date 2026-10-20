@@ -347,7 +347,7 @@ public class MapCommand extends BaseCommand
 		
 		private void getTerrainPixel(BlockPos2D chunkCoords)
 		{
-			PaperChunkBuffer chunk = this.generator.getChunkWithoutLoadingOrCaching(this.source.getLevel().getRandom(), ChunkCoordinate.fromChunkCoords(chunkCoords.x, chunkCoords.z), this.source.getLevel());
+			PaperChunkBuffer chunk = this.generator.getChunkWithoutLoadingOrCaching(new Random(this.source.getLevel().getSeed() ^ ((long) chunkCoords.x * 341873128712L) ^ ((long) chunkCoords.z * 132897987541L)), ChunkCoordinate.fromChunkCoords(chunkCoords.x, chunkCoords.z), this.source.getLevel());
 			HighestBlockInfo highestBlockInfo;
 			for (int internalX = 0; internalX < 16; internalX++)
 			{
