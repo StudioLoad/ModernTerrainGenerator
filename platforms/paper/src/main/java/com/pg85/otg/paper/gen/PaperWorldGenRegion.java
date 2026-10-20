@@ -425,7 +425,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 						LogCategory.CUSTOM_OBJECTS,
 						MessageFormat.format(
 							"Badly formatted json for tile entity with id '{0}' at {1},{2},{3}", 
-							nms.getString("id"), 
+							nms.getStringOr("id", "unknown"), 
 							x, y, z
 						)
 					);
@@ -439,7 +439,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 					LogCategory.CUSTOM_OBJECTS,
 					MessageFormat.format(
 						"Skipping tile entity with id {0}, cannot be placed at {1},{2},{3}", 
-						nms.getString("id"), 
+						nms.getStringOr("id", "unknown"), 
 						x, y, z
 					)
 				);
