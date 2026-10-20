@@ -142,7 +142,7 @@ public class PaperMaterialReader implements IMaterialReader
 		try
 		{
 			String newInput = blockNameCorrected.contains(":") ? blockNameCorrected : "minecraft:" + blockNameCorrected;
-			blockdata = new BlockStateParser(new StringReader(newInput), true).parse(true).getState();
+			blockdata = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, newInput, true).blockState();
 		}
 		catch (CommandSyntaxException ignored) { }
 		if (blockdata != null)
