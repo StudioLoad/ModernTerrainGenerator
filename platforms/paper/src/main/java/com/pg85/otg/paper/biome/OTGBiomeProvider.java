@@ -86,7 +86,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		return biomesForPreset.stream().map(p -> Holder.direct(registry.getOrThrow(p)));
 	}
 
-	protected Codec<? extends BiomeSource> codec ()
+	protected com.mojang.serialization.MapCodec<? extends BiomeSource> codec ()
 	{
 		return CODEC;
 	}
