@@ -241,7 +241,6 @@ public class PaperBiome implements IBiome
 			builder.temperatureAdjustment(TemperatureModifier.FROZEN);
 		}
 
-		builder.biomeCategory(Biome.BiomeCategory.byName(biomeConfig.getBiomeCategory()));
 
 		return builder.build();
 	}
