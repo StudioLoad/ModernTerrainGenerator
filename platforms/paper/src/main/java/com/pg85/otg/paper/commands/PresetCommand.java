@@ -27,7 +27,7 @@ public class PresetCommand extends BaseCommand
 	
 	private int showPreset(CommandSourceStack source)
 	{
-		if (!source.hasPermission(2, getPermission())) {
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
