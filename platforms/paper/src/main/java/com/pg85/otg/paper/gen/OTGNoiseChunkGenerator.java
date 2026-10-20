@@ -209,7 +209,7 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 			ObjectList<JigsawStructureData> junctions = new ObjectArrayList<>(32);
 
 			ChunkPos pos = new ChunkPos(chunkCoord.getChunkX(), chunkCoord.getChunkZ());
-			findNoiseStructures(pos, world.structureFeatureManager(), structures, junctions);
+			findNoiseStructures(pos, world.structureManager(), structures, junctions);
 
 			this.internalGenerator.populateNoise(random, buffer, buffer.getChunkCoordinate(), structures, junctions);
 			this.shadowChunkGenerator.setChunkGenerated(chunkCoord);			
