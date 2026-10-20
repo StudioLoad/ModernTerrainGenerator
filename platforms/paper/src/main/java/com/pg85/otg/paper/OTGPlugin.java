@@ -227,7 +227,11 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			pcmGen.set(serverWorld.getChunkSource().chunkMap, OTGDelegate);*/
 		} catch (ReflectiveOperationException ex)
 		{
-			ex.printStackTrace();
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN,
+					"Failed to install the OTG chunk generator for world " + world.getName()
+							+ ". The world will not be marked as processed.");
+			OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, ex);
+			return;
 		}
 
 		if (OTGGen.generator == null)
