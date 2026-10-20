@@ -13,7 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 import static com.pg85.otg.paper.commands.ExportCommand.configMap;
@@ -40,7 +40,7 @@ public class ConfigExportCommand extends BaseCommand
 							init(sender);
 							String val = context.getArgument("preset", String.class);
 							configMap.get(sender).preset = val;
-							context.getSource().sendSuccess(new TextComponent(val + " set as your default preset"), false);
+							context.getSource().sendSuccess(Component.literal(val + " set as your default preset"), false);
 							return 0;
 						})
 				)
@@ -53,7 +53,7 @@ public class ConfigExportCommand extends BaseCommand
 								init(sender);
 								LocalMaterialData mat = PaperMaterialData.ofBlockData(context.getArgument("block", BlockInput.class).getState());
 								configMap.get(sender).filter.add(mat);
-								context.getSource().sendSuccess(new TextComponent("Block "+mat.getRegistryName()+" added to filter"), false);
+								context.getSource().sendSuccess(Component.literal("Block "+mat.getRegistryName()+" added to filter"), false);
 								return 0;
 							})
 					)
@@ -65,7 +65,7 @@ public class ConfigExportCommand extends BaseCommand
 								init(sender);
 								LocalMaterialData mat = PaperMaterialData.ofBlockData(context.getArgument("block", BlockInput.class).getState());
 								configMap.get(sender).filter.remove(mat);
-								context.getSource().sendSuccess(new TextComponent("Block "+mat.getRegistryName()+" removed from filter"), false);
+								context.getSource().sendSuccess(Component.literal("Block "+mat.getRegistryName()+" removed from filter"), false);
 								return 0;
 							})
 					)
@@ -74,9 +74,9 @@ public class ConfigExportCommand extends BaseCommand
 						.executes(context -> {
 							CommandSourceStack sender = context.getSource();
 							init(sender.getEntity());
-							sender.sendSuccess(new TextComponent("Current exclusion filter:").withStyle(ChatFormatting.GOLD), false);
+							sender.sendSuccess(Component.literal("Current exclusion filter:").withStyle(ChatFormatting.GOLD), false);
 							configMap.get(sender.getEntity()).filter.forEach(item ->
-								sender.sendSuccess(new TextComponent("- "+item.getRegistryName()).withStyle(ChatFormatting.GREEN), false));
+								sender.sendSuccess(Component.literal("- "+item.getRegistryName()).withStyle(ChatFormatting.GREEN), false));
 							return 0;
 						})
 				)
@@ -89,7 +89,7 @@ public class ConfigExportCommand extends BaseCommand
 							init(sender);
 							ObjectType type = ObjectType.valueOf(context.getArgument("type", String.class));
 							configMap.get(sender).objectType = type;
-							context.getSource().sendSuccess(new TextComponent(type.getType()+" set as your default object type"), false);
+							context.getSource().sendSuccess(Component.literal(type.getType()+" set as your default object type"), false);
 							return 0;
 						})
 				)
@@ -101,7 +101,7 @@ public class ConfigExportCommand extends BaseCommand
 							init(sender);
 							var block = context.getArgument("block", BlockInput.class).getState();
 							configMap.get(sender).centerBlock = block;
-							context.getSource().sendSuccess(new TextComponent(block.getBlock()+" set as center block"), false);
+							context.getSource().sendSuccess(Component.literal(block.getBlock()+" set as center block"), false);
 							return 0;
 						})
 				)
@@ -115,7 +115,7 @@ public class ConfigExportCommand extends BaseCommand
 							Entity sender = context.getSource().getEntity();
 							String template = context.getArgument("template", String.class);
 							configMap.get(sender).template = template;
-							context.getSource().sendSuccess(new TextComponent(template+" set as your default template"), false);
+							context.getSource().sendSuccess(Component.literal(template+" set as your default template"), false);
 							return 0;
 						})
 				)
@@ -128,9 +128,9 @@ public class ConfigExportCommand extends BaseCommand
 							var overwrite = context.getArgument("overwrite", Boolean.class);
 							configMap.get(sender).overwrite = overwrite;
 							if (overwrite)
-								context.getSource().sendSuccess(new TextComponent("Overwriting existing files enabled"), false);
+								context.getSource().sendSuccess(Component.literal("Overwriting existing files enabled"), false);
 							else
-								context.getSource().sendSuccess(new TextComponent("Overwriting existing files disabled"), false);
+								context.getSource().sendSuccess(Component.literal("Overwriting existing files disabled"), false);
 							return 0;
 						})
 				)
@@ -143,9 +143,9 @@ public class ConfigExportCommand extends BaseCommand
 							var global = context.getArgument("global", Boolean.class);
 							configMap.get(sender).exportToGlobal = global;
 							if (global)
-								context.getSource().sendSuccess(new TextComponent("Writing objects to GlobalObjects enabled"), false);
+								context.getSource().sendSuccess(Component.literal("Writing objects to GlobalObjects enabled"), false);
 							else
-								context.getSource().sendSuccess(new TextComponent("Writing objects to GlobalObjects disabled"), false);
+								context.getSource().sendSuccess(Component.literal("Writing objects to GlobalObjects disabled"), false);
 							return 0;
 						})
 				)
