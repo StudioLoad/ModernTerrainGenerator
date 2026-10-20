@@ -36,7 +36,7 @@ public class OTGBiomeProvider extends BiomeSource implements ILayerSource
 		(instance) -> instance.group(
 			Codec.STRING.fieldOf("preset_name").stable().forGetter((provider) -> provider.presetFolderName),
 			Codec.LONG.fieldOf("seed").stable().forGetter((provider) -> provider.seed),
-			RegistryOps.retrieveGetter(Registries.BIOME).forGetter((provider) -> provider.registry)
+			RegistryOps.retrieveGetter(Registries.BIOME)
 		).apply(instance, instance.stable(OTGBiomeProvider::new))
 	);
 	private final long seed;
