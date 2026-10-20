@@ -200,9 +200,9 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			NoiseSettings noiseSettings = getNoiseSettings(OTGGen.getPreset().getWorldConfig());
 			OTGDelegate = new OTGNoiseChunkGenerator(
 				OTGGen.getPreset().getFolderName(),
-				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.registryOrThrow(Registries.BIOME)),
-				registryAccess.registryOrThrow(Registries.STRUCTURE_SET),
-				registryAccess.registryOrThrow(Registries.NOISE),
+				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.lookupOrThrow(Registries.BIOME)),
+				registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
+				registryAccess.lookupOrThrow(Registries.NOISE),
 				world.getSeed(),
 				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), java.util.List.of(), 63, false, true, true, false))
 			);
@@ -256,8 +256,8 @@ public class OTGPlugin extends JavaPlugin implements Listener
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
 				DensityFunctions.zero(),
-				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, registryAccess.registryOrThrow(Registries.NOISE).getHolderOrThrow(Noises.TEMPERATURE)),
-				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, registryAccess.registryOrThrow(Registries.NOISE).getHolderOrThrow(Noises.VEGETATION)),
+				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, registryAccess.lookupOrThrow(Registries.NOISE).getOrThrow(Noises.TEMPERATURE)),
+				DensityFunctions.shiftedNoise2d(shiftX, shiftZ, 0.25, registryAccess.lookupOrThrow(Registries.NOISE).getOrThrow(Noises.VEGETATION)),
 				getFunction("overworld/continents", registryAccess),
 				getFunction("overworld/erosion", registryAccess),
 				getFunction("overworld/depth", registryAccess),
@@ -271,7 +271,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	}
 
 	private DensityFunction getFunction(String string, RegistryAccess registryAccess) {
-		return registryAccess.registryOrThrow(Registries.DENSITY_FUNCTION).getHolderOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, Identifier.parse(string))).value();
+		return registryAccess.lookupOrThrow(Registries.DENSITY_FUNCTION).getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, Identifier.parse(string))).value();
 	}
 
 	private NoiseSettings getNoiseSettings(IWorldConfig worldConfig) {
