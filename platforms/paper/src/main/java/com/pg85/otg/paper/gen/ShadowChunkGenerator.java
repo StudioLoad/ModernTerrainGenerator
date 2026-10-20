@@ -142,7 +142,7 @@ public class ShadowChunkGenerator
 		{
 			for (int z = 0; z < Constants.CHUNK_SIZE; z++)
 			{
-				int endY = cachedChunk.getHeight(Types.WORLD_SURFACE_WG, x, z);
+				int endY = Math.min(maxY, cachedChunk.getHeight(Types.WORLD_SURFACE_WG, x, z));
 				for (int y = minY; y <= endY; y++)
 				{
 					BlockPos pos = new BlockPos(x, y, z);
@@ -164,7 +164,7 @@ public class ShadowChunkGenerator
 		{
 			for (int z = 0; z < Constants.CHUNK_SIZE; z++)
 			{
-				int endY = cachedChunk.getOrCreateHeightmapUnprimed(Types.WORLD_SURFACE_WG).getFirstAvailable(x, z);
+				int endY = Math.min(maxY, cachedChunk.getOrCreateHeightmapUnprimed(Types.WORLD_SURFACE_WG).getFirstAvailable(x, z));
 				for (int y = minY; y <= endY; y++)
 				{
 					BlockPos pos = new BlockPos(x, y, z);
