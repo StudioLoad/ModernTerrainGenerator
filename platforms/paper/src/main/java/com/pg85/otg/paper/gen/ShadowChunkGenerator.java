@@ -37,7 +37,6 @@ import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 //import net.minecraft.world.level.levelgen.StructureSettings;
 //import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
 //import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 
 /**
@@ -223,32 +222,6 @@ public class ShadowChunkGenerator
 				}
 			}
 
-			@SuppressWarnings("unchecked")
-			ArrayList<StructureFeature<?>>[] structuresPerDistance = new ArrayList[radiusInChunks];
-			structuresPerDistance[4] = new ArrayList<StructureFeature<?>>(Arrays.asList(
-				new StructureFeature<?>[] {
-					StructureFeature.VILLAGE,
-					StructureFeature.END_CITY,
-					StructureFeature.BASTION_REMNANT,
-					StructureFeature.OCEAN_MONUMENT,
-					StructureFeature.WOODLAND_MANSION
-				}
-			));
-			structuresPerDistance[3] = new ArrayList<StructureFeature<?>>(Arrays.asList(new StructureFeature<?>[]{}));
-			structuresPerDistance[2] = new ArrayList<StructureFeature<?>>(Arrays.asList(new StructureFeature<?>[]{}));
-			structuresPerDistance[1] = new ArrayList<StructureFeature<?>>(Arrays.asList(
-				new StructureFeature<?>[] {
-					StructureFeature.JUNGLE_TEMPLE,
-					StructureFeature.DESERT_PYRAMID,
-					StructureFeature.RUINED_PORTAL,
-					StructureFeature.SWAMP_HUT,
-					StructureFeature.IGLOO,
-					StructureFeature.SHIPWRECK,
-					StructureFeature.PILLAGER_OUTPOST,
-					StructureFeature.OCEAN_RUIN
-				}
-			));
-			structuresPerDistance[0] = new ArrayList<StructureFeature<?>>(Arrays.asList(new StructureFeature<?>[]{}));
 			Set<Biome> biomesInArea = new HashSet<>();
 
 			for(ChunkCoordinate chunkToHandle : chunksToHandle)
@@ -272,33 +245,8 @@ public class ShadowChunkGenerator
 				// TODO: Should we store this in the biomes? Would save creating them anew here -auth
 				ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.parse(biome.getBiomeConfig().getRegistryKey().toResourceLocationString()));
 				// TODO: This only checks for villages for now, needs reworking. The forge approach won't work.
-				ArrayList<ResourceKey<StructureSet>> structures = new ArrayList<>();
-				for (ResourceKey<StructureSet> structure : structures)
-				{
-					//if(structure.feature.step() == Decoration.SURFACE_STRUCTURES)
-					{
-						for(int i = structuresPerDistance.length - 1; i > 0; i--)
-						{
-							ArrayList<StructureFeature<?>> structuresAtDistance = structuresPerDistance[i];
-							//if(structuresAtDistance.contains(structure.feature))
-							{
-								if(hasStructureStart(structure, chunkGenerator, serverWorld.getSeed(), chunkpos, i))
-								{
-									chunksHandled.put(chunkToHandle, i);
-									if(i >= distance)
-									{
-										synchronized(this.hasVanillaStructureChunkCache)
-										{
-											this.hasVanillaStructureChunkCache.putAll(chunksHandled);
-										}
-										return true;
-									}
-								}
-								break;
-							}
-						}
-					}
-				}
+				// The former 1.18 structure-feature scan did not enumerate any structure sets.
+				// Leave the chunk unmarked rather than incorrectly treating it as a structure smoothing area.
 
 				chunksHandled.putIfAbsent(chunkToHandle, 0);
 			}
@@ -347,11 +295,6 @@ public class ShadowChunkGenerator
 		return false;
 	}
 
-	// Taken from PillagerOutpostStructure.isNearVillage
-	private boolean hasStructureStart(ResourceKey<StructureSet> structureFeature, ChunkGenerator chunkGenerator, long seed, ChunkPos chunkPos, int radius)
-	{
-		return chunkGenerator.hasFeatureChunkInRange(structureFeature, seed, chunkPos.x, chunkPos.z, radius);
-	}
 
 	// /otg mapterrain
 
