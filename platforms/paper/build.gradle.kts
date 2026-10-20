@@ -18,10 +18,10 @@ dependencies {
 
     implementation(project(":common:common-core"))
 
-    compileOnly("com.sk89q.worldedit:worldedit-core:7.2.7") {
+    compileOnly("com.sk89q.worldedit:worldedit-core:7.3.18") {
         exclude("org.yaml")
     }
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.7")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.18")
 }
 
 tasks {
