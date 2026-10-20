@@ -113,16 +113,17 @@ public class PaperBiome implements IBiome
 				GenerationStep.Decoration stage = GenerationStep.Decoration.valueOf(registryResource.getDecorationStage());
 				Registry<PlacedFeature> placedFeatures = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE);
 				String featureName = registryResource.getFeatureKey();
-				ResourceKey<PlacedFeature> featureKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.parse(featureName));
-				Holder<PlacedFeature> featureHolder = placedFeatures.get(featureKey).orElse(null);
+				Identifier featureId = Identifier.tryParse(featureName);
+				Holder<PlacedFeature> featureHolder = featureId == null ? null :
+						placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, featureId)).orElse(null);
 
 				if (featureHolder == null)
 				{
 					String legacyFeatureName = LegacyRegistry.convertLegacyResourceLocation(featureName);
-					if (legacyFeatureName != null)
+					Identifier legacyFeatureId = Identifier.tryParse(legacyFeatureName);
+					if (legacyFeatureId != null)
 					{
-						ResourceKey<PlacedFeature> legacyFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, Identifier.parse(legacyFeatureName));
-						featureHolder = placedFeatures.get(legacyFeatureKey).orElse(null);
+						featureHolder = placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, legacyFeatureId)).orElse(null);
 					}
 				}
 
@@ -184,7 +185,7 @@ public class PaperBiome implements IBiome
 								? biomeConfig.getWaterColor() : 4159204);
 
 		List<AmbientParticle> ambientParticles = new ArrayList<>();
-		Optional<ParticleType> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
+		Optional<ParticleType> particleType = getRegisteredValue(BuiltInRegistries.PARTICLE_TYPE, biomeConfig.getParticleType());
 		if (particleType.isPresent())
 		{
 			// OTG presets currently store a particle identifier, not its extra parameters.
@@ -200,24 +201,16 @@ public class PaperBiome implements IBiome
 			}
 		}
 
-		Optional<Music> music = BuiltInRegistries.SOUND_EVENT
-				.getOptional(Identifier.parse(biomeConfig.getMusic()))
-				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder)
+		Optional<Music> music = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getMusic())
 				.map(sound -> new Music(sound, biomeConfig.getMusicMinDelay(), biomeConfig.getMusicMaxDelay(), biomeConfig.isReplaceCurrentMusic()));
 
-		Optional<Holder<SoundEvent>> ambientSound = BuiltInRegistries.SOUND_EVENT
-				.getOptional(Identifier.parse(biomeConfig.getAmbientSound()))
-				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder);
+		Optional<Holder<SoundEvent>> ambientSound = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getAmbientSound());
 
-		Optional<AmbientMoodSettings> moodSound = BuiltInRegistries.SOUND_EVENT
-				.getOptional(Identifier.parse(biomeConfig.getMoodSound()))
-				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder)
+		Optional<AmbientMoodSettings> moodSound = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getMoodSound())
 				.map(sound -> new AmbientMoodSettings(sound, biomeConfig.getMoodSoundDelay(),
 						biomeConfig.getMoodSearchRange(), biomeConfig.getMoodOffset()));
 
-		List<AmbientAdditionsSettings> additionsSounds = BuiltInRegistries.SOUND_EVENT
-				.getOptional(Identifier.parse(biomeConfig.getAdditionsSound()))
-				.map(BuiltInRegistries.SOUND_EVENT::wrapAsHolder)
+		List<AmbientAdditionsSettings> additionsSounds = getRegisteredHolder(BuiltInRegistries.SOUND_EVENT, biomeConfig.getAdditionsSound())
 				.map(sound -> List.of(new AmbientAdditionsSettings(sound, biomeConfig.getAdditionsTickChance())))
 				.orElseGet(List::of);
 
@@ -266,6 +259,22 @@ public class PaperBiome implements IBiome
 
 
 		return builder.build();
+	}
+
+	private static <T> Optional<T> getRegisteredValue(Registry<T> registry, String rawIdentifier)
+	{
+		if (rawIdentifier == null || rawIdentifier.isBlank())
+		{
+			return Optional.empty();
+		}
+
+		Identifier identifier = Identifier.tryParse(rawIdentifier);
+		return identifier == null ? Optional.empty() : registry.getOptional(identifier);
+	}
+
+	private static <T> Optional<Holder<T>> getRegisteredHolder(Registry<T> registry, String rawIdentifier)
+	{
+		return getRegisteredValue(registry, rawIdentifier).map(registry::wrapAsHolder);
 	}
 
 	private static int getSkyColorForTemp (float safeTemperature)
