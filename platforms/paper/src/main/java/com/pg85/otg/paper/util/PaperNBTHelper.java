@@ -120,7 +120,7 @@ public class PaperNBTHelper extends LocalNBTHelper
 			switch (listType)
 			{
 				case TAG_Int_Array:
-					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.get(i)));
+					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getIntArray(i).orElseGet(() -> new int[0])));
 					break;
 				case TAG_Float:
 					listTag.addTag(new NamedBinaryTag(listType, null, nmsListTag.getFloat(i)));
