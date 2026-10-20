@@ -161,11 +161,13 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		placementSettings.put(StructureType.JUNGLE_TEMPLE, new RandomSpreadStructurePlacement(worldConfig.getJungleTempleSpacing(), worldConfig.getJungleTempleSeparation(), RandomSpreadType.LINEAR, 14357619));
 		placementSettings.put(StructureType.VILLAGE, new RandomSpreadStructurePlacement(worldConfig.getVillageSpacing(), worldConfig.getVillageSeparation(), RandomSpreadType.LINEAR, 10387312));
 		placementSettings.put(StructureType.PILLLAGER_OUTPOST, new RandomSpreadStructurePlacement(worldConfig.getPillagerOutpostSpacing(), worldConfig.getPillagerOutpostSeparation(), RandomSpreadType.LINEAR, 165745296));
-		placementSettings.put(StructureType.STRONGHOLD, new ConcentricRingsStructurePlacement(worldConfig.getStrongHoldDistance(), worldConfig.getStrongHoldSpread(), worldConfig.getStrongHoldCount()));
+		placementSettings.put(StructureType.STRONGHOLD, new ConcentricRingsStructurePlacement(worldConfig.getStrongHoldDistance(), worldConfig.getStrongHoldSpread(), worldConfig.getStrongHoldCount(), HolderSet.direct()));
 		placementSettings.put(StructureType.OCEAN_MONUMENT, new RandomSpreadStructurePlacement(worldConfig.getOceanMonumentSpacing(), worldConfig.getOceanMonumentSeparation(), RandomSpreadType.TRIANGULAR, 10387313));
 		placementSettings.put(StructureType.END_CITY, new RandomSpreadStructurePlacement(worldConfig.getEndCitySpacing(), worldConfig.getEndCitySeparation(), RandomSpreadType.TRIANGULAR, 10387313));
 		placementSettings.put(StructureType.WOODLAND_MANSION, new RandomSpreadStructurePlacement(worldConfig.getWoodlandMansionSpacing(), worldConfig.getWoodlandMansionSeparation(), RandomSpreadType.TRIANGULAR, 10387319));
-		placementSettings.put(StructureType.BURIED_TREASURE, new RandomSpreadStructurePlacement(worldConfig.getBuriedTreasureSpacing(), worldConfig.getBuriedTreasureSeparation(), RandomSpreadType.LINEAR, 0, new Vec3i(9, 0, 9)));
+		placementSettings.put(StructureType.BURIED_TREASURE, new RandomSpreadStructurePlacement(
+				new Vec3i(9, 0, 9), StructurePlacement.FrequencyReductionMethod.DEFAULT, 1.0F, 0,
+				Optional.empty(), worldConfig.getBuriedTreasureSpacing(), worldConfig.getBuriedTreasureSeparation(), RandomSpreadType.LINEAR));
 		placementSettings.put(StructureType.MINESHAFT, new RandomSpreadStructurePlacement(worldConfig.getMineshaftSpacing(), worldConfig.getMineshaftSeparation(), RandomSpreadType.LINEAR, 0));
 		placementSettings.put(StructureType.RUINED_PORTAL, new RandomSpreadStructurePlacement(worldConfig.getRuinedPortalSpacing(), worldConfig.getRuinedPortalSeparation(), RandomSpreadType.LINEAR, 34222645));
 		placementSettings.put(StructureType.SHIPWRECK, new RandomSpreadStructurePlacement(worldConfig.getShipwreckSpacing(), worldConfig.getShipwreckSeparation(), RandomSpreadType.LINEAR, 165745295));
