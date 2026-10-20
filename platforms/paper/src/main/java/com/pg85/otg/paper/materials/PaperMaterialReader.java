@@ -183,7 +183,7 @@ public class PaperMaterialReader implements IMaterialReader
 		try
 		{
 			// This returns AIR if block is not found ><. ----Does it for spigot too?
-			block = Registry.BLOCK.get(new ResourceLocation(blockNameCorrected));
+			block = Registry.BLOCK.get(ResourceLocation.parse(blockNameCorrected));
 			if (block != Blocks.AIR || blockNameCorrected.toLowerCase().endsWith("air"))
 			{
 				// For leaves, add DISTANCE 1 to make them not decay.
