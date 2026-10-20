@@ -61,6 +61,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 {
 	protected final WorldGenLevel worldGenRegion;
 	private final OTGNoiseChunkGenerator chunkGenerator;
+	private final Random worldRandom;
 
 	// BO4 plotting may call hasDefaultStructures on chunks outside the area being decorated, in order to plot large structures.
 	// It may query the same chunk multiple times, so use a fixed size cache.
@@ -72,6 +73,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		super(presetFolderName, OTG.getEngine().getPluginConfig(), worldConfig, OTG.getEngine().getLogger(), worldGenRegion.getCenter().x, worldGenRegion.getCenter().z, chunkGenerator.getCachedBiomeProvider());
 		this.worldGenRegion = worldGenRegion;
 		this.chunkGenerator = chunkGenerator;
+		this.worldRandom = createWorldRandom(worldGenRegion);
 		this.maxY = worldConfig.getWorldMaxY();
 		this.minY = worldConfig.getWorldMinY();
 	}
@@ -82,6 +84,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		super(presetFolderName, OTG.getEngine().getPluginConfig(), worldConfig, OTG.getEngine().getLogger());
 		this.worldGenRegion = worldGenRegion;
 		this.chunkGenerator = chunkGenerator;
+		this.worldRandom = createWorldRandom(worldGenRegion);
 	}
 	
 	/** Creates a LocalWorldGenRegion to be used for non-OTG worlds outside of decoration, only used for /otg spawn/edit/export. */
@@ -90,6 +93,18 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		super(presetFolderName, OTG.getEngine().getPluginConfig(), worldConfig, OTG.getEngine().getLogger());
 		this.worldGenRegion = worldGenRegion;
 		this.chunkGenerator = null;
+		this.worldRandom = createWorldRandom(worldGenRegion);
+	}
+
+	private static Random createWorldRandom(WorldGenLevel worldGenRegion)
+	{
+		long seed = worldGenRegion.getSeed();
+		if (worldGenRegion instanceof WorldGenRegion region)
+		{
+			seed ^= (long) region.getCenter().x * 341873128712L;
+			seed ^= (long) region.getCenter().z * 132897987541L;
+		}
+		return new Random(seed);
 	}
 	
 	@Override
@@ -107,7 +122,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 	@Override
 	public Random getWorldRandom()
 	{
-		return this.worldGenRegion.getRandom();
+		return this.worldRandom;
 	}
 	
 	@Override
