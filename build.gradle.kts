@@ -21,7 +21,7 @@ subprojects {
 val universalJar = tasks.register<Jar>("universalJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     destinationDirectory.set(layout.buildDirectory.dir("distributions"))
-    archiveFileName.set("OpenTerrainGenerator-Universal-" + project.version + ".jar")
+    archiveFileName.set("ModernTerrainGenerator-Universal-" + project.version + ".jar")
 }
 
 tasks.build {

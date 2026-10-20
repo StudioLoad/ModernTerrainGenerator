@@ -13,8 +13,8 @@ body:
         ## Important! 
         This issue template is for feature requests *only.* 
 
-        - To report a bug or crash, use [the appropriate form](https://github.com/PG85/OpenTerrainGenerator/issues/new/choose).
-        - For support using OpenTerrainGenerator, please contact us on [Discord](https://discord.gg/UXzdVTH). 
+        - To report a bug or crash, use [the appropriate form](https://github.com/StudioLoad/ModernTerrainGenerator/issues/new/choose).
+        - For support using ModernTerrainGenerator, please contact us on [Discord](https://discord.gg/UXzdVTH). 
 
         Please complete the entire form so we can best consider your suggestion!
 
@@ -29,7 +29,7 @@ body:
   - type: textarea
     attributes:
       label: Suggested Feature
-      description: A concise description of what you would like to see added to OpenTerrainGenerator.
+      description: A concise description of what you would like to see added to ModernTerrainGenerator.
     validations:
       required: true
 

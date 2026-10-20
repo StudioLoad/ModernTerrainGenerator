@@ -1,16 +1,16 @@
-Contribution to OpenTerrainGenerator
+Contribution to ModernTerrainGenerator
 -----------------------
 
 Please talk to us on Discord @ https://discord.gg/UXzdVTH prior to contributing.
 
 ## Signing
 
-Please sign [the Contributor License Agreement](https://cla-assistant.io/PG85/OpenTerrainGenerator).
+Please sign [the Contributor License Agreement](https://cla-assistant.io/PG85/ModernTerrainGenerator).
 
 ## Pull Requests
 
 For pull requests:
-- You MUST: own the code you submit OR it must be free/open/safe to use (like code in the public domain). Code gathered from within any open source OpenTerrainGenerator project is valid to include here as well.
+- You MUST: own the code you submit OR it must be free/open/safe to use (like code in the public domain). Code gathered from within any open source ModernTerrainGenerator project is valid to include here as well.
 	- If your code is under any pre-existing license, you MUST note it in the pull request.
 	- It is preferred that you contribute code that you own the rights to (generally, original code that you have written) rather than code licensed from another project.
 - Any and all code you submit is subject to the mini-license below.
@@ -41,4 +41,4 @@ If you later decide you don't want us using your code - you may make a polite re
 
 ### Contribution guidelines adaptation
 
-These contribution guidelines have been adapted from the [Denizen Contribution Guidelines](https://github.com/DenizenScript/Denizen/blob/release/CONTRIBUTING.md) and are provided under the [MIT License](https://github.com/DenizenScript/Denizen/tree/release) used by both Denizen and OpenTerrainGenerator.
+These contribution guidelines have been adapted from the [Denizen Contribution Guidelines](https://github.com/DenizenScript/Denizen/blob/release/CONTRIBUTING.md) and are provided under the [MIT License](https://github.com/DenizenScript/Denizen/tree/release) used by both Denizen and ModernTerrainGenerator.

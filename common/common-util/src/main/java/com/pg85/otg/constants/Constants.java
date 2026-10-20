@@ -23,13 +23,13 @@ public class Constants
 	
 	// Network
 	
-	public static final String ChannelName = "OpenTerrainGenerator";
+	public static final String ChannelName = "ModernTerrainGenerator";
 	public static final int ProtocolVersion = 6;
 	
 	// Plugin Defaults
 	
-	public static final String MOD_ID = "OpenTerrainGenerator";
-	public static final String MOD_ID_LOWER_CASE = "openterraingenerator";
+	public static final String MOD_ID = "ModernTerrainGenerator";
+	public static final String MOD_ID_LOWER_CASE = MOD_ID.toLowerCase();
 	public static final String MOD_ID_SHORT = "otg";
 	
 	// Default min build height

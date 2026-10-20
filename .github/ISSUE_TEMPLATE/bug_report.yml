@@ -1,6 +1,6 @@
 
 name: Bug report
-description: Report a bug with OpenTerrainGenerator, including crashes or other errors.
+description: Report a bug with ModernTerrainGenerator, including crashes or other errors.
 title: "[Bug]: "
 labels: ["Bug", "Needs validation"]
 assignees:

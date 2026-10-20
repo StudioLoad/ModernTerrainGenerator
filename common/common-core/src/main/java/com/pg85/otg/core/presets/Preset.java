@@ -10,7 +10,7 @@ import com.pg85.otg.interfaces.IBiomeConfig;
 import com.pg85.otg.interfaces.IWorldConfig;
 
 /**
- * Represents an OTG preset, with all its world and biome configs, stored in /config/OpenTerrainGenerator/Presets/\<PresetName\>/.
+ * Represents an OTG preset, with all its world and biome configs, stored in /config/ModernTerrainGenerator/Presets/\<PresetName\>/.
  */
 public class Preset
 {

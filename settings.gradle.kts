@@ -7,7 +7,7 @@ pluginManagement {
     includeBuild("build-logic")
 }
 
-rootProject.name = "OpenTerrainGenerator"
+rootProject.name = "ModernTerrainGenerator"
 
 include(
     "common:common-util",

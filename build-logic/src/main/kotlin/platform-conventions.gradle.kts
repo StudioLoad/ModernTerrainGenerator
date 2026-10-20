@@ -12,7 +12,7 @@ val otgPlatform = extensions.create<OTGPlatformExtension>("otgPlatform")
 tasks {
     jar {
         manifest.attributes(
-            "Specification-Title" to "openterraingenerator",
+            "Specification-Title" to "ModernTerrainGenerator",
             "Specification-Vendor" to "Team OTG",
             "Specification-Version" to "1", // We are version 1 of ourselves
             "Implementation-Title" to project.name,
@@ -53,7 +53,7 @@ tasks {
     val copyPlatformJar = register<CopyFile>("copyPlatformJar") {
         sourceFile.set(otgPlatform.productionJar)
         destination.set(rootProject.layout.buildDirectory.dir("distributions").map {
-            it.file("OpenTerrainGenerator-${project.name.capitalize()}-${project.version}.jar")
+            it.file("ModernTerrainGenerator-${project.name.capitalize()}-${project.version}.jar")
         })
     }
 
