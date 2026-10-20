@@ -137,7 +137,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		{
 			return ChunkCoordinate.fromBlockCoords(this.getWorldConfig().getSpawnPointX(), this.getWorldConfig().getSpawnPointZ());
 		} else {
-			BlockPos spawnPos = this.worldGenRegion.getMinecraftWorld().getSharedSpawnPos();
+			BlockPos spawnPos = this.worldGenRegion.getLevel().getSharedSpawnPos();
 			return ChunkCoordinate.fromBlockCoords(spawnPos.getX(), spawnPos.getZ());
 		}
 	}
@@ -643,7 +643,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		// Create and spawn entities according to group size
 		for (int r = 0; r < entityData.getGroupSize(); r++)
 		{
-			Entity entity = type.create(this.worldGenRegion.getMinecraftWorld(), EntitySpawnReason.CHUNK_GENERATION);
+			Entity entity = type.create(this.worldGenRegion.getLevel(), EntitySpawnReason.CHUNK_GENERATION);
 			if (entity == null)
 			{
 				if(this.logger.getLogCategoryEnabled(LogCategory.CUSTOM_OBJECTS))
