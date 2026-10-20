@@ -151,7 +151,7 @@ public class PaperLegacyMaterials
 			case "magma":
 				return Blocks.MAGMA_BLOCK.defaultBlockState();
 			case "tallgrass":
-				return Blocks.GRASS.defaultBlockState();
+				return Blocks.SHORT_GRASS.defaultBlockState();
 			case "cobble_wall":
 				return Blocks.COBBLESTONE_WALL.defaultBlockState();
 			case "iron_fence":
@@ -431,7 +431,7 @@ public class PaperLegacyMaterials
 					{
 						case 1:
 						default:
-							return Blocks.GRASS.defaultBlockState();
+							return Blocks.SHORT_GRASS.defaultBlockState();
 						case 2:
 							return Blocks.FERN.defaultBlockState();
 					}
