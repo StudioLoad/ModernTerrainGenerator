@@ -10,7 +10,7 @@ import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -640,7 +640,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			String nameTag = entityData.getNameTagOrNBTFileName();
 			if (nameTag != null && !nameTag.toLowerCase().trim().endsWith(".txt") && !nameTag.toLowerCase().trim().endsWith(".nbt"))
 			{
-				entity.setCustomName(new TextComponent(nameTag));
+				entity.setCustomName(Component.literal(nameTag));
 			}
 		
 			// TODO: Non-mob entities, aren't those handled via Block(nbt), chests, armor stands etc?
