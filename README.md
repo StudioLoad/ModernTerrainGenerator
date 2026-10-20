@@ -37,7 +37,6 @@
 
 > [!CAUTION]
 > This project is being moved to the latest versions (1.21.11).
-> Contains bugs at the compilation stage.
 
 ### Team
 * <a href="https://github.com/rodriaum">Rodrigo F.</a>
