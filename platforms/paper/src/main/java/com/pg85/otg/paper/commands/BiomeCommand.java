@@ -111,7 +111,8 @@ public class BiomeCommand extends BaseCommand
 		for (int i = 0; i < featureList.size(); i++)
 		{
 			HolderSet<PlacedFeature> innerList = featureList.get(i);
-			source.sendSuccess(() -> (Component.literal(" "+GenerationStep.Decoration.values()[i].toString().toLowerCase(Locale.ROOT)+":").withStyle(ChatFormatting.GOLD)), false);
+			String stageName = GenerationStep.Decoration.values()[i].toString().toLowerCase(Locale.ROOT);
+			source.sendSuccess(() -> (Component.literal(" " + stageName + ":").withStyle(ChatFormatting.GOLD)), false);
 			for (Holder<PlacedFeature> holder : innerList)
 			{
 				source.sendSuccess(() -> (Component.literal(" - "+holder.value().toString()).withStyle(ChatFormatting.GREEN)), false);
