@@ -10,6 +10,8 @@ import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.WorldGenRegion;
@@ -472,73 +474,73 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			switch (type)
 			{
 				case Acacia:
-					tree = TreePlacements.ACACIA_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.ACACIA_CHECKED);
 					break;
 				case BigTree:
-					tree = TreePlacements.FANCY_OAK_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.FANCY_OAK_CHECKED);
 					break;
 				case Forest:
 				case Birch:
-					tree = TreePlacements.BIRCH_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.BIRCH_CHECKED);
 					break;
 				case JungleTree:
-					tree = TreePlacements.MEGA_JUNGLE_TREE_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.MEGA_JUNGLE_TREE_CHECKED);
 					break;
 				case CocoaTree:
-					tree = TreePlacements.JUNGLE_TREE_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.JUNGLE_TREE_CHECKED);
 					break;
 				case DarkOak:
-					tree = TreePlacements.DARK_OAK_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.DARK_OAK_CHECKED);
 					break;
 				case GroundBush:
-					tree = TreePlacements.JUNGLE_BUSH.value();
+					tree = getPlacedFeature(TreePlacements.JUNGLE_BUSH);
 					break;
 				case HugeMushroom:
 					if (rand.nextBoolean())
 					{
-						other = TreeFeatures.HUGE_BROWN_MUSHROOM.value();
+						other = getConfiguredFeature(TreeFeatures.HUGE_BROWN_MUSHROOM);
 					} else {
-						other = TreeFeatures.HUGE_RED_MUSHROOM.value();
+						other = getConfiguredFeature(TreeFeatures.HUGE_RED_MUSHROOM);
 					}
 					break;
 				case HugeRedMushroom:
-					other = TreeFeatures.HUGE_RED_MUSHROOM.value();
+					other = getConfiguredFeature(TreeFeatures.HUGE_RED_MUSHROOM);
 					break;
 				case HugeBrownMushroom:
-					other = TreeFeatures.HUGE_BROWN_MUSHROOM.value();
+					other = getConfiguredFeature(TreeFeatures.HUGE_BROWN_MUSHROOM);
 					break;
 				case SwampTree:
-					other = TreeFeatures.SWAMP_OAK.value();
+					other = getConfiguredFeature(TreeFeatures.SWAMP_OAK);
 					break;
 				case Taiga1:
-					tree = TreePlacements.PINE_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.PINE_CHECKED);
 					break;
 				case Taiga2:
-					tree = TreePlacements.SPRUCE_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.SPRUCE_CHECKED);
 					break;
 				case HugeTaiga1:
-					tree = TreePlacements.MEGA_PINE_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.MEGA_PINE_CHECKED);
 					break;
 				case HugeTaiga2:
-					tree = TreePlacements.MEGA_SPRUCE_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.MEGA_SPRUCE_CHECKED);
 					break;
 				case TallBirch:
-					tree = TreePlacements.SUPER_BIRCH_BEES_0002.value();
+					tree = getPlacedFeature(TreePlacements.SUPER_BIRCH_BEES_0002);
 					break;
 				case Tree:
-					tree = TreePlacements.OAK_CHECKED.value();
+					tree = getPlacedFeature(TreePlacements.OAK_CHECKED);
 					break;
 				case CrimsonFungi:
-					tree = TreePlacements.CRIMSON_FUNGI.value();
+					tree = getPlacedFeature(TreePlacements.CRIMSON_FUNGI);
 					break;
 				case WarpedFungi:
-					tree = TreePlacements.WARPED_FUNGI.value();
+					tree = getPlacedFeature(TreePlacements.WARPED_FUNGI);
 					break;
 				case ChorusPlant:
-					tree = EndPlacements.CHORUS_PLANT.value();
+					tree = getPlacedFeature(EndPlacements.CHORUS_PLANT);
 					break;	
 				case Azalea:
-					other = TreeFeatures.AZALEA_TREE.value();
+					other = getConfiguredFeature(TreeFeatures.AZALEA_TREE);
 					break;	
 				default:
 					throw new RuntimeException("Failed to handle tree of type " + type);
@@ -682,7 +684,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 	@Override
 	public void placeDungeon (Random random, int x, int y, int z)
 	{
-		CavePlacements.MONSTER_ROOM.value().placeWithBiomeCheck(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
+		getPlacedFeature(CavePlacements.MONSTER_ROOM).placeWithBiomeCheck(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
 	}
 
 	@Override
@@ -690,9 +692,9 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 	{
 		if(y >= 0)
 		{
-			CavePlacements.FOSSIL_UPPER.value().place(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
+			getPlacedFeature(CavePlacements.FOSSIL_UPPER).place(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
 		} else {
-			CavePlacements.FOSSIL_LOWER.value().place(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
+			getPlacedFeature(CavePlacements.FOSSIL_LOWER).place(this.worldGenRegion, this.chunkGenerator, RandomSource.create(random.nextLong()), new BlockPos(x, y, z));
 		}
 	}
 
@@ -791,4 +793,18 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		cachedHasDefaultStructureChunks.put(chunkCoordinate, hasDefaultStructure);
 		return hasDefaultStructure;
 	}
+	private PlacedFeature getPlacedFeature(ResourceKey key)
+	{
+		return (PlacedFeature) this.worldGenRegion.registryAccess()
+				.registryOrThrow(Registries.PLACED_FEATURE)
+				.getValueOrThrow(key);
+	}
+
+	private ConfiguredFeature<?, ?> getConfiguredFeature(ResourceKey key)
+	{
+		return (ConfiguredFeature<?, ?>) this.worldGenRegion.registryAccess()
+				.registryOrThrow(Registries.CONFIGURED_FEATURE)
+				.getValueOrThrow(key);
+}
+
 }
