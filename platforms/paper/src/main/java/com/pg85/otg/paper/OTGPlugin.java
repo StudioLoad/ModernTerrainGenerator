@@ -118,7 +118,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		// Does this go here?
 		OTG.getEngine().getPresetLoader().registerBiomes();
 
-		Registry<Biome> biome_registry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().ownedRegistryOrThrow(Registries.BIOME);
+		Registry<Biome> biome_registry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().lookupOrThrow(Registries.BIOME);
 		int i = 0;
 
 		if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY))
