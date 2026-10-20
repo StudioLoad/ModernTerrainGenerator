@@ -35,8 +35,12 @@ public class OTGPaperChunkGen extends ChunkGenerator
 		if (generator == null)
 		{
 			((PaperEngine) OTG.getEngine()).getPlugin().injectInternalGenerator(world);
-			generator.fixBiomes(chunkX, chunkZ);
+			if (generator == null)
+			{
+				throw new IllegalStateException("OTG failed to initialise its internal generator for world '" + world.getName() + "'. Check the server log for the generator injection error.");
+			}
 		}
+		generator.fixBiomes(chunkX, chunkZ);
 
 		ChunkCoordinate chunkCoord = ChunkCoordinate.fromChunkCoords(chunkX, chunkZ);
 		ChunkData chunkData = chunkDataCache.get(chunkCoord);
