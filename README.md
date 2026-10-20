@@ -56,7 +56,7 @@
 
 ## Original developers
 
-ModernTerrainGenerator is a fork of [OpenTerrainGenerator](https://github.com/PG85/OpenTerrainGenerator), which evolved from Terrain Control, the successor to [PhoenixTerrainMod](http://www.minecraftforum.net/topic/313991-phoenixterrainmod/), originally based on [BiomeTerrainMod](http://www.minecraftforum.net/topic/71565-biomemod/).
+ModernTerrainGenerator is a fork of [OpenTerrainGenerator](https://github.com/PG85/OpenTerrainGenerator/), which evolved from [TerrainControl](https://github.com/MCTCP/TerrainControl/), the successor to [PhoenixTerrainMod](http://www.minecraftforum.net/topic/313991-phoenixterrainmod/), originally based on [BiomeTerrainMod](http://www.minecraftforum.net/topic/71565-biomemod/).
 
 * Buycruss       - BiomeTerrainMod
 * R-T-B          - PhoenixTerrainMod
