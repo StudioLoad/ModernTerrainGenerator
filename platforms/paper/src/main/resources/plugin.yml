@@ -1,6 +1,6 @@
 name: ModernTerrainGenerator
 version: ${version}
-description: 'A Paper Lobby based in Core and Arcade.'
+description: 'A Paper Modern Terrain Generator based in Minecraft.'
 authors: ['Rodriaum']
 main: com.rodriaum.mtg.paper.MTGPlugin
 load: STARTUP
@@ -24,10 +24,10 @@ permissions:
       mtg.cmd.preset: true
       mtg.cmd.region: true
       mtg.cmd.structure: true
-      otg.cmd.help: true
-      otg.cmd.map: true
-      otg.cmd.spawn: true
-      otg.cmd.tp: true
+      mtg.cmd.help: true
+      mtg.cmd.map: true
+      mtg.cmd.spawn: true
+      mtg.cmd.tp: true
     mtg.cmd.biome:
       default: op
       description: show chunk biome and block stats
