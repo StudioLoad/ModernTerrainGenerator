@@ -657,7 +657,8 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			{
 				entity.load(TagValueInput.create(ProblemReporter.DISCARDING, this.worldGenRegion.registryAccess(), compoundTag));
 			}
-			entity.setRot(this.getWorldRandom().nextFloat() * 360.0F, 0.0F);
+			entity.setYRot(this.getWorldRandom().nextFloat() * 360.0F);
+			entity.setXRot(0.0F);
 			entity.setPos(entityData.getX(), entityData.getY(), entityData.getZ());
 
 			// Attach nametag if one was provided via Entity()
