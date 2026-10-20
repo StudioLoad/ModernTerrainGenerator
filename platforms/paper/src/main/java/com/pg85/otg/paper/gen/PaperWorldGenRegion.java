@@ -693,7 +693,7 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 			{
 				// Make sure Entity() mobs don't de-spawn, regardless of nbt data
 				mobEntity.setPersistenceRequired();
-				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())), MobSpawnType.CHUNK_GENERATION, null, compoundTag);
+				mobEntity.finalizeSpawn(this.worldGenRegion, this.worldGenRegion.getCurrentDifficultyAt(new BlockPos(entityData.getX(), entityData.getY(), entityData.getZ())), EntitySpawnReason.CHUNK_GENERATION, null, compoundTag);
 			}
 			this.worldGenRegion.addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.DEFAULT);
 		}
