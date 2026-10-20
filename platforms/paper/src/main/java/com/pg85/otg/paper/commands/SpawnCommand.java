@@ -98,7 +98,7 @@ public class SpawnCommand extends BaseCommand
 	
 	public static int execute(CommandSourceStack source, String presetName, String objectName, BlockPos blockPos, boolean force)
 	{
-		if (!source.hasPermission(2, "otg.cmd.spawn")) {
+		if (!source.getBukkitSender().hasPermission("otg.cmd.spawn")) {
 			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
 			return 0;
 		}
@@ -211,7 +211,7 @@ public class SpawnCommand extends BaseCommand
 	                            // than we need to.
 	                            if(
                             		!source.getLevel().hasChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ()) || 
-                            		!source.getLevel().getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ()).getStatus().isOrAfter(ChunkStatus.FEATURES)
+                            		!source.getLevel().getChunk(chunkCoord.getChunkX(), chunkCoord.getChunkZ()).getPersistedStatus().isOrAfter(ChunkStatus.FEATURES)
                         		)
 	                            {
 	                            	// TODO: Add targetBiomes parameter for command.
@@ -235,7 +235,7 @@ public class SpawnCommand extends BaseCommand
 	                            	{
 	                            		source.sendSuccess(() -> (Component.literal(objectToSpawn.getName() + " was spawned at: ")), false);
 	                            		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", chunkCoordSpawned.getBlockX(), "~", chunkCoordSpawned.getBlockZ())).withStyle((p_241055_1_) -> {
-	                            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + chunkCoordSpawned.getBlockX() + " ~ " + chunkCoordSpawned.getBlockZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")));
+	                            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent.SuggestCommand("/tp @s " + chunkCoordSpawned.getBlockX() + " ~ " + chunkCoordSpawned.getBlockZ())).withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")));
 	                            		});	                            		
 	                            		source.sendSuccess(() -> (itextcomponent), false);
 	                            		return 0;
@@ -261,7 +261,7 @@ public class SpawnCommand extends BaseCommand
 				{
             		source.sendSuccess(() -> (Component.literal(objectToSpawn.getName() + " was spawned at: ")), false);
             		MutableComponent itextcomponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", blockPos.getX(), "~", blockPos.getZ())).withStyle((p_241055_1_) -> {
-            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + blockPos.getX() + " ~ " + blockPos.getZ())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")));
+            			return p_241055_1_.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent.SuggestCommand("/tp @s " + blockPos.getX() + " ~ " + blockPos.getZ())).withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")));
             		});	                            		
             		source.sendSuccess(() -> (itextcomponent), false);
 				} else {
