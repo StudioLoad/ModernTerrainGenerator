@@ -87,24 +87,24 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			// Make the frozen boolean accessible
 			frozen.setAccessible(true);
 			// Set the 'frozen' boolean to false for this registry
-			frozen.set(Registry.BIOME_SOURCE, false);
-			frozen.set(Registry.CHUNK_GENERATOR, false);
+			frozen.set(BuiltInRegistries.BIOME_SOURCE, false);
+			frozen.set(BuiltInRegistries.CHUNK_GENERATOR, false);
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
 			e.printStackTrace();
 		}
-		Registry.register(Registry.BIOME_SOURCE, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
-		Registry.register(Registry.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
+		Registry.register(BuiltInRegistries.BIOME_SOURCE, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
+		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
 
 		// Re-freeze the two registries
 		try
 		{
 			frozen = ObfuscationHelper.getField(MappedRegistry.class, "frozen", "bL");
 			frozen.setAccessible(true);
-			frozen.set(Registry.BIOME_SOURCE, true);
-			frozen.set(Registry.CHUNK_GENERATOR, true);
+			frozen.set(BuiltInRegistries.BIOME_SOURCE, true);
+			frozen.set(BuiltInRegistries.CHUNK_GENERATOR, true);
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
@@ -119,7 +119,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 		// Does this go here?
 		OTG.getEngine().getPresetLoader().registerBiomes();
 
-		Registry<Biome> biome_registry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().ownedRegistryOrThrow(Registry.BIOME_REGISTRY);
+		Registry<Biome> biome_registry = ((CraftServer) Bukkit.getServer()).getServer().registryAccess().ownedRegistryOrThrow(Registries.BIOME);
 		int i = 0;
 
 		if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY))
@@ -199,9 +199,9 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			NoiseSettings noiseSettings = getNoiseSettings(OTGGen.getPreset().getWorldConfig());
 			OTGDelegate = new OTGNoiseChunkGenerator(
 				OTGGen.getPreset().getFolderName(),
-				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.registryOrThrow(Registry.BIOME_REGISTRY)),
-				registryAccess.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY),
-				registryAccess.registryOrThrow(Registry.NOISE_REGISTRY),
+				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.registryOrThrow(Registries.BIOME)),
+				registryAccess.registryOrThrow(Registries.STRUCTURE_SET),
+				registryAccess.registryOrThrow(Registries.NOISE),
 				world.getSeed(),
 				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings), SurfaceRuleData.overworld(), 63, false, true, true, false))
 			);
@@ -267,7 +267,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	}
 
 	private DensityFunction getFunction(String string) {
-		return BuiltInRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, Identifier.parse(string))).value();
+		return BuiltInRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, Identifier.parse(string))).value();
 	}
 
 	private NoiseSettings getNoiseSettings(IWorldConfig worldConfig) {
