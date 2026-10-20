@@ -78,7 +78,7 @@ public class TpCommand extends BaseCommand
 
 		Preset preset = ((OTGNoiseChunkGenerator) world.getChunkSource().getGenerator()).getPreset();
 
-		ResourceLocation key = new ResourceLocation(new OTGBiomeResourceLocation(preset.getPresetFolder(),
+		ResourceLocation key = ResourceLocation.parse(new OTGBiomeResourceLocation(preset.getPresetFolder(),
 				preset.getShortPresetName(), preset.getMajorVersion(), biome).toResourceLocationString());
 
 		var t = world.findNearestBiome(p -> p.is(key),
