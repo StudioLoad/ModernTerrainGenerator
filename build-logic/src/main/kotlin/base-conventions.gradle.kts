@@ -9,7 +9,7 @@ configure<JavaPluginExtension> {
 }
 
 configure<BasePluginExtension> {
-    archivesName.set("OpenTerrainGenerator-${project.name}")
+    archivesName.set("ModernTerrainGenerator-${project.name}")
 }
 
 configure<PublishingExtension> {

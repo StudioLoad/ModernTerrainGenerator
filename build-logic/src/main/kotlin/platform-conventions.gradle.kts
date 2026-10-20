@@ -7,17 +7,17 @@ plugins {
 }
 
 // Create otgPlatform extension
-val otgPlatform = extensions.create<OTGPlatformExtension>("otgPlatform")
+val otgPlatform = extensions.create<OTGPlatformExtension>("mtgPlatform")
 
 tasks {
     jar {
         manifest.attributes(
-            "Specification-Title" to "openterraingenerator",
-            "Specification-Vendor" to "Team OTG",
+            "Specification-Title" to "ModernTerrainGenerator",
+            "Specification-Vendor" to "Load Studio",
             "Specification-Version" to "1", // We are version 1 of ourselves
             "Implementation-Title" to project.name,
             "Implementation-Version" to project.version,
-            "Implementation-Vendor" to "Team OTG",
+            "Implementation-Vendor" to "Load Studio",
             // This will cause jar + any tasks dependent on it to be out-of-date every build (timestamp will be different run-to-run) // todo: Remove if not needed
             "Implementation-Timestamp" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
         )
@@ -40,8 +40,8 @@ tasks {
         }
 
         // Apply relocations for shaded dependencies
-        relocate("com.fasterxml.jackson", "com.pg85.otg.dependency.jackson")
-        relocate("org.yaml.snakeyaml", "com.pg85.otg.dependency.snakeyaml")
+        relocate("com.fasterxml.jackson", "com.rodriaum.mtg.dependency.jackson")
+        relocate("org.yaml.snakeyaml", "com.rodriaum.mtg.dependency.snakeyaml")
 
         // Include resources from root project resources directory in shadowJar
         from(rootDir) {
@@ -53,7 +53,7 @@ tasks {
     val copyPlatformJar = register<CopyFile>("copyPlatformJar") {
         sourceFile.set(otgPlatform.productionJar)
         destination.set(rootProject.layout.buildDirectory.dir("distributions").map {
-            it.file("OpenTerrainGenerator-${project.name.capitalize()}-${project.version}.jar")
+            it.file("ModernTerrainGenerator-${project.name.capitalize()}-${project.version}.jar")
         })
     }
 

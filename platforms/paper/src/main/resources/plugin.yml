@@ -1,66 +1,66 @@
-name: OpenTerrainGenerator
+name: ModernTerrainGenerator
 version: ${version}
-description: 'Team OTG: PG85 (code), MC_Pitman & LordSmellyPants (graphics, web, community). Authvin, SuperCoder79 and Josh/Coll1234567 (more code). This mod is a fork of TerrainControl by Khorn/Wickth, Olof Cayorion Larsson, RutgerKok and Timethor. - OTG: Generate anything! -'
-authors: ['PeeGee85', 'Authvin', 'SuperCoder79', 'Josh/Coll1234567', 'RutgerKok', 'TimeThor', 'Khorn/Wickth', 'Olof Cayorion Larsson']
-main: com.pg85.otg.paper.OTGPlugin
+description: 'A Paper Lobby based in Core and Arcade.'
+authors: ['Rodriaum']
+main: com.rodriaum.mtg.paper.MTGPlugin
 load: STARTUP
 softdepend: ['WorldEdit']
 api-version: '1.21'
 folia-supported: false
 permissions:
-  otg.*:
+  mtg.*:
     default: false
     children:
-      otg.cmd.*: true
-      otg.default: true
-  otg.cmd.*:
+      mtg.cmd.*: true
+      mtg.default: true
+  mtg.cmd.*:
     default: false
     children:
-      otg.cmd.biome: true
-      otg.cmd.data: true
-      otg.cmd.edit: true
-      otg.cmd.export: true
-      otg.cmd.flush: true
-      otg.cmd.preset: true
-      otg.cmd.region: true
-      otg.cmd.structure: true
+      mtg.cmd.biome: true
+      mtg.cmd.data: true
+      mtg.cmd.edit: true
+      mtg.cmd.export: true
+      mtg.cmd.flush: true
+      mtg.cmd.preset: true
+      mtg.cmd.region: true
+      mtg.cmd.structure: true
       otg.cmd.help: true
       otg.cmd.map: true
       otg.cmd.spawn: true
       otg.cmd.tp: true
-    otg.cmd.biome:
+    mtg.cmd.biome:
       default: op
       description: show chunk biome and block stats
-    otg.cmd.data:
+    mtg.cmd.data:
       default: op
-      description: modifies otg data
-    otg.cmd.help:
+      description: modifies mtg data
+    mtg.cmd.help:
       default: true
       description: show help
-    otg.cmd.edit:
+    mtg.cmd.edit:
       default: op
       description: allows you to edit presets
-    otg.cmd.map:
+    mtg.cmd.map:
       default: op
       description: generate map image, terrain/biome options are available
-    otg.cmd.spawn:
+    mtg.cmd.spawn:
       default: op
       description: spawn bo3 where you look
-    otg.cmd.tp:
+    mtg.cmd.tp:
       default: op
       description: Teleport to the given biome (name or id, max range 1000 chunks)
-    otg.cmd.flush:
+    mtg.cmd.flush:
       default: op
-      description: Flushes OTG data
-    otg.cmd.export:
+      description: Flushes MTG data
+    mtg.cmd.export:
       default: op
       description: Exports the current WorldEdit selection as a new BO3.
-    otg.cmd.preset:
+    mtg.cmd.preset:
       default: true
       description: Shows current preset
-    otg.cmd.region:
+    mtg.cmd.region:
       default: op
-      description: Configures region for OTG commands
-    otg.cmd.structure:
+      description: Configures region for MTG commands
+    mtg.cmd.structure:
       default: op
       description: Shows information about a structure

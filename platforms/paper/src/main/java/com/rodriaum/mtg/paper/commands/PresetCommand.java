@@ -1,0 +1,52 @@
+package com.rodriaum.mtg.paper.commands;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.rodriaum.mtg.core.presets.Preset;
+import com.rodriaum.mtg.paper.gen.OTGNoiseChunkGenerator;
+
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+
+public class PresetCommand extends BaseCommand
+{
+	public PresetCommand() 
+	{
+		super("preset");
+		this.helpMessage = "Displays information about the current world's preset.";
+		this.usage = "/mtg preset";
+	}
+	
+	@Override
+	public void build(LiteralArgumentBuilder<CommandSourceStack> builder)
+	{
+		builder.then(Commands.literal("preset")
+			.executes(context -> showPreset(context.getSource()))
+		);
+	}
+	
+	private int showPreset(CommandSourceStack source)
+	{
+		if (!source.getBukkitSender().hasPermission(getPermission())) {
+			source.sendSuccess(() -> (Component.literal("\u00a7cPermission denied!")), false);
+			return 0;
+		}
+		if (!(source.getLevel().getChunkSource().getGenerator() instanceof OTGNoiseChunkGenerator))
+		{
+			source.sendSuccess(() -> (Component.literal("MTG is not enabled in this world")), false);
+			return 0;
+		}
+		Preset preset = ((OTGNoiseChunkGenerator) source.getLevel().getChunkSource().getGenerator()).getPreset();
+		source.sendSuccess(() -> (Component.literal("Preset: " + preset.getFolderName()
+			 + "\nDescription: " + preset.getDescription()
+			 + "\nMajor version: " + preset.getMajorVersion()
+			)),
+				false);
+		return 0;
+	}
+
+	@Override
+	public String getPermission() {
+		return "mtg.cmd.preset";
+	}
+}
