@@ -37,8 +37,7 @@ public class PresetCommand extends BaseCommand
 			return 0;
 		}
 		Preset preset = ((OTGNoiseChunkGenerator) source.getLevel().getChunkSource().getGenerator()).getPreset();
-		source.sendSuccess(() -> (new TextComponent
-			("Preset: " + preset.getFolderName()
+		source.sendSuccess(() -> (Component.literal("Preset: " + preset.getFolderName()
 			 + "\nDescription: " + preset.getDescription()
 			 + "\nMajor version: " + preset.getMajorVersion()
 			)),
