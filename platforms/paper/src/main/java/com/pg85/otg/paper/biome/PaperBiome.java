@@ -184,7 +184,7 @@ public class PaperBiome implements IBiome
 								? biomeConfig.getWaterColor() : 4159204);
 
 		List<AmbientParticle> ambientParticles = new ArrayList<>();
-		Optional<ParticleType<?>> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
+		Optional<ParticleType> particleType = BuiltInRegistries.PARTICLE_TYPE.getOptional(Identifier.parse(biomeConfig.getParticleType()));
 		if (particleType.isPresent())
 		{
 			// OTG presets currently store a particle identifier, not its extra parameters.
