@@ -540,6 +540,11 @@ public class OTGNoiseChunkGenerator extends ChunkGenerator
 		return preset;
 	}
 
+	public Holder<NoiseGeneratorSettings> getGeneratorSettingsHolder()
+	{
+		return this.generatorSettingsHolder;
+	}
+
 	@Override
 	public int getMinY()
 	{
