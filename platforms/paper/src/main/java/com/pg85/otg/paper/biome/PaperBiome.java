@@ -131,8 +131,9 @@ public class PaperBiome implements IBiome
 
 				if (featureHolder == null)
 				{
+					String attemptedKey = legacyFeatureName == null ? "<no legacy mapping>" : legacyFeatureName;
 					OTG.getEngine().getLogger().log(LogLevel.WARN, LogCategory.BIOME_REGISTRY,
-							"Could not find placed feature " + featureName + " in the registry; check the feature key");
+							"Could not find placed feature " + featureName + " (legacy mapping: " + attemptedKey + ") in the registry; check the feature key and Minecraft version");
 				}
 				else
 				{
