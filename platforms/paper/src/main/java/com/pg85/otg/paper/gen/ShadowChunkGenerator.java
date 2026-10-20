@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.pg85.otg.paper.biome.PaperBiome;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -99,7 +100,7 @@ public class ShadowChunkGenerator
 		// Make a dummy chunk, we'll fill this with base terrain data ourselves, without touching any MC worldgen logic.
 		// As an optimisation, we cache the dummy chunk in a limited size FIFO cache. Later when MC requests the chunk 
 		// during world generation, we swap the dummy chunk's data into the real chunk.
-		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), null, level, level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), null);
+		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), null, level, level.registryAccess().registryOrThrow(Registries.BIOME), null);
 		PaperChunkBuffer buffer = new PaperChunkBuffer(chunk);
 
 		// This is where vanilla processes any noise affecting structures like villages, in order to spawn smoothing areas.
@@ -252,14 +253,14 @@ public class ShadowChunkGenerator
 
 			for(ChunkCoordinate chunkToHandle : chunksToHandle)
 			{
-				chunk = new ProtoChunk(new ChunkPos(chunkToHandle.getChunkX(), chunkToHandle.getChunkZ()), null, serverWorld, serverWorld.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), null);
+				chunk = new ProtoChunk(new ChunkPos(chunkToHandle.getChunkX(), chunkToHandle.getChunkZ()), null, serverWorld, serverWorld.registryAccess().registryOrThrow(Registries.BIOME), null);
 				chunkpos = chunk.getPos();
 				biomesInArea.add(((PaperBiome) cachedBiomeProvider.getNoiseBiome((chunkpos.x << 2) + 2, (chunkpos.z << 2) + 2)).getBiome());
 			}
 
 			for(ChunkCoordinate chunkToHandle : chunksToHandle)
 			{
-				chunk = new ProtoChunk(new ChunkPos(chunkToHandle.getChunkX(), chunkToHandle.getChunkZ()), null, serverWorld, serverWorld.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), null);
+				chunk = new ProtoChunk(new ChunkPos(chunkToHandle.getChunkX(), chunkToHandle.getChunkZ()), null, serverWorld, serverWorld.registryAccess().registryOrThrow(Registries.BIOME), null);
 				chunkpos = chunk.getPos();
 				int distance = (int)Math.floor(Math.sqrt(Math.pow (chunkToHandle.getChunkX() - chunkCoordinate.getChunkX(), 2) + Math.pow (chunkToHandle.getChunkZ() - chunkCoordinate.getChunkZ(), 2)));
 
@@ -269,7 +270,7 @@ public class ShadowChunkGenerator
 				// TODO: Optimise this for biome lookups, fetch a whole region of noise biome info at once?
 				IBiome biome = cachedBiomeProvider.getNoiseBiome((chunkpos.x << 2) + 2, (chunkpos.z << 2) + 2);
 				// TODO: Should we store this in the biomes? Would save creating them anew here -auth
-				ResourceKey<Biome> key = ResourceKey.create(Registry.BIOME_REGISTRY, Identifier.parse(biome.getBiomeConfig().getRegistryKey().toResourceLocationString()));
+				ResourceKey<Biome> key = ResourceKey.create(Registries.BIOME, Identifier.parse(biome.getBiomeConfig().getRegistryKey().toResourceLocationString()));
 				// TODO: This only checks for villages for now, needs reworking. The forge approach won't work.
 				ArrayList<ResourceKey<StructureSet>> structures = new ArrayList<>();
 				for (ResourceKey<StructureSet> structure : structures)
