@@ -17,7 +17,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.data.worldgen.TerrainProvider;
 import net.minecraft.resources.ResourceKey;
@@ -30,9 +31,9 @@ import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.generator.CustomChunkGenerator;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.generator.CustomChunkGenerator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
@@ -94,7 +95,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
 			e.printStackTrace();
 		}
-		Registry.register(Registry.BIOME_SOURCE, new ResourceLocation(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
+		Registry.register(Registry.BIOME_SOURCE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
 		Registry.register(Registry.CHUNK_GENERATOR, new ResourceLocation(Constants.MOD_ID_SHORT, "default"), OTGNoiseChunkGenerator.CODEC);
 
 		// Re-freeze the two registries
@@ -266,7 +267,7 @@ public class OTGPlugin extends JavaPlugin implements Listener
 	}
 
 	private DensityFunction getFunction(String string) {
-		return BuiltinRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(string))).value();
+		return BuiltinRegistries.DENSITY_FUNCTION.getHolderOrThrow(ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, ResourceLocation.parse(string))).value();
 	}
 
 	private NoiseSettings getNoiseSettings(IWorldConfig worldConfig) {
