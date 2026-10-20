@@ -9,11 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.OptionalInt;
 import java.util.Set;
 
 import com.pg85.otg.paper.util.ObfuscationHelper;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -183,12 +183,16 @@ public class PaperPresetLoader extends LocalPresetLoader
 			biomeConfig.getValue().setOTGBiomeId(otgBiomeId);
 			registryKey = ResourceKey.create(BIOME_KEY, resourceLocation);
 			presetBiomes.add(registryKey);
-			biome = PaperBiome.createOTGBiome(isOceanBiome, preset.getWorldConfig(), biomeConfig.getValue(), ((CraftServer)Bukkit.getServer()).getServer().registryHolder);
+			biome = PaperBiome.createOTGBiome(isOceanBiome, preset.getWorldConfig(), biomeConfig.getValue(), ((CraftServer)Bukkit.getServer()).getServer().registryAccess());
 
-			if(!refresh) {
-				biomeRegistry.register(registryKey, biome, Lifecycle.experimental());
+			if (!refresh) {
+				biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
 			} else {
-				biomeRegistry.registerOrOverride(OptionalInt.empty(), registryKey, biome, Lifecycle.experimental());
+				// Minecraft 1.21.11 registries no longer expose registerOrOverride.
+				// Existing biome entries are kept until the registry is rebuilt by a server restart.
+				if (biomeRegistry.getOptional(registryKey).isEmpty()) {
+					biomeRegistry.register(registryKey, biome, new RegistrationInfo(java.util.Optional.empty(), Lifecycle.experimental()));
+				}
 			}
 
 			// Populate our map for syncing
