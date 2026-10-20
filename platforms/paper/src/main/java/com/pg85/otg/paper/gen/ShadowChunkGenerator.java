@@ -4,7 +4,6 @@ import java.util.*;
 
 import com.pg85.otg.paper.biome.PaperBiome;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +33,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.UpgradeData;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 //import net.minecraft.world.level.levelgen.StructureSettings;
 //import net.minecraft.world.level.levelgen.WorldgenRandom;
@@ -99,7 +99,7 @@ public class ShadowChunkGenerator
 		// Make a dummy chunk, we'll fill this with base terrain data ourselves, without touching any MC worldgen logic.
 		// As an optimisation, we cache the dummy chunk in a limited size FIFO cache. Later when MC requests the chunk 
 		// during world generation, we swap the dummy chunk's data into the real chunk.
-		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), null, level, level.registryAccess().lookupOrThrow(Registries.BIOME), null);
+		ProtoChunk chunk = new ProtoChunk(new ChunkPos(chunkCoordinate.getChunkX(), chunkCoordinate.getChunkZ()), UpgradeData.EMPTY, level, level.palettedContainerFactory(), null);
 		PaperChunkBuffer buffer = new PaperChunkBuffer(chunk);
 
 		// This is where vanilla processes any noise affecting structures like villages, in order to spawn smoothing areas.
