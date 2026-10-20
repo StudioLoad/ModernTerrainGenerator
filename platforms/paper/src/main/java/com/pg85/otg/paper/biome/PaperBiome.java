@@ -250,7 +250,8 @@ public class PaperBiome implements IBiome
 				.mobSpawnSettings(mobSpawnInfoBuilder.build())
 				.generationSettings(biomeGenerationSettingsBuilder.build());
 
-		music.ifPresent(value -> builder.setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(value)));
+		music.ifPresent(value -> builder.setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC,
+				new BackgroundMusic(Optional.of(value), Optional.empty(), Optional.empty())));
 
 		if(biomeConfig.useFrozenOceanTemperature())
 		{
