@@ -243,10 +243,10 @@ public class ObjectUtils
 
 			if (verbose && fixedObject != null)
 			{
-				source.sendSuccess(Component.literal("Successfully updated " + type.getType() + " " + inputObject.getName()), false);
+				source.sendSuccess(() -> (Component.literal("Successfully updated " + type.getType() + " " + inputObject.getName())), false);
 				OTG.getEngine().getCustomObjectManager().getGlobalObjects().addObjectToPreset(presetFolderName, fixedObject.getName(), fixedObject.getConfig().getFile(), inputObject);
 			} else if (verbose) {
-				source.sendSuccess(Component.literal("Failed to update "+type.getType()+" " + inputObject.getName()), false);
+				source.sendSuccess(() -> (Component.literal("Failed to update "+type.getType()+" " + inputObject.getName())), false);
 			}
 			cleanArea(worldGenRegion, region.getMin(), region.getMax(), false);
 		};
