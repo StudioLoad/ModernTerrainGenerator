@@ -108,8 +108,9 @@ public class PaperNBTHelper extends LocalNBTHelper
 	{
 		if (nmsListTag.size() == 0)
 		{
-			// Nothing to return
-			return null;
+			// Empty lists are valid NBT values. The legacy representation stores
+			// their element type as TAG_End because modern ListTag does not retain it.
+			return new NamedBinaryTag(name, NamedBinaryTag.Type.TAG_End);
 		}
 
 		NamedBinaryTag.Type listType = NamedBinaryTag.Type.values()[nmsListTag.get(0).getId()];
