@@ -76,7 +76,8 @@ public class StructureCommand extends BaseCommand
 			}
 		}
 		
-		source.sendSuccess(() -> (Component.literal(structureInfo)), false);
+		String finalStructureInfo = structureInfo;
+		source.sendSuccess(() -> Component.literal(finalStructureInfo), false);
 		return 0;
 	}
 
