@@ -23,8 +23,8 @@ public class WorldEditUtil
 				.get(BukkitAdapter.adapt(source))
 				.getSelection(BukkitAdapter.adapt(source.getWorld()));
 			RegionCommand.Region region = new RegionCommand.Region();
-			region.setPos1(getPosFromVector3(weRegion.getMinimumPoint()));
-			region.setPos2(getPosFromVector3(weRegion.getMaximumPoint()));
+			region.setPos(getPosFromVector3(weRegion.getMinimumPoint()));
+			region.setPos(getPosFromVector3(weRegion.getMaximumPoint()));
 			return region;
 		}
 		catch (IncompleteRegionException e)
