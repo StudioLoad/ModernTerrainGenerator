@@ -29,10 +29,10 @@
   <p align="center">
     Minecraft's Leading Data-Driven Worldgen Engine
     <br />
-    <a href="https://openterraingen.fandom.com"><strong>Explore the docs »</strong></a>
+    <a href="https://mtg.rodriaum.com"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://openterraingen.fandom.com/wiki/OTG_Presets">See Our Presets</a>
+    <a href="https://mtg.rodriaum.com/documentation/presets">See Our Presets</a>
     ·
     <a href="https://github.com/StudioLoad/ModernTerrainGenerator/issues">Report Bugs</a>
   </p>
@@ -40,7 +40,7 @@
 
 ##  Modern Terrain Generator
 
-> [!CAUTION]
+> [!WARNING]
 > This project is being moved to the latest versions (1.21.11).
 
 ### Team
