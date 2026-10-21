@@ -16,7 +16,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/StudioLoad/ModernTerrainGenerator">
-    <img src="logo.png" alt="Logo" width="180" height="180">
+    <img src="https://cdn-loadmc.rodriaum.com/assets/designs/mtg-logo.png" alt="Logo" width="180" height="180">
   </a>
 
   <h3 align="center">ModernTerrainGenerator</h3>
