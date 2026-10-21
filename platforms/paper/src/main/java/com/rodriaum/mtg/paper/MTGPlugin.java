@@ -82,7 +82,7 @@ public class MTGPlugin extends JavaPlugin implements Listener
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze registry");
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to unfreeze Minecraft registries required to register MTG biome and chunk generator codecs.");
 			e.printStackTrace();
 		}
 		Registry.register(BuiltInRegistries.BIOME_SOURCE, Identifier.fromNamespaceAndPath(Constants.MOD_ID_SHORT, "default"), OTGBiomeProvider.CODEC);
@@ -98,12 +98,12 @@ public class MTGPlugin extends JavaPlugin implements Listener
 		}
 		catch (NoSuchFieldException | IllegalAccessException e)
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to re-freeze registry");
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.BIOME_REGISTRY, "Failed to re-freeze Minecraft registries after registering MTG biome and chunk generator codecs.");
 			e.printStackTrace();
 		}
 
 		OTG.startEngine(new PaperEngine(this));
-		
+
 		OTGCommandExecutor.registerArguments();
 		OTGCommandExecutor.register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
 		// Does this go here?
@@ -115,7 +115,7 @@ public class MTGPlugin extends JavaPlugin implements Listener
 		if(OTG.getEngine().getLogger().getLogCategoryEnabled(LogCategory.BIOME_REGISTRY))
 		{
 			OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.BIOME_REGISTRY, "-----------------");
-			OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.BIOME_REGISTRY, "Registered biomes:");
+			OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.BIOME_REGISTRY, "Listing registered biomes:");
 			for (Biome biomeBase : biome_registry)
 			{
 				OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.BIOME_REGISTRY, (i++) + ": " + biomeBase.toString());
@@ -123,8 +123,8 @@ public class MTGPlugin extends JavaPlugin implements Listener
 			OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.BIOME_REGISTRY, "-----------------");
 		}
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		
-		this.handler = new OTGHandler(this);	
+
+		this.handler = new OTGHandler(this);
 		Bukkit.getPluginManager().registerEvents(new NetworkingListener(this), this);
 	}
 
@@ -138,7 +138,7 @@ public class MTGPlugin extends JavaPlugin implements Listener
 		Preset preset = OTG.getEngine().getPresetLoader().getPresetByShortNameOrFolderName(id);
 		if (preset == null)
 		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Could not find preset '" + id + "', did you install it correctly?");
+			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Preset '" + id + "' could not be found. Check that the preset is installed and its folder name is correct.");
 			return null;
 		}
 		worlds.put(worldName, id);
@@ -160,118 +160,118 @@ public class MTGPlugin extends JavaPlugin implements Listener
 		initLock.lock();
 		try
 		{
-		if (processedWorlds.contains(world.getName()))
-		{
-			// We have already processed this world, return
-			return;
-		}
+			if (processedWorlds.contains(world.getName()))
+			{
+				// We have already processed this world, return
+				return;
+			}
 
-		OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.MAIN, "Taking over world " + world.getName());
-		ServerLevel serverWorld = ((CraftWorld) world).getHandle();
+			OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.MAIN, "Installing the MTG chunk generator for world '" + world.getName() + "'.");
+			ServerLevel serverWorld = ((CraftWorld) world).getHandle();
 
-		net.minecraft.world.level.chunk.ChunkGenerator generator = serverWorld.getChunkSource().getGenerator();
-		if (!(generator instanceof CustomChunkGenerator))
-		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Mission failed, we'll get them next time");
-			return;
-		}
-		if (!(world.getGenerator() instanceof OTGPaperChunkGen OTGGen))
-		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "World generator was not an MTG generator, cannot take over, something has gone wrong");
-			return;
-		}
-		// We have a CustomChunkGenerator and a NoiseChunkGenerator
-		OTGNoiseChunkGenerator OTGDelegate;
-		RegistryAccess registryAccess = ((CraftServer) Bukkit.getServer()).getServer().registryAccess();
-		// If generator is null, it has not been initialized yet. Initialize it.
-		// The lock is used to avoid the accidental creation of two separate objects, in case
-		// of a race condition.
-		if (OTGGen.generator == null)
-		{
-			NoiseSettings noiseSettings = getNoiseSettings(OTGGen.getPreset().getWorldConfig());
-			OTGDelegate = new OTGNoiseChunkGenerator(
-				OTGGen.getPreset().getFolderName(),
-				new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.lookupOrThrow(Registries.BIOME)),
-				registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
-				registryAccess.lookupOrThrow(Registries.NOISE),
-				world.getSeed(),
-				Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), java.util.List.of(), 63, false, true, true, false))
-			);
-			// add the weird Spigot config; it was complaining about this
-			//OTGDelegate.conf = serverWorld.spigotConfig;
-		} else {
-			OTGDelegate = OTGGen.generator;
-		}
+			net.minecraft.world.level.chunk.ChunkGenerator generator = serverWorld.getChunkSource().getGenerator();
+			if (!(generator instanceof CustomChunkGenerator))
+			{
+				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Cannot install the MTG chunk generator for world '" + world.getName() + "': the active generator is not a CustomChunkGenerator.");
+				return;
+			}
+			if (!(world.getGenerator() instanceof OTGPaperChunkGen OTGGen))
+			{
+				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN, "Cannot install the MTG chunk generator for world '" + world.getName() + "': the configured Bukkit generator is not an MTG generator.");
+				return;
+			}
+			// We have a CustomChunkGenerator and a NoiseChunkGenerator
+			OTGNoiseChunkGenerator OTGDelegate;
+			RegistryAccess registryAccess = ((CraftServer) Bukkit.getServer()).getServer().registryAccess();
+			// If generator is null, it has not been initialized yet. Initialize it.
+			// The lock is used to avoid the accidental creation of two separate objects, in case
+			// of a race condition.
+			if (OTGGen.generator == null)
+			{
+				NoiseSettings noiseSettings = getNoiseSettings(OTGGen.getPreset().getWorldConfig());
+				OTGDelegate = new OTGNoiseChunkGenerator(
+						OTGGen.getPreset().getFolderName(),
+						new OTGBiomeProvider(OTGGen.getPreset().getFolderName(), world.getSeed(), registryAccess.lookupOrThrow(Registries.BIOME)),
+						registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
+						registryAccess.lookupOrThrow(Registries.NOISE),
+						world.getSeed(),
+						Holder.direct(new NoiseGeneratorSettings(noiseSettings, Blocks.STONE.defaultBlockState(), Blocks.WATER.defaultBlockState(), getNoiseRouter(noiseSettings, registryAccess), SurfaceRuleData.overworld(), java.util.List.of(), 63, false, true, true, false))
+				);
+				// add the weird Spigot config; it was complaining about this
+				//OTGDelegate.conf = serverWorld.spigotConfig;
+			} else {
+				OTGDelegate = OTGGen.generator;
+			}
 
-		try
-		{
-			ChunkMap chunkMap = serverWorld.getChunkSource().chunkMap;
-			Field contextField = ChunkMap.class.getDeclaredField("worldGenContext");
-			Field randomStateField = ChunkMap.class.getDeclaredField("randomState");
-			Field structureStateField = ChunkMap.class.getDeclaredField("chunkGeneratorState");
-			contextField.setAccessible(true);
-			randomStateField.setAccessible(true);
-			structureStateField.setAccessible(true);
-
-			WorldGenContext oldContext = (WorldGenContext) contextField.get(chunkMap);
-			RandomState otgRandomState = RandomState.create(
-					OTGDelegate.getGeneratorSettingsHolder().value(),
-					registryAccess.lookupOrThrow(Registries.NOISE),
-					world.getSeed());
-			ChunkGeneratorStructureState otgStructureState = OTGDelegate.createState(
-					registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
-					otgRandomState,
-					world.getSeed(),
-					serverWorld.spigotConfig
-			);
-			WorldGenContext otgContext = new WorldGenContext(
-					oldContext.level(),
-					OTGDelegate,
-					oldContext.structureManager(),
-					oldContext.lightEngine(),
-					oldContext.mainThreadExecutor(),
-					oldContext.unsavedListener());
-
-			Object oldRandomState = randomStateField.get(chunkMap);
-			Object oldStructureState = structureStateField.get(chunkMap);
 			try
 			{
-				randomStateField.set(chunkMap, otgRandomState);
-				structureStateField.set(chunkMap, otgStructureState);
-				contextField.set(chunkMap, otgContext);
-			}
-			catch (ReflectiveOperationException ex)
-			{
+				ChunkMap chunkMap = serverWorld.getChunkSource().chunkMap;
+				Field contextField = ChunkMap.class.getDeclaredField("worldGenContext");
+				Field randomStateField = ChunkMap.class.getDeclaredField("randomState");
+				Field structureStateField = ChunkMap.class.getDeclaredField("chunkGeneratorState");
+				contextField.setAccessible(true);
+				randomStateField.setAccessible(true);
+				structureStateField.setAccessible(true);
+
+				WorldGenContext oldContext = (WorldGenContext) contextField.get(chunkMap);
+				RandomState otgRandomState = RandomState.create(
+						OTGDelegate.getGeneratorSettingsHolder().value(),
+						registryAccess.lookupOrThrow(Registries.NOISE),
+						world.getSeed());
+				ChunkGeneratorStructureState otgStructureState = OTGDelegate.createState(
+						registryAccess.lookupOrThrow(Registries.STRUCTURE_SET),
+						otgRandomState,
+						world.getSeed(),
+						serverWorld.spigotConfig
+				);
+				WorldGenContext otgContext = new WorldGenContext(
+						oldContext.level(),
+						OTGDelegate,
+						oldContext.structureManager(),
+						oldContext.lightEngine(),
+						oldContext.mainThreadExecutor(),
+						oldContext.unsavedListener());
+
+				Object oldRandomState = randomStateField.get(chunkMap);
+				Object oldStructureState = structureStateField.get(chunkMap);
 				try
 				{
-					randomStateField.set(chunkMap, oldRandomState);
-					structureStateField.set(chunkMap, oldStructureState);
+					randomStateField.set(chunkMap, otgRandomState);
+					structureStateField.set(chunkMap, otgStructureState);
+					contextField.set(chunkMap, otgContext);
 				}
-				catch (ReflectiveOperationException rollbackException)
+				catch (ReflectiveOperationException ex)
 				{
-					ex.addSuppressed(rollbackException);
+					try
+					{
+						randomStateField.set(chunkMap, oldRandomState);
+						structureStateField.set(chunkMap, oldStructureState);
+					}
+					catch (ReflectiveOperationException rollbackException)
+					{
+						ex.addSuppressed(rollbackException);
+					}
+					throw ex;
 				}
-				throw ex;
+			} catch (ReflectiveOperationException ex)
+			{
+				OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN,
+						"Failed to install the MTG internal chunk generator for world '" + world.getName()
+								+ "'. The world has not been marked as processed and may require further investigation.");
+				OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, ex);
+				return;
 			}
-		} catch (ReflectiveOperationException ex)
-		{
-			OTG.getEngine().getLogger().log(LogLevel.ERROR, LogCategory.MAIN,
-					"Failed to install the MTG chunk generator for world " + world.getName()
-							+ ". The world will not be marked as processed.");
-			OTG.getEngine().getLogger().printStackTrace(LogLevel.ERROR, LogCategory.MAIN, ex);
-			return;
-		}
 
-		if (OTGGen.generator == null)
-		{
-			OTGGen.generator = OTGDelegate;
-		}
+			if (OTGGen.generator == null)
+			{
+				OTGGen.generator = OTGDelegate;
+			}
 
-		// Spigot may have started generating - we gotta regen if so
+			// Spigot may have started generating - we gotta regen if so
 
-		OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.MAIN, "Success!");
+			OTG.getEngine().getLogger().log(LogLevel.INFO, LogCategory.MAIN, "Successfully installed the MTG chunk generator for world '" + world.getName() + "'.");
 
-		processedWorlds.add(world.getName());
+			processedWorlds.add(world.getName());
 		}
 		finally
 		{
