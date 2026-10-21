@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 
 public class PaperLogger extends Logger
 {
-	private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Constants.MOD_ID_SHORT);
+	private final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Constants.MOD_ID);
 
 	@Override
 	public void log (LogLevel level, LogCategory category, String message)
