@@ -28,19 +28,19 @@ public class BiomeLayers
 	// The island bit marks isle biomes spawned inside other biomes.
 	protected static final int ISLAND_BIT = (1 << 29); // TODO: Do we really need this?
 
-	// River bits mark whether there is a river in this column (TODO: Why 2?).
+	// River bits mark whether there is a river in this column.
 	private static final int RIVER_SHIFT = 27;
 	protected static final int RIVER_BITS = (3 << RIVER_SHIFT);
 	protected static final int RIVER_BIT_ONE = (1 << RIVER_SHIFT);
 	protected static final int RIVER_BIT_TWO = (1 << (RIVER_SHIFT + 1));
-	
+
 	// Group bits store the id of the biome group used for a column.
 	protected static final int GROUP_SHIFT = 20;
 	protected static final int GROUP_BITS = (127 << GROUP_SHIFT); // Max 127 biome groups, 7 bits
 
 	// Biome bits store the id of the biome used for a column.
 	protected static final int BIOME_BITS = (1 << GROUP_SHIFT) - 1;
-	
+
 	static boolean isLand(int sample)
 	{
 		return (sample & LAND_BIT) != 0;
@@ -50,38 +50,32 @@ public class BiomeLayers
 	{
 		return (sample & GROUP_BITS) >> GROUP_SHIFT;
 	}
-	
+
 	/**
-	* Checks for land and when present returns biome data, otherwise returns default ocean.
-	*/
+	 * Checks for land and when present returns biome data, otherwise returns default ocean.
+	 */
 	static int getBiomeFromLayer(int sample)
 	{
-		return 
-			(sample & BiomeLayers.LAND_BIT) != 0 ? 
-			(sample & BiomeLayers.BIOME_BITS) : 
-			0; // ID 0 maps to the ocean biome, or to the first preset biome when oceans are disabled.
+		return (sample & BiomeLayers.LAND_BIT) != 0 ? (sample & BiomeLayers.BIOME_BITS) : 0;
 	}
 
 	private static <T extends ILayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(BiomeLayerData data, LongFunction<C> contextProvider, ILogger logger)
 	{
-		// Create an empty layer to start the biome generation
 		LayerFactory<T> factory = new InitializationLayer().create(contextProvider.apply(1L));
-		LayerFactory<T> riverFactory = new InitializationLayer().create(contextProvider.apply(1L));
+		LayerFactory<T> riverFactory = data.riversEnabled && data.randomRivers
+			? new InitializationLayer().create(contextProvider.apply(1L))
+			: null;
 		LayerFactory<T> oceanTemperatureFactory = null;
 		boolean riversStarted = false;
 		boolean oceanTemperatureStarted = false;
 
 		if(data.biomeMode != BiomeMode.FromImage || data.imageMode == ImageMode.ContinueNormal)
 		{
-			// Iterate through the depth, manipulating the factory at specific points
 			for (int depth = 0; depth <= data.generationDepth; depth++)
 			{
-				// Scale the factory by 2x before adding more transformations
 				factory = new ScaleLayer().create(contextProvider.apply(2000L + depth), factory);
-				// TODO: probably should add smooth layer here
 
-				// Scale our rivers if they've been started
-				if (data.randomRivers && riversStarted)
+				if (data.riversEnabled && data.randomRivers && riversStarted)
 				{
 					riverFactory = new ScaleLayer().create(contextProvider.apply(2000L + depth), riverFactory);
 				}
@@ -91,7 +85,6 @@ public class BiomeLayers
 					oceanTemperatureFactory = new ScaleLayer().create(contextProvider.apply(2000L + depth), oceanTemperatureFactory);
 				}
 
-				// If we're at the land size, initialize the land layer with the provided rarity.
 				if (depth == data.landSize && data.landRarity > 0)
 				{
 					factory = new LandLayer(data.landRarity, data.forceLandAtSpawn, data.oldLandRarity).create(contextProvider.apply(1L), factory);
@@ -100,12 +93,10 @@ public class BiomeLayers
 
 				if (data.oceanEnabled && depth == data.oceanBiomeSize)
 				{
-					// TODO: Process isles/borders for oceanTemperatureFactory too, for gendepths after its been added?
 					oceanTemperatureFactory = new OceanTemperatureLayer(data).create(contextProvider.apply(3L));
 					oceanTemperatureStarted = true;
 				}
 
-				// If the depth is between landSize and landFuzzy, add islands to fuzz the ocean/land border.
 				if (depth < (data.landSize + data.landFuzzy))
 				{
 					factory = new AddIslandsLayer().create(contextProvider.apply(depth), factory);
@@ -122,8 +113,8 @@ public class BiomeLayers
 					{
 						factory = new BiomeLayer(data, depth).create(contextProvider.apply(depth), factory);
 					}
-					// TODO: Do we need an IceLayer for Normal?
-					if (depth == 3) // TODO: Why 3?
+
+					if (depth == 3)
 					{
 						factory = new IceLayer(data).create(contextProvider.apply(depth), factory);
 					}
@@ -141,33 +132,34 @@ public class BiomeLayers
 					}
 				}
 
-				// Start rivers if we're at the current depth
-				if (data.riverDepth == depth)
+				// Only build river layers when river generation is enabled.
+				if (data.riversEnabled && data.riverDepth == depth)
 				{
 					if (data.randomRivers)
 					{
 						riverFactory = new RiverInitLayer().create(contextProvider.apply(depth), riverFactory);
 						riversStarted = true;
-					} else {
-						// TODO: This generates no rivers atm
+					}
+					else
+					{
 						factory = new RiverInitLayer().create(contextProvider.apply(depth), factory);
 					}
 				}
 
-				// If we're at the end of the river size
-				if ((data.generationDepth - data.riverSize) == depth)
+				if (data.riversEnabled && (data.generationDepth - data.riverSize) == depth)
 				{
 					if (data.randomRivers)
 					{
 						riverFactory = new RiverLayer().create(contextProvider.apply(5 + depth), riverFactory);
-					} else {
-						// TODO: This generates no rivers atm						
+					}
+					else
+					{
 						factory = new RiverLayer().create(contextProvider.apply(5 + depth), factory);
 					}
 				}
 
 				List<BiomeData> isleBiomes = data.isleBiomesAtDepth.get(depth);
-				if(isleBiomes != null && isleBiomes.size() > 0)
+				if(isleBiomes != null && !isleBiomes.isEmpty())
 				{
 					BiomeIsleLayer.IslesList islesAtCurrentDepth = new BiomeIsleLayer.IslesList();
 					for (BiomeData biome : isleBiomes)
@@ -179,47 +171,52 @@ public class BiomeLayers
 							if (data.oceanEnabled && islandInBiome == data.oceanBiomeData.id)
 							{
 								inOcean = true;
-							} else {
+							}
+							else
+							{
 								biomeCanSpawnIn[islandInBiome] = true;
 							}
 						}
 						int chance = (data.biomeRarityScale + 1) - biome.rarity;
 						islesAtCurrentDepth.addIsle(biome.id, chance, biomeCanSpawnIn, inOcean);
 					}
-					factory = new BiomeIsleLayer(islesAtCurrentDepth).create(contextProvider.apply(depth), factory);				
+					factory = new BiomeIsleLayer(islesAtCurrentDepth).create(contextProvider.apply(depth), factory);
 				}
-				
+
 				List<BiomeData> borderBiomes = data.borderBiomesAtDepth.get(depth);
-				if(borderBiomes != null && borderBiomes.size() > 0)
+				if(borderBiomes != null && !borderBiomes.isEmpty())
 				{
 					BiomeBorderLayer.BordersList bordersAtCurrentDepth = new BiomeBorderLayer.BordersList();
 					for (BiomeData biome : borderBiomes)
 					{
 						for(int targetBiomeId : biome.borderInBiomes)
 						{
-							bordersAtCurrentDepth.addBorder(biome.id, targetBiomeId, biome.onlyBorderNearBiomes, biome.notBorderNearBiomes);						
+							bordersAtCurrentDepth.addBorder(biome.id, targetBiomeId, biome.onlyBorderNearBiomes, biome.notBorderNearBiomes);
 						}
 					}
-					factory = new BiomeBorderLayer(bordersAtCurrentDepth).create(contextProvider.apply(depth), factory);				
+					factory = new BiomeBorderLayer(bordersAtCurrentDepth).create(contextProvider.apply(depth), factory);
 				}
 			}
-
-			// Add ocean biomes. This only adds the regular ocean at the moment, soon it will add others.
-			// TODO: This does nothing atm, remove?
-			//factory = new ApplyOceanLayer(data).create(contextProvider.apply(3L), factory);
 
 			if (data.oceanEnabled)
 			{
 				factory = new MergeOceanTemperatureLayer().create(contextProvider.apply(1L), factory, oceanTemperatureFactory);
 			}
-			
-			// Finalize the biome data
-			if (data.randomRivers)
+
+			if (data.riversEnabled)
 			{
-				factory = new FinalizeWithRiverLayer(data.riversEnabled, data.riverBiomes).create(contextProvider.apply(1L), factory, riverFactory);
-			} else {
-				// TODO: This generates no rivers atm
-				factory = new FinalizeLayer(data.riversEnabled, data.riverBiomes).create(contextProvider.apply(1L), factory);
+				if (data.randomRivers)
+				{
+					factory = new FinalizeWithRiverLayer(true, data.riverBiomes).create(contextProvider.apply(1L), factory, riverFactory);
+				}
+				else
+				{
+					factory = new FinalizeLayer(true, data.riverBiomes).create(contextProvider.apply(1L), factory);
+				}
+			}
+			else
+			{
+				factory = new FinalizeLayer(false, data.riverBiomes).create(contextProvider.apply(1L), factory);
 			}
 		}
 
