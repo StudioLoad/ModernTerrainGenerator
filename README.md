@@ -32,7 +32,7 @@
     <a href="https://mtg.rodriaum.com"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://mtg.rodriaum.com/documentation/presets">See Our Presets</a>
+    <a href="https://mtg.rodriaum.com/documentation/preset-catalog">See Our Presets</a>
     ·
     <a href="https://github.com/StudioLoad/ModernTerrainGenerator/issues">Report Bugs</a>
   </p>
