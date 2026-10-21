@@ -85,6 +85,8 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		this.worldGenRegion = worldGenRegion;
 		this.chunkGenerator = chunkGenerator;
 		this.worldRandom = createWorldRandom(worldGenRegion);
+		this.maxY = worldConfig.getWorldMaxY();
+		this.minY = worldConfig.getWorldMinY();
 	}
 	
 	/** Creates a LocalWorldGenRegion to be used for non-OTG worlds outside of decoration, only used for /otg spawn/edit/export. */
@@ -94,6 +96,8 @@ public class PaperWorldGenRegion extends LocalWorldGenRegion
 		this.worldGenRegion = worldGenRegion;
 		this.chunkGenerator = null;
 		this.worldRandom = createWorldRandom(worldGenRegion);
+		this.maxY = worldConfig.getWorldMaxY();
+		this.minY = worldConfig.getWorldMinY();
 	}
 
 	private static Random createWorldRandom(WorldGenLevel worldGenRegion)
