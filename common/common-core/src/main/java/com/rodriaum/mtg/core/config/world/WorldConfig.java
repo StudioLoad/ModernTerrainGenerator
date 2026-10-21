@@ -219,6 +219,7 @@ public class WorldConfig extends WorldConfigBase
 		this.landRarity = reader.getSetting(WorldStandardValues.LAND_RARITY, logger);
 		this.landSize = reader.getSetting(WorldStandardValues.LAND_SIZE, logger);
 		this.forceLandAtSpawn = reader.getSetting(WorldStandardValues.FORCE_LAND_AT_SPAWN, logger);
+		this.oceanEnabled = reader.getSetting(WorldStandardValues.OCEAN_ENABLED, logger);
 		this.oceanBiomeSize = reader.getSetting(WorldStandardValues.OCEAN_BIOME_SIZE, logger);
 		this.defaultOceanBiome = reader.getSetting(WorldStandardValues.DEFAULT_OCEAN_BIOME, logger);
 		this.defaultWarmOceanBiome = reader.getSetting(WorldStandardValues.DEFAULT_WARM_OCEAN_BIOME, logger);
@@ -637,6 +638,10 @@ public class WorldConfig extends WorldConfigBase
 
 		writer.putSetting(WorldStandardValues.FORCE_LAND_AT_SPAWN, this.forceLandAtSpawn,
 			"If enabled, land will always spawn at or near 0,0"
+		);
+
+		writer.putSetting(WorldStandardValues.OCEAN_ENABLED, this.oceanEnabled,
+			"Enables or disables ocean biome generation. When disabled, ocean biome settings are ignored and non-land fallback uses the first preset biome."
 		);
 
 		writer.putSetting(WorldStandardValues.OCEAN_BIOME_SIZE, this.oceanBiomeSize,

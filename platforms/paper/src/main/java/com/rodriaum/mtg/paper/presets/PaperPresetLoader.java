@@ -135,7 +135,8 @@ public class PaperPresetLoader extends LocalPresetLoader
 		// Index BiomeColors for FromImageMode and /otg map
 		HashMap<Integer, Integer> biomeColorMap = new HashMap<>();
 		
-		// Start at 1, 0 is the fallback for the biome generator (the world's ocean biome).
+		// ID 0 is reserved as the fallback. When oceans are enabled it represents the ocean;
+		// otherwise it maps to the first preset biome.
 		int currentId = 1;
 		
 		List<ResourceKey<Biome>> presetBiomes = new ArrayList<>();
@@ -166,13 +167,13 @@ public class PaperPresetLoader extends LocalPresetLoader
 			}
 		}
 
-		IBiome[] presetIdMapping = new IBiome[biomeConfigsByResourceLocation.entrySet().size()];
+		IBiome[] presetIdMapping = new IBiome[biomeConfigsByResourceLocation.size() + (worldConfig.getOceanEnabled() ? 0 : 1)];
 		for(Entry<IBiomeResourceLocation, IBiomeConfig> biomeConfig : biomeConfigsByResourceLocation.entrySet())
 		{
 			boolean isOceanBiome = false;
 			// Biome id 0 is reserved for ocean, used when a land column has 
 			// no biome assigned, which can happen due to biome group rarity.
-			if(biomeConfig.getValue().getName().equals(worldConfig.getDefaultOceanBiome()))
+			if(worldConfig.getOceanEnabled() && biomeConfig.getValue().getName().equals(worldConfig.getDefaultOceanBiome()))
 			{
 				oceanBiomeConfig = biomeConfig.getValue();
 				isOceanBiome = true;
@@ -215,9 +216,17 @@ public class PaperPresetLoader extends LocalPresetLoader
 				// Bind an empty set as a safe fallback until the next normal tag reload.
 				Holder<Biome> registeredHolder = biomeRegistry.getOrThrow(registryKey);
 				if (registeredHolder instanceof Holder.Reference<?> reference) {
-					@SuppressWarnings("unchecked")
-					Holder.Reference<Biome> biomeHolder = (Holder.Reference<Biome>) reference;
-					biomeHolder.bindTags(List.of());
+					try {
+						// Reference.bindTags is package-private in this Minecraft version.
+						// Invoke it reflectively so this fix remains compilable against Paper.
+						java.lang.reflect.Method bindTags = Holder.Reference.class
+								.getDeclaredMethod("bindTags", java.util.Collection.class);
+						bindTags.setAccessible(true);
+						bindTags.invoke(reference, List.of());
+					} catch (ReflectiveOperationException e) {
+						throw new IllegalStateException(
+								"Failed to bind tags for dynamically registered biome " + registryKey.identifier(), e);
+					}
 				}
 			}
 
@@ -225,19 +234,19 @@ public class PaperPresetLoader extends LocalPresetLoader
 			OTGClientSyncManager.getSyncedData().put(resourceLocation.toString(), new BiomeSettingSyncWrapper(biomeConfig.getValue()));
 
 			// Ocean temperature mappings. Probably a better way to do this?
-			if (biomeConfig.getValue().getName().equals(worldConfig.getDefaultWarmOceanBiome()))
+			if (worldConfig.getOceanEnabled() && biomeConfig.getValue().getName().equals(worldConfig.getDefaultWarmOceanBiome()))
 			{
 				oceanTemperatures[0] = otgBiomeId;
 			}
-			if (biomeConfig.getValue().getName().equals(worldConfig.getDefaultLukewarmOceanBiome()))
+			if (worldConfig.getOceanEnabled() && biomeConfig.getValue().getName().equals(worldConfig.getDefaultLukewarmOceanBiome()))
 			{
 				oceanTemperatures[1] = otgBiomeId;
 			}
-			if (biomeConfig.getValue().getName().equals(worldConfig.getDefaultColdOceanBiome()))
+			if (worldConfig.getOceanEnabled() && biomeConfig.getValue().getName().equals(worldConfig.getDefaultColdOceanBiome()))
 			{
 				oceanTemperatures[2] = otgBiomeId;
 			}
-			if (biomeConfig.getValue().getName().equals(worldConfig.getDefaultFrozenOceanBiome()))
+			if (worldConfig.getOceanEnabled() && biomeConfig.getValue().getName().equals(worldConfig.getDefaultFrozenOceanBiome()))
 			{
 				oceanTemperatures[3] = otgBiomeId;
 			}
@@ -315,10 +324,15 @@ public class PaperPresetLoader extends LocalPresetLoader
 			currentId += isOceanBiome ? 0 : 1;
 		}
 
-		// If the ocean config is null, shift the array downwards to fill id 0
-		if (oceanBiomeConfig == null)
+		// When oceans are disabled, map the fallback ID 0 to the first actual preset biome.
+		// Keep biome IDs starting at 1 so ID 0 can still represent an unassigned layer sample.
+		if (!worldConfig.getOceanEnabled())
 		{
-			System.arraycopy(presetIdMapping, 1, presetIdMapping, 0, presetIdMapping.length - 1);
+			if (presetIdMapping.length <= 1 || presetIdMapping[1] == null)
+			{
+				throw new IllegalStateException("OceanEnabled is false, but the preset has no registered biome to use as fallback.");
+			}
+			presetIdMapping[0] = presetIdMapping[1];
 		}
 		
 		this.globalIdMapping.put(preset.getFolderName(), presetIdMapping);

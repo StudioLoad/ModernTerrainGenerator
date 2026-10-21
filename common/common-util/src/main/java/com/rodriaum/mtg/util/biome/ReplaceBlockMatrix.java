@@ -136,7 +136,7 @@ public class ReplaceBlockMatrix
 	{
 		this.minY = minY;
 		this.maxY = maxY;
-		this.targetsAtHeights = new ReplaceBlockEntry[maxY-minY];
+		this.targetsAtHeights = new ReplaceBlockEntry[maxY - minY + 1];
 		
 		// Parse
 		if (setting.isEmpty() || setting.equalsIgnoreCase(NO_REPLACE))

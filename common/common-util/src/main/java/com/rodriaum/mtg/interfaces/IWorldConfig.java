@@ -69,6 +69,7 @@ public interface IWorldConfig
 	int getLandFuzzy();
 	int getLandRarity();
 	int getLandSize();
+	boolean getOceanEnabled();
 	int getOceanBiomeSize();
 	String getDefaultOceanBiome();
 	String getDefaultWarmOceanBiome();

@@ -72,6 +72,7 @@ abstract class WorldConfigBase extends ConfigFile implements IWorldConfig
 	protected int landRarity;
 	protected int landSize;
 	protected boolean forceLandAtSpawn;
+	protected boolean oceanEnabled;
 	protected int oceanBiomeSize;
 	protected String defaultOceanBiome;
 	protected String defaultWarmOceanBiome;
@@ -1019,6 +1020,12 @@ abstract class WorldConfigBase extends ConfigFile implements IWorldConfig
 	public int getLandSize()
 	{
 		return this.landSize;
+	}
+
+	@Override
+	public boolean getOceanEnabled()
+	{
+		return this.oceanEnabled;
 	}
 
 	@Override

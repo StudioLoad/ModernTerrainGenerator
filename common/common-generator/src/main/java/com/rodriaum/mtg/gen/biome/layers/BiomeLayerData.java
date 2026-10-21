@@ -28,6 +28,7 @@ public class BiomeLayerData
 	public final int landFuzzy;
 	public final int landRarity;
 	public boolean forceLandAtSpawn;
+	public final boolean oceanEnabled;
 	public final int oceanBiomeSize;
 	public final int[] oceanTemperatures;
 	public final double frozenOceanTemperature;
@@ -88,6 +89,7 @@ public class BiomeLayerData
 		this.landSize = data.landSize;
 		this.landFuzzy = data.landFuzzy;
 		this.landRarity = data.landRarity;
+		this.oceanEnabled = data.oceanEnabled;
 		this.oceanBiomeSize = data.oceanBiomeSize;
 		this.frozenOceanTemperature = data.frozenOceanTemperature;
 		this.biomeRarityScale = data.biomeRarityScale;
@@ -170,6 +172,7 @@ public class BiomeLayerData
 		this.landSize = worldConfig.getLandSize();
 		this.landFuzzy = worldConfig.getLandFuzzy();
 		this.landRarity = worldConfig.getLandRarity();
+		this.oceanEnabled = worldConfig.getOceanEnabled();
 		this.oceanBiomeSize = worldConfig.getOceanBiomeSize();
 		this.oceanTemperatures = oceanTemperatures;
 
@@ -182,7 +185,7 @@ public class BiomeLayerData
 
 		if (oceanBiomeConfig == null)
 		{
-			this.oceanBiomeData = new BiomeData(0, 0, 0, 0, ImmutableList.of(), ImmutableList.of(), ImmutableList.of(), ImmutableList.of());
+			this.oceanBiomeData = new BiomeData(this.oceanEnabled ? 0 : 1, 0, 0, 0, ImmutableList.of(), ImmutableList.of(), ImmutableList.of(), ImmutableList.of());
 		} else {
 			this.oceanBiomeData = new BiomeData(
 				0,

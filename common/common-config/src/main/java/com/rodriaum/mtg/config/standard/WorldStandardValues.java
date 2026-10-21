@@ -145,6 +145,7 @@ public class WorldStandardValues extends Settings
 	;
 	
 	public static final Setting<Boolean>
+		OCEAN_ENABLED = booleanSetting("OceanEnabled", true),
 		FORCE_LAND_AT_SPAWN = booleanSetting("ForceLandAtSpawn", true),
 		RIVERS_ENABLED = booleanSetting("RiversEnabled", true),
 		RANDOM_RIVERS = booleanSetting("RandomRivers", false),

@@ -59,7 +59,7 @@ public class BiomeLayers
 		return 
 			(sample & BiomeLayers.LAND_BIT) != 0 ? 
 			(sample & BiomeLayers.BIOME_BITS) : 
-			0; // 0 should be the default ocean biome otg id, set by the presetloader.
+			0; // ID 0 maps to the ocean biome, or to the first preset biome when oceans are disabled.
 	}
 
 	private static <T extends ILayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(BiomeLayerData data, LongFunction<C> contextProvider, ILogger logger)
@@ -98,7 +98,7 @@ public class BiomeLayers
 					factory = new FuzzyScaleLayer().create(contextProvider.apply(2000L), factory);
 				}
 
-				if (depth == data.oceanBiomeSize)
+				if (data.oceanEnabled && depth == data.oceanBiomeSize)
 				{
 					// TODO: Process isles/borders for oceanTemperatureFactory too, for gendepths after its been added?
 					oceanTemperatureFactory = new OceanTemperatureLayer(data).create(contextProvider.apply(3L));
@@ -176,7 +176,7 @@ public class BiomeLayers
 						boolean inOcean = false;
 						for (int islandInBiome : biome.isleInBiomes)
 						{
-							if (islandInBiome == data.oceanBiomeData.id)
+							if (data.oceanEnabled && islandInBiome == data.oceanBiomeData.id)
 							{
 								inOcean = true;
 							} else {
@@ -208,7 +208,10 @@ public class BiomeLayers
 			// TODO: This does nothing atm, remove?
 			//factory = new ApplyOceanLayer(data).create(contextProvider.apply(3L), factory);
 
-			factory = new MergeOceanTemperatureLayer().create(contextProvider.apply(1L), factory, oceanTemperatureFactory);
+			if (data.oceanEnabled)
+			{
+				factory = new MergeOceanTemperatureLayer().create(contextProvider.apply(1L), factory, oceanTemperatureFactory);
+			}
 			
 			// Finalize the biome data
 			if (data.randomRivers)
