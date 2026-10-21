@@ -215,9 +215,17 @@ public class PaperPresetLoader extends LocalPresetLoader
 				// Bind an empty set as a safe fallback until the next normal tag reload.
 				Holder<Biome> registeredHolder = biomeRegistry.getOrThrow(registryKey);
 				if (registeredHolder instanceof Holder.Reference<?> reference) {
-					@SuppressWarnings("unchecked")
-					Holder.Reference<Biome> biomeHolder = (Holder.Reference<Biome>) reference;
-					biomeHolder.bindTags(List.of());
+					try {
+						// Reference.bindTags is package-private in this Minecraft version.
+						// Invoke it reflectively so this fix remains compilable against Paper.
+						java.lang.reflect.Method bindTags = Holder.Reference.class
+								.getDeclaredMethod("bindTags", java.util.Collection.class);
+						bindTags.setAccessible(true);
+						bindTags.invoke(reference, List.of());
+					} catch (ReflectiveOperationException e) {
+						throw new IllegalStateException(
+								"Failed to bind tags for dynamically registered biome " + registryKey.identifier(), e);
+					}
 				}
 			}
 
