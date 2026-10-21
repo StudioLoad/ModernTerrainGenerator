@@ -176,7 +176,7 @@ public class BiomeLayers
 						boolean inOcean = false;
 						for (int islandInBiome : biome.isleInBiomes)
 						{
-							if (islandInBiome == data.oceanBiomeData.id)
+							if (data.oceanEnabled && islandInBiome == data.oceanBiomeData.id)
 							{
 								inOcean = true;
 							} else {
