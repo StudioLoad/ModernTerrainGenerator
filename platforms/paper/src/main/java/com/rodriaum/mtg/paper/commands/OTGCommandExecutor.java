@@ -16,7 +16,7 @@ public class OTGCommandExecutor
 	
 	//
 	// our command is registered as minecraft:otg, which is not ideal -josh
-	// -- Partially fixed this by removing the command from our plugin.yml, now works using only /otg -auth
+	// -- Partially fixed this by removing the command from our paper-plugin.yml, now works using only /otg -auth
 	//
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
 	{

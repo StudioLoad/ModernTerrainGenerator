@@ -6,7 +6,7 @@ defaultTasks = arrayListOf("build", "publishToMavenLocal")
 
 allprojects {
     group = "com.rodriaum.mtg"
-    version = "1.21.11-1.0.0"
+    version = "1.0.0"
     description = "Modern Terrain Generator: Generate anything!"
 }
 
@@ -21,7 +21,7 @@ subprojects {
 val universalJar = tasks.register<Jar>("universalJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     destinationDirectory.set(layout.buildDirectory.dir("distributions"))
-    archiveFileName.set("ModernTerrainGenerator-Universal-" + project.version + ".jar")
+    archiveFileName.set("ModernTerrainGenerator-" + project.version + ".jar")
 }
 
 tasks.build {
