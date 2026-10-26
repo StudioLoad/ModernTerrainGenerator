@@ -43,7 +43,7 @@
 > [!WARNING]
 > This project is being moved to the latest versions (1.21.11).
 
-### Team
+### Load Team
 * <a href="https://github.com/rodriaum">Rodrigo F.</a>
 
 ## Installation / building
