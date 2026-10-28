@@ -6,7 +6,7 @@ defaultTasks = arrayListOf("build", "publishToMavenLocal")
 
 allprojects {
     group = "com.rodriaum.mtg"
-    version = "1.0.0"
+    version = "1.0.1"
     description = "Modern Terrain Generator: Generate anything!"
 }
 
