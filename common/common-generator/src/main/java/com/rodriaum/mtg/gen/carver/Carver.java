@@ -154,7 +154,7 @@ public abstract class Carver
 			{
 				for (int k = minY - 1; k <= maxY + 1; ++k)
 				{
-					if (chunk.getBlock(i + mainChunkX * Constants.CHUNK_SIZE, k, j + mainChunkZ * Constants.CHUNK_SIZE).isMaterial(LocalMaterials.WATER) || chunk.getBlock(i + mainChunkX * Constants.CHUNK_SIZE, k, j + mainChunkZ * Constants.CHUNK_SIZE).isMaterial(LocalMaterials.LAVA))
+					if (chunk.getBlock(i + mainChunkX * Constants.CHUNK_SIZE, k, j + mainChunkZ * Constants.CHUNK_SIZE).isMaterial(LocalMaterials.WATER))
 					{
 						return true;
 					}
